@@ -1,0 +1,18 @@
+{
+  "name": "@agile-flow/shared",
+  "version": "1.0.0",
+  "description": "Shared types and utilities for AgileFlow",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

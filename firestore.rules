@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read/write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Projects - users can only access projects they're members of
+    match /projects/{projectId} {
+      allow read, write: if request.auth != null && 
+        request.auth.uid in resource.data.memberIds;
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.ownerId;
+    }
+    
+    // Tasks - users can only access tasks in projects they're members of
+    match /tasks/{taskId} {
+      allow read, write: if request.auth != null && 
+        exists(/databases/$(database)/documents/projects/$(resource.data.projectId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/projects/$(resource.data.projectId)).data.memberIds;
+    }
+    
+    // Sprints - users can only access sprints in projects they're members of
+    match /sprints/{sprintId} {
+      allow read, write: if request.auth != null && 
+        exists(/databases/$(database)/documents/projects/$(resource.data.projectId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/projects/$(resource.data.projectId)).data.memberIds;
+    }
+  }
+}

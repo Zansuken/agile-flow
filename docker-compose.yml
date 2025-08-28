@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:3001/api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - /app/dist
+    env_file:
+      - ./backend/.env
+
+  # Firebase Emulators (optional for local development)
+  firebase-emulator:
+    image: node:18-alpine
+    ports:
+      - "4000:4000"  # Firebase Emulator Suite UI
+      - "9099:9099"  # Authentication Emulator
+      - "8080:8080"  # Firestore Emulator
+      - "5001:5001"  # Functions Emulator
+      - "8085:8085"  # Firebase Hosting Emulator
+    volumes:
+      - ./firebase:/firebase
+    working_dir: /firebase
+    command: sh -c "npm install -g firebase-tools && firebase emulators:start --host 0.0.0.0"
+    profiles:
+      - emulators
+
+networks:
+  default:
+    driver: bridge
