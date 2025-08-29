@@ -14,7 +14,22 @@ Environment Variable "VITE_API_BASE_URL" references Secret "vite_api_base_url", 
    - Settings → Environment Variables
    - Add each variable manually
 
-### Issue 2: Build Command Not Found
+### Issue 2: Frontend Directory Not Found
+```
+sh: line 1: cd: frontend: No such file or directory
+Error: Command "cd frontend && npm install" exited with 1
+```
+
+**Solution:**
+1. Set **Root Directory** to `frontend` in Vercel project settings
+2. Use the updated `vercel.json` configuration (now fixed)
+3. Or manually configure in Vercel dashboard:
+   - Go to Project Settings → General
+   - Set **Root Directory** to `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+
+### Issue 3: Build Command Not Found
 ```
 Error: Build command failed with exit code 1
 ```
@@ -66,10 +81,10 @@ Firebase: Error (auth/invalid-api-key)
 
 2. **Configure Build Settings**
    - **Framework Preset**: Vite
-   - **Root Directory**: Leave empty (project root)
-   - **Build Command**: `cd frontend && npm run build`
-   - **Output Directory**: `frontend/dist`
-   - **Install Command**: `cd frontend && npm install`
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Install Command**: `npm install`
 
 3. **Deploy First Time**
    - Click "Deploy"

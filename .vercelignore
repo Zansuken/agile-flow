@@ -1,0 +1,8 @@
+backend/
+docs/
+scripts/
+shared/
+node_modules/
+.env
+.env.local
+*.log
