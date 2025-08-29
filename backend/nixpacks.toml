@@ -9,7 +9,7 @@ cmds = ['npm ci']
 cmds = ['npm run build']
 
 [start]
-cmd = './start.sh'
+cmd = 'npm run start:prod'
 
 [variables]
 NODE_ENV = 'production'
