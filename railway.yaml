@@ -18,3 +18,4 @@ services:
     environment:
       NODE_ENV: production
       PORT: $PORT
+      NIXPACKS_BUILD_ONLY_COMMANDS: "npm install && npm run build"
