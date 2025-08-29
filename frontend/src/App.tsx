@@ -1,19 +1,26 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Box, CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, Box } from '@mui/material';
+import React from 'react';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from 'react-router-dom';
 
-import { theme } from './theme/theme.js';
-import { AuthProvider } from './contexts/AuthContext.tsx';
-import { useAuth } from './hooks/useAuth.ts';
 import { LoadingSpinner } from './components/common/LoadingSpinner.tsx';
 import { Navbar } from './components/layout/Navbar.tsx';
-import { LoginPage } from './pages/LoginPage.tsx';
+import { AuthProvider } from './contexts/AuthContext.tsx';
+import { useAuth } from './hooks/useAuth.ts';
 import { DashboardPage } from './pages/DashboardPage.tsx';
-import { ProjectsPage } from './pages/ProjectsPage.tsx';
-import { ProjectDetailPage } from './pages/ProjectDetailPage.tsx';
 import { KanbanPage } from './pages/KanbanPage.tsx';
+import { LoginPage } from './pages/LoginPage.tsx';
+import { ProjectDetailPage } from './pages/ProjectDetailPage.tsx';
+import { ProjectSettingsPage } from './pages/ProjectSettingsPage.tsx';
+import { ProjectsPage } from './pages/ProjectsPage.tsx';
 import { SprintsPage } from './pages/SprintsPage.tsx';
+import { TeamManagePage } from './pages/TeamManagePage.tsx';
+import { theme } from './theme/theme.js';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -33,7 +40,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         {children}
       </Box>
     </Box>
@@ -62,9 +69,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route
         path="/login"
-        element={
-          currentUser ? <Navigate to="/dashboard" /> : <LoginPage />
-        }
+        element={currentUser ? <Navigate to="/dashboard" /> : <LoginPage />}
       />
       <Route
         path="/dashboard"
@@ -92,6 +97,26 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <AppLayout>
               <ProjectDetailPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects/:projectId/team"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <TeamManagePage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects/:projectId/settings"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <ProjectSettingsPage />
             </AppLayout>
           </ProtectedRoute>
         }

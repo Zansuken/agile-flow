@@ -1,33 +1,33 @@
-import React, { useState } from 'react';
 import {
-  Container,
-  Paper,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Divider,
-  Link,
-  useTheme,
-  alpha,
-  IconButton,
-  InputAdornment,
-  Chip,
-} from '@mui/material';
-import {
-  Google as GoogleIcon,
-  Visibility,
-  VisibilityOff,
+  ArrowForward as ArrowForwardIcon,
   Email as EmailIcon,
+  Google as GoogleIcon,
   Lock as LockIcon,
   Person as PersonIcon,
-  ArrowForward as ArrowForwardIcon,
   Security as SecurityIcon,
+  Visibility,
+  VisibilityOff,
 } from '@mui/icons-material';
-import { useAuth } from '../hooks/useAuth.js';
+import {
+  Alert,
+  alpha,
+  Box,
+  Button,
+  Chip,
+  Container,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Link,
+  Paper,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SlideIn, LoadingSpinner } from '../components/animations/index.js';
+import { LoadingSpinner, SlideIn } from '../components/animations/index.js';
+import { useAuth } from '../hooks/useAuth.js';
 
 export const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -90,7 +90,11 @@ export const LoginPage: React.FC = () => {
         position: 'relative',
       }}
     >
-      <Container component="main" maxWidth="xs" sx={{ width: '100%', maxWidth: 380 }}>
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{ width: '100%', maxWidth: 380 }}
+      >
         <SlideIn direction="up">
           <Box>
             <Paper
@@ -98,11 +102,11 @@ export const LoginPage: React.FC = () => {
               sx={{
                 p: { xs: 2.5, sm: 3 },
                 width: '100%',
-                borderRadius: 4,
+                borderRadius: 2,
                 border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
                 background: `linear-gradient(145deg, ${alpha(theme.palette.background.paper, 0.95)}, ${alpha(theme.palette.background.paper, 0.98)})`,
                 backdropFilter: 'blur(10px)',
-                boxShadow: theme.shadows[20],
+                boxShadow: theme.shadows[3],
               }}
             >
               {/* Header Section */}
@@ -152,11 +156,19 @@ export const LoginPage: React.FC = () => {
                   AgileFlow
                 </Typography>
 
-                <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 0.5 }}>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  sx={{ mb: 0.5 }}
+                >
                   {isSignUp ? 'Create your account' : 'Welcome back'}
                 </Typography>
 
-                <Typography variant="body2" color="text.secondary" fontSize="0.875rem">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontSize="0.875rem"
+                >
                   {isSignUp
                     ? 'Join teams managing projects efficiently'
                     : 'Sign in to continue to your projects'}
@@ -202,7 +214,11 @@ export const LoginPage: React.FC = () => {
                     transition: 'all 0.3s ease',
                   }}
                 >
-                  {loading ? <LoadingSpinner size={20} /> : 'Continue with Google'}
+                  {loading ? (
+                    <LoadingSpinner size={20} />
+                  ) : (
+                    'Continue with Google'
+                  )}
                 </Button>
               </SlideIn>
 
@@ -244,7 +260,10 @@ export const LoginPage: React.FC = () => {
                         mb: 1.5,
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
-                          backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                          backgroundColor: alpha(
+                            theme.palette.background.paper,
+                            0.8,
+                          ),
                         },
                       }}
                     />
@@ -271,8 +290,10 @@ export const LoginPage: React.FC = () => {
                     sx={{
                       mb: 1.5,
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,
-                        backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                        backgroundColor: alpha(
+                          theme.palette.background.paper,
+                          0.8,
+                        ),
                       },
                     }}
                   />
@@ -285,7 +306,9 @@ export const LoginPage: React.FC = () => {
                     label="Password"
                     type={showPassword ? 'text' : 'password'}
                     id="password"
-                    autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                    autoComplete={
+                      isSignUp ? 'new-password' : 'current-password'
+                    }
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     InputProps={{
@@ -295,7 +318,7 @@ export const LoginPage: React.FC = () => {
                         </InputAdornment>
                       ),
                       endAdornment: (
-                        <InputAdornment position="end">
+                        <InputAdornment position="end" sx={{ pr: 1 }}>
                           <IconButton
                             aria-label="toggle password visibility"
                             onClick={() => setShowPassword(!showPassword)}
@@ -309,8 +332,10 @@ export const LoginPage: React.FC = () => {
                     sx={{
                       mb: 2,
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,
-                        backgroundColor: alpha(theme.palette.background.paper, 0.8),
+                        backgroundColor: alpha(
+                          theme.palette.background.paper,
+                          0.8,
+                        ),
                       },
                     }}
                   />
@@ -326,9 +351,7 @@ export const LoginPage: React.FC = () => {
                       py: 1.2,
                       borderRadius: 2.5,
                       background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                      boxShadow: theme.shadows[8],
                       '&:hover': {
-                        boxShadow: theme.shadows[12],
                         transform: 'translateY(-2px)',
                         background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
                       },
@@ -341,8 +364,10 @@ export const LoginPage: React.FC = () => {
                   >
                     {loading ? (
                       <LoadingSpinner size={20} color="white" />
+                    ) : isSignUp ? (
+                      'Create Account'
                     ) : (
-                      isSignUp ? 'Create Account' : 'Sign In'
+                      'Sign In'
                     )}
                   </Button>
                 </SlideIn>
@@ -371,52 +396,6 @@ export const LoginPage: React.FC = () => {
                   </Box>
                 </SlideIn>
               </Box>
-
-              {/* Trust Indicators */}
-              <SlideIn direction="up">
-                <Box
-                  sx={{
-                    mt: 2.5,
-                    pt: 2,
-                    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexWrap: 'wrap',
-                    gap: 1,
-                  }}
-                >
-                  <Chip
-                    label="🔒 Secure"
-                    size="small"
-                    sx={{
-                      backgroundColor: alpha(theme.palette.success.main, 0.1),
-                      color: theme.palette.success.main,
-                      border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`,
-                      fontSize: '0.7rem',
-                    }}
-                  />
-                  <Chip
-                    label="⚡ Fast"
-                    size="small"
-                    sx={{
-                      backgroundColor: alpha(theme.palette.warning.main, 0.1),
-                      color: theme.palette.warning.main,
-                      border: `1px solid ${alpha(theme.palette.warning.main, 0.2)}`,
-                      fontSize: '0.7rem',
-                    }}
-                  />
-                  <Chip
-                    label="🌟 Trusted"
-                    size="small"
-                    sx={{
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      color: theme.palette.primary.main,
-                      border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                      fontSize: '0.7rem',
-                    }}
-                  />
-                </Box>
-              </SlideIn>
             </Paper>
           </Box>
         </SlideIn>
