@@ -1,5 +1,4 @@
-import { createTheme } from '@mui/material/styles';
-import { alpha } from '@mui/material/styles';
+import { alpha, createTheme } from '@mui/material/styles';
 
 // Extend Material-UI theme to include custom properties
 declare module '@mui/material/styles' {
@@ -221,10 +220,31 @@ const breakpoints = {
 
 // Shadows with modern approach - exactly 25 elements as required by Material-UI
 const shadows: [
-  "none",
-  string, string, string, string, string, string, string, string, string, string,
-  string, string, string, string, string, string, string, string, string, string,
-  string, string, string, string
+  'none',
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
 ] = [
   'none',
   '0px 1px 3px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04)',
@@ -353,7 +373,7 @@ export const theme = createTheme({
           transition: animations.transitions.standard,
           '&:hover': {
             transform: 'translateY(-1px)',
-            boxShadow: shadows[4],
+            boxShadow: shadows[2],
           },
         },
         contained: {
@@ -367,12 +387,11 @@ export const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 16,
+          borderRadius: 8,
           border: `1px solid ${alpha(colors.neutral[300], 0.5)}`,
           boxShadow: shadows[1],
           transition: animations.transitions.standard,
           '&:hover': {
-            transform: 'translateY(-2px)',
             boxShadow: shadows[4],
           },
         },
@@ -444,7 +463,7 @@ export const theme = createTheme({
 });
 
 // Export colors and animations for use in custom components
-export { colors, animations };
+export { animations, colors };
 
 // Dark theme variant
 export const darkTheme = createTheme({
