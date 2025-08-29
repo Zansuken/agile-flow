@@ -1,0 +1,15 @@
+# Render deployment configuration
+version: 1
+
+services:
+  - type: web
+    name: agileflow-backend
+    runtime: node
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000

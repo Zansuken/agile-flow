@@ -1,0 +1,20 @@
+# Railway deployment configuration
+version: 2
+
+build:
+  commands:
+    - cd backend && npm install
+    - cd backend && npm run build
+
+start:
+  command: cd backend && npm run start:prod
+
+healthcheck:
+  path: /api/health
+  interval: 30s
+  timeout: 10s
+  retries: 3
+
+environment:
+  NODE_ENV: production
+  PORT: $PORT
