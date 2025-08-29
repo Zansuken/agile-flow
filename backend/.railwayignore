@@ -1,4 +1,5 @@
 # Railway ignore file - exclude root Dockerfile for backend deployment
+
 ../Dockerfile
 ../docker-compose.yml
 ../frontend/
@@ -7,4 +8,4 @@
 ../shared/
 ../.git/
 ../.vscode/
-../*.md
+../\*.md

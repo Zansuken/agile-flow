@@ -1,9 +1,16 @@
 # Force Railway to use Nixpacks instead of Docker
+[phases.setup]
+nixPkgs = ['nodejs_18']
+
+[phases.install]
+cmds = ['npm ci']
+
 [phases.build]
-cmds = ['npm install', 'npm run build']
+cmds = ['npm run build']
 
 [phases.start]
 cmd = 'npm run start:prod'
 
 [variables]
 NODE_ENV = 'production'
+PORT = '3001'
