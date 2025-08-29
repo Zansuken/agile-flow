@@ -1,9 +1,10 @@
 # Railway ignore file - exclude root Dockerfile for backend deployment
-Dockerfile
-frontend/
-docs/
-scripts/
-shared/
-.git/
-.vscode/
-*.md
+../Dockerfile
+../docker-compose.yml
+../frontend/
+../docs/
+../scripts/
+../shared/
+../.git/
+../.vscode/
+../*.md
