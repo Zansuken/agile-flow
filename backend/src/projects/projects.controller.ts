@@ -1,24 +1,25 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
-  ApiBearerAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 import type { DecodedIdToken } from 'firebase-admin/auth';
-import { ProjectsService } from './projects.service';
-import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { ProjectRole } from '../common/rbac';
+import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
+import { ProjectsService } from './projects.service';
 
 @ApiTags('projects')
 @ApiBearerAuth()
@@ -91,6 +92,21 @@ export class ProjectsController {
     return this.projectsService.addMember(projectId, memberId, user.uid);
   }
 
+  @Get(':id/members')
+  @ApiOperation({ summary: 'Get project members' })
+  @ApiResponse({
+    status: 200,
+    description: 'Project members retrieved successfully',
+  })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  getMembers(
+    @Param('id') projectId: string,
+    @CurrentUser() user: DecodedIdToken,
+  ) {
+    return this.projectsService.getMembers(projectId, user.uid);
+  }
+
   @Delete(':id/members/:memberId')
   @ApiOperation({ summary: 'Remove member from project' })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
@@ -102,5 +118,68 @@ export class ProjectsController {
     @CurrentUser() user: DecodedIdToken,
   ) {
     return this.projectsService.removeMember(projectId, memberId, user.uid);
+  }
+
+  @Post(':id/invite')
+  @ApiOperation({ summary: 'Invite user to project by email' })
+  @ApiResponse({ status: 200, description: 'Invitation sent successfully' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 400,
+    description: 'User not found or already a member',
+  })
+  inviteUser(
+    @Param('id') projectId: string,
+    @Body() body: { email: string; role?: ProjectRole },
+    @CurrentUser() user: DecodedIdToken,
+  ) {
+    return this.projectsService.inviteUserByEmail(
+      projectId,
+      body.email,
+      user.uid,
+      body.role,
+    );
+  }
+
+  @Patch(':id/members/:memberId/role')
+  @ApiOperation({ summary: 'Update member role in project' })
+  @ApiResponse({ status: 200, description: 'Member role updated successfully' })
+  @ApiResponse({ status: 404, description: 'Project or member not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Insufficient permissions' })
+  updateMemberRole(
+    @Param('id') projectId: string,
+    @Param('memberId') memberId: string,
+    @Body() body: { role: ProjectRole },
+    @CurrentUser() user: DecodedIdToken,
+  ) {
+    return this.projectsService.updateMemberRole(
+      projectId,
+      memberId,
+      body.role,
+      user.uid,
+    );
+  }
+
+  @Get(':id/members/:memberId/role')
+  @ApiOperation({ summary: 'Get user role in project' })
+  @ApiResponse({ status: 200, description: 'User role retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getUserRole(
+    @Param('id') projectId: string,
+    @Param('memberId') memberId: string,
+    @CurrentUser() user: DecodedIdToken,
+  ) {
+    // Users can check their own role or project members can check others
+    const targetUserId = memberId === 'me' ? user.uid : memberId;
+    const role = await this.projectsService.getUserProjectRole(
+      projectId,
+      targetUserId,
+    );
+
+    // Return a JSON object instead of a raw string
+    return { role };
   }
 }
