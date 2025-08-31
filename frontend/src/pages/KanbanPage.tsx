@@ -97,19 +97,6 @@ export const KanbanPage: React.FC = () => {
     },
   ];
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return theme.palette.error.main;
-      case 'medium':
-        return theme.palette.warning.main;
-      case 'low':
-        return theme.palette.success.main;
-      default:
-        return theme.palette.grey[500];
-    }
-  };
-
   return (
     <>
       <style>
@@ -269,134 +256,110 @@ export const KanbanPage: React.FC = () => {
                           <AddIcon />
                         </IconButton>
                       </Box>
-                    </Box>                  <Box
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-                  >
-                    {column.tasks.map((task) => (
-                      <HoverCard key={task.id}>
-                        <Card
-                          sx={{
-                            borderRadius: 3,
-                            background: 'rgba(255, 255, 255, 0.1)',
-                            backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.15)',
-                            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-                            cursor: 'grab',
-                            '&:hover': {
-                              background: 'rgba(255, 255, 255, 0.15)',
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-                            },
-                            '&:active': {
-                              cursor: 'grabbing',
-                            },
-                            transition: 'all 0.3s ease',
-                          }}
-                        >
-                          <CardContent sx={{ p: 2.5 }}>
-                            <Box
-                              display="flex"
-                              justifyContent="space-between"
-                              alignItems="flex-start"
-                              mb={2}
-                            >
-                              <Typography
-                                variant="subtitle1"
-                                fontWeight={600}
-                                lineHeight={1.3}
-                                sx={{ color: 'white' }}
-                              >
-                                {task.title}
-                              </Typography>
-                              <IconButton 
-                                size="small"
-                                sx={{ color: 'white' }}
-                              >
-                                <MoreVertIcon fontSize="small" />
-                              </IconButton>
-                            </Box>
+                    </Box>
 
-                            <Typography
-                              variant="body2"
-                              sx={{ 
-                                color: 'rgba(255, 255, 255, 0.8)',
-                                mb: 3,
-                                lineHeight: 1.5,
-                              }}
-                            >
-                              {task.description}
-                            </Typography>
-
-                            <Box
-                              display="flex"
-                              justifyContent="space-between"
-                              alignItems="center"
-                            >
-                              <Box display="flex" alignItems="center" gap={1}>
-                                <FlagIcon
-                                  sx={{
-                                    fontSize: 16,
-                                    color: 'rgba(255, 255, 255, 0.8)',
-                                  }}
-                                />
+                    <Box
+                      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                    >
+                      {column.tasks.map((task) => (
+                        <HoverCard key={task.id}>
+                          <Card
+                            sx={{
+                              borderRadius: 3,
+                              background: 'rgba(255, 255, 255, 0.1)',
+                              backdropFilter: 'blur(10px)',
+                              border: '1px solid rgba(255, 255, 255, 0.15)',
+                              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+                              cursor: 'grab',
+                              '&:hover': {
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                              },
+                              '&:active': {
+                                cursor: 'grabbing',
+                              },
+                              transition: 'all 0.3s ease',
+                            }}
+                          >
+                            <CardContent sx={{ p: 2.5 }}>
+                              <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
+                                mb={2}
+                              >
                                 <Typography
-                                  variant="caption"
-                                  sx={{ 
-                                    color: 'rgba(255, 255, 255, 0.8)',
-                                    textTransform: 'capitalize',
-                                  }}
+                                  variant="subtitle1"
+                                  fontWeight={600}
+                                  lineHeight={1.3}
+                                  sx={{ color: 'white' }}
                                 >
-                                  {task.priority}
+                                  {task.title}
                                 </Typography>
+                                <IconButton 
+                                  size="small"
+                                  sx={{ color: 'white' }}
+                                >
+                                  <MoreVertIcon fontSize="small" />
+                                </IconButton>
                               </Box>
-                              <Avatar
-                                sx={{
-                                  width: 28,
-                                  height: 28,
-                                  fontSize: '0.75rem',
-                                  background: 'rgba(255, 255, 255, 0.2)',
-                                  color: 'white',
-                                  border: '1px solid rgba(255, 255, 255, 0.3)',
+
+                              <Typography
+                                variant="body2"
+                                sx={{ 
+                                  color: 'rgba(255, 255, 255, 0.8)',
+                                  mb: 3,
+                                  lineHeight: 1.5,
                                 }}
                               >
-                                {task.avatar}
-                              </Avatar>
-                            </Box>
-                          </CardContent>
-                                  variant="caption"
-                                  sx={{
-                                    color: getPriorityColor(task.priority),
-                                    fontWeight: 600,
-                                    textTransform: 'capitalize',
-                                  }}
-                                >
-                                  {task.priority}
-                                </Typography>
-                              </Box>
+                                {task.description}
+                              </Typography>
 
-                              <Box display="flex" alignItems="center" gap={1}>
+                              <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                              >
+                                <Box display="flex" alignItems="center" gap={1}>
+                                  <FlagIcon
+                                    sx={{
+                                      fontSize: 16,
+                                      color: 'rgba(255, 255, 255, 0.8)',
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="caption"
+                                    sx={{ 
+                                      color: 'rgba(255, 255, 255, 0.8)',
+                                      textTransform: 'capitalize',
+                                    }}
+                                  >
+                                    {task.priority}
+                                  </Typography>
+                                </Box>
                                 <Avatar
                                   sx={{
-                                    width: 24,
-                                    height: 24,
-                                    fontSize: 10,
-                                    fontWeight: 600,
-                                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
+                                    width: 28,
+                                    height: 28,
+                                    fontSize: '0.75rem',
+                                    background: 'rgba(255, 255, 255, 0.2)',
+                                    color: 'white',
+                                    border: '1px solid rgba(255, 255, 255, 0.3)',
                                   }}
                                 >
                                   {task.avatar}
                                 </Avatar>
                               </Box>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </HoverCard>
-                    ))}
+                            </CardContent>
+                          </Card>
+                        </HoverCard>
+                      ))}
+                    </Box>
                   </Box>
-                </Box>
-              </Paper>
-            </SlideIn>
-          ))}
+                </Paper>
+              </SlideIn>
+            ))}
           </Box>
         </StaggerContainer>
       </Box>
