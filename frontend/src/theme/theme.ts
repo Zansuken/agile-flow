@@ -365,7 +365,7 @@ export const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 8,
           textTransform: 'none',
           fontWeight: 600,
           fontSize: '0.95rem',
@@ -401,7 +401,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: 12,
+            borderRadius: 8,
             transition: animations.transitions.standard,
             '&:hover': {
               '& .MuiOutlinedInput-notchedOutline': {

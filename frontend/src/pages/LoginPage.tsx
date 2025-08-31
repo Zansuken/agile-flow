@@ -1,19 +1,15 @@
 import {
-  ArrowForward as ArrowForwardIcon,
   Email as EmailIcon,
   Google as GoogleIcon,
   Lock as LockIcon,
   Person as PersonIcon,
-  Security as SecurityIcon,
   Visibility,
   VisibilityOff,
 } from '@mui/icons-material';
 import {
   Alert,
-  alpha,
   Box,
   Button,
-  Chip,
   Container,
   Divider,
   IconButton,
@@ -22,12 +18,40 @@ import {
   Paper,
   TextField,
   Typography,
-  useTheme,
+  keyframes,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoadingSpinner, SlideIn } from '../components/animations/index.js';
 import { useAuth } from '../hooks/useAuth.js';
+
+// Animation for floating circles
+const float = keyframes`
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+`;
+
+const floatSlow = keyframes`
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(180deg);
+  }
+`;
+
+const floatMedium = keyframes`
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.1);
+  }
+`;
 
 export const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -40,7 +64,6 @@ export const LoginPage: React.FC = () => {
 
   const { login, signup, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,323 +104,320 @@ export const LoginPage: React.FC = () => {
         minHeight: '100vh',
         width: '100vw',
         display: 'flex',
-        alignItems: { xs: 'flex-start', md: 'center' },
+        alignItems: 'center',
         justifyContent: 'center',
-        background: `linear-gradient(135deg, ${theme.palette.primary.main}15, ${theme.palette.secondary.main}10, ${theme.palette.primary.light}05)`,
-        py: { xs: 2, md: 3 },
-        px: 2,
-        margin: 0,
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Container
-        component="main"
-        maxWidth="xs"
-        sx={{ width: '100%', maxWidth: 380 }}
-      >
+      {/* Animated Background Circles */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '10%',
+          left: '15%',
+          width: 120,
+          height: 120,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          animation: `${float} 6s ease-in-out infinite`,
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '60%',
+          left: '5%',
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.08)',
+          animation: `${floatSlow} 8s ease-in-out infinite`,
+          animationDelay: '2s',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '20%',
+          right: '10%',
+          width: 100,
+          height: 100,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.06)',
+          animation: `${floatMedium} 7s ease-in-out infinite`,
+          animationDelay: '1s',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '20%',
+          width: 60,
+          height: 60,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.12)',
+          animation: `${float} 5s ease-in-out infinite`,
+          animationDelay: '3s',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '70%',
+          left: '60%',
+          width: 90,
+          height: 90,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.05)',
+          animation: `${floatSlow} 9s ease-in-out infinite`,
+          animationDelay: '4s',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '40%',
+          left: '80%',
+          width: 70,
+          height: 70,
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.09)',
+          animation: `${floatMedium} 6.5s ease-in-out infinite`,
+          animationDelay: '1.5s',
+        }}
+      />
+
+      {/* Main Content */}
+      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
         <SlideIn direction="up">
-          <Box>
-            <Paper
-              elevation={0}
+          <Paper
+            elevation={24}
+            sx={{
+              p: 4,
+              borderRadius: 1,
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              maxWidth: 400,
+              mx: 'auto',
+            }}
+          >
+            {/* Header */}
+            <Box textAlign="center" mb={3}>
+              <Box
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  background:
+                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  mb: 2,
+                  color: 'white',
+                  fontSize: 24,
+                  fontWeight: 'bold',
+                }}
+              >
+                🎯
+              </Box>
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+                color="text.primary"
+                mb={1}
+              >
+                AgileFlow
+              </Typography>
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                fontWeight="normal"
+                mb={0.5}
+              >
+                Welcome back
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Sign in to your project management workspace
+              </Typography>
+            </Box>
+
+            {/* Google Sign In Button */}
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<GoogleIcon />}
+              onClick={handleGoogleLogin}
+              disabled={loading}
               sx={{
-                p: { xs: 2.5, sm: 3 },
-                width: '100%',
-                borderRadius: 2,
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                background: `linear-gradient(145deg, ${alpha(theme.palette.background.paper, 0.95)}, ${alpha(theme.palette.background.paper, 0.98)})`,
-                backdropFilter: 'blur(10px)',
-                boxShadow: theme.shadows[3],
+                py: 1.5,
+                mb: 3,
+                borderColor: '#dadce0',
+                color: '#3c4043',
+                '&:hover': {
+                  backgroundColor: '#f8f9fa',
+                  borderColor: '#dadce0',
+                },
               }}
             >
-              {/* Header Section */}
-              <Box textAlign="center" mb={2.5}>
-                <SlideIn direction="up">
-                  <Box
-                    sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: 50,
-                      height: 50,
-                      borderRadius: 2.5,
-                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                      mb: 1.5,
-                      position: 'relative',
-                    }}
-                  >
-                    <SecurityIcon sx={{ fontSize: 26, color: 'white' }} />
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: -2,
-                        right: -2,
-                        width: 14,
-                        height: 14,
-                        borderRadius: '50%',
-                        backgroundColor: theme.palette.success.main,
-                        border: `2px solid ${theme.palette.background.paper}`,
-                      }}
-                    />
-                  </Box>
-                </SlideIn>
+              Continue with Google
+            </Button>
 
-                <Typography
-                  variant="h4"
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    color: 'transparent',
-                    mb: 0.5,
-                  }}
-                >
-                  AgileFlow
-                </Typography>
+            {/* Divider */}
+            <Box display="flex" alignItems="center" mb={3}>
+              <Divider sx={{ flex: 1 }} />
+              <Typography variant="body2" color="text.secondary" px={2}>
+                OR CONTINUE WITH
+              </Typography>
+              <Divider sx={{ flex: 1 }} />
+            </Box>
 
-                <Typography
-                  variant="subtitle1"
-                  color="text.secondary"
-                  sx={{ mb: 0.5 }}
-                >
-                  {isSignUp ? 'Create your account' : 'Welcome back'}
-                </Typography>
+            {/* Error Alert */}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
 
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  fontSize="0.875rem"
-                >
-                  {isSignUp
-                    ? 'Join teams managing projects efficiently'
-                    : 'Sign in to continue to your projects'}
-                </Typography>
-              </Box>
-
-              {/* Error Alert */}
-              {error && (
-                <SlideIn direction="up">
-                  <Alert
-                    severity="error"
-                    sx={{
-                      mb: 2,
-                      borderRadius: 2,
-                      border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
-                    }}
-                  >
-                    {error}
-                  </Alert>
-                </SlideIn>
-              )}
-
-              {/* Google Login Button */}
-              <SlideIn direction="up">
-                <Button
+            {/* Form */}
+            <Box component="form" onSubmit={handleSubmit}>
+              {isSignUp && (
+                <TextField
                   fullWidth
+                  label="Full Name"
                   variant="outlined"
-                  size="large"
-                  startIcon={<GoogleIcon />}
-                  onClick={handleGoogleLogin}
-                  disabled={loading}
-                  sx={{
-                    mb: 2,
-                    py: 1,
-                    borderRadius: 2.5,
-                    border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                    backgroundColor: alpha(theme.palette.background.paper, 0.8),
-                    '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                      border: `2px solid ${alpha(theme.palette.primary.main, 0.4)}`,
-                      transform: 'translateY(-1px)',
-                    },
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  {loading ? (
-                    <LoadingSpinner size={20} />
-                  ) : (
-                    'Continue with Google'
-                  )}
-                </Button>
-              </SlideIn>
-
-              <Divider sx={{ my: 2, position: 'relative' }}>
-                <Chip
-                  label="or"
-                  size="small"
-                  sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                    fontWeight: 500,
-                    fontSize: '0.75rem',
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  required
+                  sx={{ mb: 2 }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="action" />
+                      </InputAdornment>
+                    ),
                   }}
                 />
-              </Divider>
+              )}
 
-              {/* Form */}
-              <Box component="form" onSubmit={handleSubmit}>
-                <SlideIn direction="up">
-                  {isSignUp && (
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="displayName"
-                      label="Full Name"
-                      name="displayName"
-                      autoComplete="name"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <PersonIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
+              <Typography
+                variant="body2"
+                color="text.primary"
+                mb={1}
+                fontWeight={500}
+              >
+                Email
+              </Typography>
+              <TextField
+                fullWidth
+                type="email"
+                variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="name@company.com"
+                sx={{ mb: 2 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Typography
+                variant="body2"
+                color="text.primary"
+                mb={1}
+                fontWeight={500}
+              >
+                Password
+              </Typography>
+              <TextField
+                fullWidth
+                type={showPassword ? 'text' : 'password'}
+                variant="outlined"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+                sx={{ mb: 3 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
                       sx={{
-                        mb: 1.5,
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: 2,
-                          backgroundColor: alpha(
-                            theme.palette.background.paper,
-                            0.8,
-                          ),
-                        },
-                      }}
-                    />
-                  )}
-
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    autoFocus={!isSignUp}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <EmailIcon color="action" />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{
-                      mb: 1.5,
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: alpha(
-                          theme.palette.background.paper,
-                          0.8,
-                        ),
-                      },
-                    }}
-                  />
-
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    autoComplete={
-                      isSignUp ? 'new-password' : 'current-password'
-                    }
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end" sx={{ pr: 1 }}>
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{
-                      mb: 2,
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: alpha(
-                          theme.palette.background.paper,
-                          0.8,
-                        ),
-                      },
-                    }}
-                  />
-
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    size="large"
-                    endIcon={loading ? null : <ArrowForwardIcon />}
-                    disabled={loading}
-                    sx={{
-                      py: 1.2,
-                      borderRadius: 2.5,
-                      background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                      '&:hover': {
-                        transform: 'translateY(-2px)',
-                        background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
-                      },
-                      '&:disabled': {
-                        background: alpha(theme.palette.primary.main, 0.3),
-                      },
-                      transition: 'all 0.3s ease',
-                      mb: 2,
-                    }}
-                  >
-                    {loading ? (
-                      <LoadingSpinner size={20} color="white" />
-                    ) : isSignUp ? (
-                      'Create Account'
-                    ) : (
-                      'Sign In'
-                    )}
-                  </Button>
-                </SlideIn>
-
-                <SlideIn direction="up">
-                  <Box textAlign="center">
-                    <Link
-                      component="button"
-                      variant="body2"
-                      onClick={() => setIsSignUp(!isSignUp)}
-                      type="button"
-                      sx={{
-                        color: theme.palette.primary.main,
-                        fontWeight: 500,
-                        textDecoration: 'none',
-                        fontSize: '0.875rem',
-                        '&:hover': {
-                          textDecoration: 'underline',
-                        },
+                        pr: 1,
                       }}
                     >
-                      {isSignUp
-                        ? 'Already have an account? Sign in'
-                        : "Don't have an account? Sign up"}
-                    </Link>
-                  </Box>
-                </SlideIn>
-              </Box>
-            </Paper>
-          </Box>
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={loading}
+                sx={{
+                  py: 1.5,
+                  mb: 2,
+                  background:
+                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '&:hover': {
+                    background:
+                      'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                  },
+                }}
+              >
+                {loading ? (
+                  <LoadingSpinner size={20} color="white" />
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+            </Box>
+
+            {/* Sign up link */}
+            <Box textAlign="center">
+              <Typography variant="body2" color="text.secondary">
+                Don't have an account?{' '}
+                <Link
+                  component="button"
+                  variant="body2"
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  type="button"
+                  sx={{
+                    color: '#667eea',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  Sign up
+                </Link>
+              </Typography>
+            </Box>
+          </Paper>
         </SlideIn>
       </Container>
     </Box>

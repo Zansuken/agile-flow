@@ -1,7 +1,10 @@
 import { auth } from '../config/firebase';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+export const isDEV = import.meta.env.MODE === 'development';
+
+const API_BASE_URL = isDEV
+  ? import.meta.env.VITE_API_URL_DEV
+  : import.meta.env.VITE_API_URL;
 
 class ApiService {
   private async getAuthHeaders() {
