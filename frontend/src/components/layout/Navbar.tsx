@@ -1,21 +1,21 @@
-import React from 'react';
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  Avatar,
-  Menu,
-  MenuItem,
-  IconButton,
-} from '@mui/material';
-import {
+  AccountCircle as AccountIcon,
   Dashboard as DashboardIcon,
   FolderOpen as ProjectsIcon,
-  AccountCircle as AccountIcon,
 } from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Navbar: React.FC = () => {
@@ -48,24 +48,25 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <AppBar 
-      position="static" 
+    <AppBar
+      position="static"
       elevation={0}
-      sx={{ 
+      sx={{
         background: 'rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
       }}
     >
       <Toolbar sx={{ py: 1 }}>
-        <Typography 
-          variant="h5" 
-          component="div" 
-          sx={{ 
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{
             flexGrow: 1,
             fontWeight: 700,
             color: 'white',
-            background: 'linear-gradient(45deg, #ffffff, rgba(255, 255, 255, 0.8))',
+            background:
+              'linear-gradient(45deg, #ffffff, rgba(255, 255, 255, 0.8))',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -73,12 +74,12 @@ export const Navbar: React.FC = () => {
         >
           AgileFlow
         </Typography>
-        
+
         <Box sx={{ display: 'flex', gap: 1, mr: 3 }}>
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname.startsWith(item.path);
-            
+
             return (
               <Button
                 key={item.path}
@@ -91,8 +92,12 @@ export const Navbar: React.FC = () => {
                   py: 1,
                   textTransform: 'none',
                   fontWeight: 600,
-                  border: isActive ? '1px solid rgba(255, 255, 255, 0.4)' : '1px solid transparent',
-                  bgcolor: isActive ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                  border: isActive
+                    ? '1px solid rgba(255, 255, 255, 0.4)'
+                    : '1px solid transparent',
+                  bgcolor: isActive
+                    ? 'rgba(255, 255, 255, 0.15)'
+                    : 'transparent',
                   backdropFilter: isActive ? 'blur(10px)' : 'none',
                   '&:hover': {
                     bgcolor: 'rgba(255, 255, 255, 0.1)',
@@ -108,12 +113,12 @@ export const Navbar: React.FC = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography 
-            variant="body2" 
-            sx={{ 
+          <Typography
+            variant="body2"
+            sx={{
               color: 'rgba(255, 255, 255, 0.9)',
               fontWeight: 500,
-              display: { xs: 'none', sm: 'block' }
+              display: { xs: 'none', sm: 'block' },
             }}
           >
             {currentUserData?.displayName || currentUser?.email}

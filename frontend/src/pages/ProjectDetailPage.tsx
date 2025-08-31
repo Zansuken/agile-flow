@@ -101,16 +101,13 @@ export const ProjectDetailPage: React.FC = () => {
     return (
       <Box
         sx={{
-          minHeight: '100vh',
-          background: `linear-gradient(135deg, 
-            ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-            ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
+          minHeight: 'calc(100vh - 64px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <CircularProgress size={60} />
+        <CircularProgress size={60} sx={{ color: 'white' }} />
       </Box>
     );
   }
@@ -120,20 +117,41 @@ export const ProjectDetailPage: React.FC = () => {
     return (
       <Box
         sx={{
-          minHeight: '100vh',
-          background: `linear-gradient(135deg, 
-            ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-            ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
+          minHeight: 'calc(100vh - 64px)',
           px: { xs: 1, sm: 1.5, md: 2 },
           py: { xs: 2, sm: 2.5, md: 3 },
         }}
       >
         <Box mb={4}>
-          <IconButton onClick={handleGoBack} sx={{ mb: 2 }}>
+          <IconButton 
+            onClick={handleGoBack} 
+            sx={{ 
+              mb: 2,
+              color: 'white',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              '&:hover': {
+                background: 'rgba(255, 255, 255, 0.15)',
+              },
+            }}
+          >
             <ArrowBackIcon />
           </IconButton>
         </Box>
-        <Alert severity="error">{error || 'Project not found'}</Alert>
+        <Alert 
+          severity="error"
+          sx={{
+            background: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            color: 'white',
+            '& .MuiAlert-icon': {
+              color: 'white',
+            },
+          }}
+        >
+          {error || 'Project not found'}
+        </Alert>
       </Box>
     );
   }
@@ -169,30 +187,87 @@ export const ProjectDetailPage: React.FC = () => {
   ];
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: `linear-gradient(135deg, 
-          ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-          ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-        px: { xs: 1, sm: 1.5, md: 2 },
-        py: { xs: 2, sm: 2.5, md: 3 },
-        width: '100%',
-        maxWidth: '100vw',
-      }}
-    >
-      <SlideIn direction="up">
-        <Box mb={6}>
-          <Box mb={3}>
-            <IconButton
-              onClick={handleGoBack}
-              sx={{
-                mb: 2,
-                '&:hover': {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                },
-              }}
-            >
+    <>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
+          @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-180deg); }
+          }
+          @keyframes floatMedium {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(90deg); }
+          }
+        `}
+      </style>
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 64px)',
+          position: 'relative',
+          overflow: 'hidden',
+          px: { xs: 1, sm: 1.5, md: 2 },
+          py: { xs: 2, sm: 2.5, md: 3 },
+          width: '100%',
+          maxWidth: '100vw',
+        }}
+      >
+        {/* Background Circles */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '-10%',
+            right: '-5%',
+            width: '250px',
+            height: '250px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.1)',
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '-3%',
+            width: '180px',
+            height: '180px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            animation: 'floatSlow 8s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '40%',
+            left: '85%',
+            width: '120px',
+            height: '120px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.06)',
+            animation: 'floatMedium 7s ease-in-out infinite',
+          }}
+        />
+
+        <SlideIn direction="up">
+          <Box mb={6} sx={{ position: 'relative', zIndex: 2 }}>
+            <Box mb={3}>
+              <IconButton
+                onClick={handleGoBack}
+                sx={{
+                  mb: 2,
+                  color: 'white',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.15)',
+                  },
+                }}
+              >
               <ArrowBackIcon />
             </IconButton>
           </Box>
@@ -209,12 +284,12 @@ export const ProjectDetailPage: React.FC = () => {
                   height: 56,
                   p: 1.5,
                   borderRadius: 2,
-                  background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.accent?.main || theme.palette.secondary.main, 0.1)})`,
+                  background: 'rgba(255, 255, 255, 0.2)',
                 }}
               >
                 <ProjectIcon
                   sx={{
-                    color: theme.palette.primary.main,
+                    color: 'white',
                     fontSize: 32,
                   }}
                 />
@@ -225,10 +300,7 @@ export const ProjectDetailPage: React.FC = () => {
                   component="h1"
                   sx={{
                     fontWeight: 700,
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
+                    color: 'white',
                     mb: 1,
                   }}
                 >
@@ -238,13 +310,16 @@ export const ProjectDetailPage: React.FC = () => {
                   <Chip
                     label={statusInfo.status}
                     sx={{
-                      backgroundColor: alpha(statusInfo.color, 0.1),
-                      color: statusInfo.color,
-                      border: `1px solid ${alpha(statusInfo.color, 0.3)}`,
-                      fontWeight: 500,
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      fontWeight: 600,
                     }}
                   />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography 
+                    variant="body2" 
+                    sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  >
                     Project Key: {project.key}
                   </Typography>
                 </Box>
@@ -256,14 +331,19 @@ export const ProjectDetailPage: React.FC = () => {
                 startIcon={<SettingsIcon />}
                 onClick={() => navigate(`/projects/${projectId}/settings`)}
                 sx={{
-                  borderRadius: 3,
-                  px: 3,
+                  borderRadius: '50px',
+                  px: 4,
                   py: 1.5,
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                  boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.3)}`,
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: 'white',
+                  fontWeight: 600,
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                   '&:hover': {
-                    boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.4)}`,
+                    background: 'rgba(255, 255, 255, 0.25)',
                     transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
                   },
                   transition: 'all 0.3s ease',
                 }}
@@ -284,9 +364,11 @@ export const ProjectDetailPage: React.FC = () => {
                     startIcon={<SettingsIcon />}
                     disabled
                     sx={{
-                      borderRadius: 3,
-                      px: 3,
+                      borderRadius: '50px',
+                      px: 4,
                       py: 1.5,
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: 'rgba(255, 255, 255, 0.5)',
                     }}
                   >
                     Project Settings
@@ -298,24 +380,31 @@ export const ProjectDetailPage: React.FC = () => {
 
           <Typography
             variant="body1"
-            color="text.secondary"
-            lineHeight={1.7}
-            mb={4}
+            sx={{ 
+              color: 'rgba(255, 255, 255, 0.9)',
+              lineHeight: 1.7,
+              mb: 4,
+            }}
           >
             {project.description}
           </Typography>
 
           <Box mb={4}>
-            <Typography variant="h6" fontWeight={600} mb={2}>
+            <Typography 
+              variant="h6" 
+              fontWeight={600} 
+              mb={2}
+              sx={{ color: 'white' }}
+            >
               Project Information
             </Typography>
             <Box
               sx={{
                 p: 3,
                 borderRadius: 2,
-                background: alpha(theme.palette.background.paper, 0.7),
-                backdropFilter: 'blur(20px)',
-                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(15px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
               }}
             >
               <Box display="flex" justifyContent="space-between" mb={2}>
@@ -353,30 +442,44 @@ export const ProjectDetailPage: React.FC = () => {
               <HoverCard>
                 <Card
                   sx={{
-                    borderRadius: 2,
-                    background: alpha(theme.palette.background.paper, 0.7),
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                    boxShadow: theme.shadows[8],
+                    borderRadius: 3,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(15px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                     p: 3,
                     textAlign: 'center',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      transform: 'translateY(-5px)',
+                      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                    },
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <Box
                     sx={{
                       p: 2,
                       borderRadius: 3,
-                      background: alpha(stat.color, 0.1),
+                      background: 'rgba(255, 255, 255, 0.2)',
                       display: 'inline-flex',
                       mb: 2,
                     }}
                   >
-                    <stat.icon sx={{ color: stat.color, fontSize: 28 }} />
+                    <stat.icon sx={{ color: 'white', fontSize: 28 }} />
                   </Box>
-                  <Typography variant="h4" fontWeight={700} mb={1}>
+                  <Typography 
+                    variant="h4" 
+                    fontWeight={700} 
+                    mb={1}
+                    sx={{ color: 'white' }}
+                  >
                     {stat.value}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography 
+                    variant="body2" 
+                    sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  >
                     {stat.title}
                   </Typography>
                 </Card>
@@ -525,6 +628,7 @@ export const ProjectDetailPage: React.FC = () => {
           </SlideIn>
         </Box>
       </StaggerContainer>
-    </Box>
+      </Box>
+    </>
   );
 };
