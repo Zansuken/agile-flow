@@ -177,11 +177,12 @@ export const KanbanPage: React.FC = () => {
             >
               Kanban Board
             </Typography>
-            <Typography 
-              variant="body1" 
+            <Typography
+              variant="body1"
               sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
             >
-              Project ID: {projectId} • Drag and drop tasks to update their status
+              Project ID: {projectId} • Drag and drop tasks to update their
+              status
             </Typography>
           </Box>
         </SlideIn>
@@ -219,7 +220,8 @@ export const KanbanPage: React.FC = () => {
                       left: 0,
                       right: 0,
                       height: 4,
-                      background: 'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
+                      background:
+                        'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
                       borderRadius: '16px 16px 0 0',
                     },
                   }}
@@ -231,8 +233,8 @@ export const KanbanPage: React.FC = () => {
                       alignItems="center"
                       mb={3}
                     >
-                      <Typography 
-                        variant="h6" 
+                      <Typography
+                        variant="h6"
                         fontWeight={600}
                         sx={{ color: 'white' }}
                       >
@@ -249,10 +251,7 @@ export const KanbanPage: React.FC = () => {
                             border: '1px solid rgba(255, 255, 255, 0.3)',
                           }}
                         />
-                        <IconButton 
-                          size="small"
-                          sx={{ color: 'white' }}
-                        >
+                        <IconButton size="small" sx={{ color: 'white' }}>
                           <AddIcon />
                         </IconButton>
                       </Box>
@@ -297,7 +296,7 @@ export const KanbanPage: React.FC = () => {
                                 >
                                   {task.title}
                                 </Typography>
-                                <IconButton 
+                                <IconButton
                                   size="small"
                                   sx={{ color: 'white' }}
                                 >
@@ -307,7 +306,7 @@ export const KanbanPage: React.FC = () => {
 
                               <Typography
                                 variant="body2"
-                                sx={{ 
+                                sx={{
                                   color: 'rgba(255, 255, 255, 0.8)',
                                   mb: 3,
                                   lineHeight: 1.5,
@@ -330,7 +329,7 @@ export const KanbanPage: React.FC = () => {
                                   />
                                   <Typography
                                     variant="caption"
-                                    sx={{ 
+                                    sx={{
                                       color: 'rgba(255, 255, 255, 0.8)',
                                       textTransform: 'capitalize',
                                     }}
@@ -345,7 +344,8 @@ export const KanbanPage: React.FC = () => {
                                     fontSize: '0.75rem',
                                     background: 'rgba(255, 255, 255, 0.2)',
                                     color: 'white',
-                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                    border:
+                                      '1px solid rgba(255, 255, 255, 0.3)',
                                   }}
                                 >
                                   {task.avatar}

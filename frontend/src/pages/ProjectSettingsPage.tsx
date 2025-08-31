@@ -200,7 +200,9 @@ export const ProjectSettingsPage: React.FC = () => {
               animation: 'float 6s ease-in-out infinite',
             }}
           />
-          <Typography sx={{ color: 'white' }}>Loading project settings...</Typography>
+          <Typography sx={{ color: 'white' }}>
+            Loading project settings...
+          </Typography>
         </Box>
       </>
     );
@@ -217,8 +219,8 @@ export const ProjectSettingsPage: React.FC = () => {
             }
           `}
         </style>
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             minHeight: 'calc(100vh - 64px)',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             position: 'relative',
@@ -238,8 +240,8 @@ export const ProjectSettingsPage: React.FC = () => {
               animation: 'float 6s ease-in-out infinite',
             }}
           />
-          <Alert 
-            severity="error" 
+          <Alert
+            severity="error"
             icon={<SecurityIcon />}
             sx={{
               background: 'rgba(255, 255, 255, 0.15)',
@@ -368,16 +370,16 @@ export const ProjectSettingsPage: React.FC = () => {
                   <ArrowBackIcon />
                 </IconButton>
                 <SettingsIcon sx={{ mr: 2, fontSize: 28, color: 'white' }} />
-                <Typography 
-                  variant="h4" 
+                <Typography
+                  variant="h4"
                   fontWeight="bold"
                   sx={{ color: 'white' }}
                 >
                   Project Settings
                 </Typography>
               </Box>
-              <Typography 
-                variant="subtitle1" 
+              <Typography
+                variant="subtitle1"
                 sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
               >
                 Manage project permissions and member roles for{' '}
@@ -391,7 +393,7 @@ export const ProjectSettingsPage: React.FC = () => {
             <SlideIn direction="up">
               <Alert
                 severity="error"
-                sx={{ 
+                sx={{
                   mb: 3,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
@@ -411,7 +413,7 @@ export const ProjectSettingsPage: React.FC = () => {
             <SlideIn direction="up">
               <Alert
                 severity="success"
-                sx={{ 
+                sx={{
                   mb: 3,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
@@ -427,10 +429,10 @@ export const ProjectSettingsPage: React.FC = () => {
             </SlideIn>
           )}
 
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              gap: 3, 
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 3,
               flexWrap: 'wrap',
               position: 'relative',
               zIndex: 2,
@@ -479,8 +481,8 @@ export const ProjectSettingsPage: React.FC = () => {
                           </ListItemIcon>
                           <ListItemText
                             primary={
-                              <Typography 
-                                variant="subtitle1" 
+                              <Typography
+                                variant="subtitle1"
                                 fontWeight="medium"
                                 sx={{ color: 'white' }}
                               >
@@ -491,7 +493,7 @@ export const ProjectSettingsPage: React.FC = () => {
                               <Box>
                                 <Typography
                                   variant="body2"
-                                  sx={{ 
+                                  sx={{
                                     mb: 1,
                                     color: 'rgba(255, 255, 255, 0.8)',
                                   }}
@@ -512,9 +514,10 @@ export const ProjectSettingsPage: React.FC = () => {
                                         label={permission.replace('_', ' ')}
                                         size="small"
                                         variant="outlined"
-                                        sx={{ 
+                                        sx={{
                                           fontSize: '0.7rem',
-                                          borderColor: 'rgba(255, 255, 255, 0.3)',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.3)',
                                           color: 'white',
                                         }}
                                       />
@@ -526,7 +529,9 @@ export const ProjectSettingsPage: React.FC = () => {
                           />
                         </ListItem>
                         {index < availableRoles.length - 1 && (
-                          <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+                          <Divider
+                            sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }}
+                          />
                         )}
                       </React.Fragment>
                     ))}
@@ -561,8 +566,8 @@ export const ProjectSettingsPage: React.FC = () => {
                   avatar={<GroupIcon sx={{ color: 'white' }} />}
                 />
                 <CardContent>
-                  <TableContainer 
-                    component={Paper} 
+                  <TableContainer
+                    component={Paper}
                     elevation={0}
                     sx={{
                       background: 'rgba(255, 255, 255, 0.1)',
@@ -599,12 +604,14 @@ export const ProjectSettingsPage: React.FC = () => {
 
                           return (
                             <TableRow key={member.id}>
-                              <TableCell sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                              <TableCell
+                                sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                              >
                                 <Box
                                   sx={{ display: 'flex', alignItems: 'center' }}
                                 >
-                                  <Typography 
-                                    variant="body2" 
+                                  <Typography
+                                    variant="body2"
                                     fontWeight="medium"
                                     sx={{ color: 'white' }}
                                   >
@@ -618,7 +625,8 @@ export const ProjectSettingsPage: React.FC = () => {
                                         ml: 1,
                                         background: 'rgba(255, 255, 255, 0.2)',
                                         color: 'white',
-                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        border:
+                                          '1px solid rgba(255, 255, 255, 0.3)',
                                       }}
                                     />
                                   )}
@@ -630,37 +638,46 @@ export const ProjectSettingsPage: React.FC = () => {
                                   {member.email}
                                 </Typography>
                               </TableCell>
-                              <TableCell sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                              <TableCell
+                                sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                              >
                                 <Chip
                                   label={getRoleDisplayName(memberRole)}
                                   sx={{
-                                    background: memberRole === ProjectRole.OWNER 
-                                      ? 'rgba(255, 255, 255, 0.25)' 
-                                      : 'rgba(255, 255, 255, 0.15)',
+                                    background:
+                                      memberRole === ProjectRole.OWNER
+                                        ? 'rgba(255, 255, 255, 0.25)'
+                                        : 'rgba(255, 255, 255, 0.15)',
                                     color: 'white',
-                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                    border:
+                                      '1px solid rgba(255, 255, 255, 0.3)',
                                   }}
                                 />
                               </TableCell>
-                              <TableCell sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                              <TableCell
+                                sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                              >
                                 {canEditThisRole &&
                                 !isCurrentUser &&
                                 memberRole !== ProjectRole.OWNER ? (
                                   <FormControl
                                     size="small"
-                                    sx={{ 
+                                    sx={{
                                       minWidth: 120,
                                       '& .MuiOutlinedInput-root': {
                                         background: 'rgba(255, 255, 255, 0.1)',
                                         color: 'white',
                                         '& fieldset': {
-                                          borderColor: 'rgba(255, 255, 255, 0.3)',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.3)',
                                         },
                                         '&:hover fieldset': {
-                                          borderColor: 'rgba(255, 255, 255, 0.5)',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.5)',
                                         },
                                         '&.Mui-focused fieldset': {
-                                          borderColor: 'rgba(255, 255, 255, 0.7)',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.7)',
                                         },
                                       },
                                       '& .MuiInputLabel-root': {
@@ -668,7 +685,9 @@ export const ProjectSettingsPage: React.FC = () => {
                                       },
                                     }}
                                   >
-                                    <InputLabel sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                                    <InputLabel
+                                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                                    >
                                       Change Role
                                     </InputLabel>
                                     <Select
@@ -717,7 +736,8 @@ export const ProjectSettingsPage: React.FC = () => {
                                         startIcon={<WarningIcon />}
                                         sx={{
                                           color: 'rgba(255, 255, 255, 0.5)',
-                                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.2)',
                                         }}
                                       >
                                         Cannot Edit

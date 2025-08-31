@@ -165,11 +165,12 @@ export const SprintsPage: React.FC = () => {
               >
                 Sprints
               </Typography>
-              <Typography 
-                variant="body1" 
+              <Typography
+                variant="body1"
                 sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
               >
-                Project ID: {projectId} • Plan and manage your development sprints
+                Project ID: {projectId} • Plan and manage your development
+                sprints
               </Typography>
             </Box>
             <Button
@@ -198,10 +199,10 @@ export const SprintsPage: React.FC = () => {
         </SlideIn>
 
         <StaggerContainer>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
               gap: 3,
               position: 'relative',
               zIndex: 2,
@@ -226,7 +227,8 @@ export const SprintsPage: React.FC = () => {
                         left: 0,
                         right: 0,
                         height: 4,
-                        background: 'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
+                        background:
+                          'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
                       },
                     }}
                   >
@@ -250,20 +252,20 @@ export const SprintsPage: React.FC = () => {
                             {getStatusIcon(sprint.status)}
                           </Box>
                           <Box>
-                            <Typography 
-                              variant="h5" 
-                              fontWeight={600} 
+                            <Typography
+                              variant="h5"
+                              fontWeight={600}
                               mb={0.5}
                               sx={{ color: 'white' }}
                             >
                               {sprint.name}
                             </Typography>
-                            <Typography 
-                              variant="body2" 
+                            <Typography
+                              variant="body2"
                               sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                             >
-                              {new Date(sprint.startDate).toLocaleDateString()} -{' '}
-                              {new Date(sprint.endDate).toLocaleDateString()}
+                              {new Date(sprint.startDate).toLocaleDateString()}{' '}
+                              - {new Date(sprint.endDate).toLocaleDateString()}
                             </Typography>
                           </Box>
                         </Box>
@@ -285,14 +287,14 @@ export const SprintsPage: React.FC = () => {
                           alignItems="center"
                           mb={1}
                         >
-                          <Typography 
-                            variant="body2" 
+                          <Typography
+                            variant="body2"
                             sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                           >
                             Sprint Progress
                           </Typography>
-                          <Typography 
-                            variant="body2" 
+                          <Typography
+                            variant="body2"
                             fontWeight={600}
                             sx={{ color: 'white' }}
                           >
@@ -308,7 +310,8 @@ export const SprintsPage: React.FC = () => {
                             backgroundColor: 'rgba(255, 255, 255, 0.2)',
                             '& .MuiLinearProgress-bar': {
                               borderRadius: 4,
-                              background: 'linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6))',
+                              background:
+                                'linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6))',
                             },
                           }}
                         />
@@ -340,15 +343,15 @@ export const SprintsPage: React.FC = () => {
                             />
                           </Box>
                           <Box>
-                            <Typography 
-                              variant="h6" 
+                            <Typography
+                              variant="h6"
                               fontWeight={600}
                               sx={{ color: 'white' }}
                             >
                               {sprint.completedTasks}/{sprint.totalTasks}
                             </Typography>
-                            <Typography 
-                              variant="caption" 
+                            <Typography
+                              variant="caption"
                               sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                             >
                               Tasks Completed
@@ -374,15 +377,15 @@ export const SprintsPage: React.FC = () => {
                             />
                           </Box>
                           <Box>
-                            <Typography 
-                              variant="h6" 
+                            <Typography
+                              variant="h6"
                               fontWeight={600}
                               sx={{ color: 'white' }}
                             >
                               {sprint.remainingDays}
                             </Typography>
-                            <Typography 
-                              variant="caption" 
+                            <Typography
+                              variant="caption"
                               sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                             >
                               Days Remaining
@@ -408,18 +411,19 @@ export const SprintsPage: React.FC = () => {
                             />
                           </Box>
                           <Box>
-                            <Typography 
-                              variant="h6" 
+                            <Typography
+                              variant="h6"
                               fontWeight={600}
                               sx={{ color: 'white' }}
                             >
                               {Math.round(
-                                (sprint.completedTasks / sprint.totalTasks) * 100,
+                                (sprint.completedTasks / sprint.totalTasks) *
+                                  100,
                               )}
                               %
                             </Typography>
-                            <Typography 
-                              variant="caption" 
+                            <Typography
+                              variant="caption"
                               sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                             >
                               Completion Rate

@@ -324,9 +324,9 @@ export const TeamManagePage: React.FC = () => {
             }}
           />
           <Box mb={4} sx={{ position: 'relative', zIndex: 2 }}>
-            <IconButton 
-              onClick={handleGoBack} 
-              sx={{ 
+            <IconButton
+              onClick={handleGoBack}
+              sx={{
                 mb: 2,
                 color: 'white',
                 background: 'rgba(255, 255, 255, 0.1)',
@@ -338,7 +338,7 @@ export const TeamManagePage: React.FC = () => {
               <ArrowBackIcon />
             </IconButton>
           </Box>
-          <Alert 
+          <Alert
             severity="error"
             sx={{
               background: 'rgba(255, 255, 255, 0.15)',
@@ -479,8 +479,8 @@ export const TeamManagePage: React.FC = () => {
                   >
                     Team Management
                   </Typography>
-                  <Typography 
-                    variant="body1" 
+                  <Typography
+                    variant="body1"
                     sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                   >
                     Manage team members for {project.name}
@@ -488,7 +488,7 @@ export const TeamManagePage: React.FC = () => {
                       <Chip
                         label={`Your role: ${userRole}`}
                         size="small"
-                        sx={{ 
+                        sx={{
                           ml: 2,
                           background: 'rgba(255, 255, 255, 0.2)',
                           color: 'white',
@@ -500,7 +500,7 @@ export const TeamManagePage: React.FC = () => {
                       <Chip
                         label="Role: Loading..."
                         size="small"
-                        sx={{ 
+                        sx={{
                           ml: 2,
                           background: 'rgba(255, 255, 255, 0.15)',
                           color: 'white',
@@ -512,7 +512,7 @@ export const TeamManagePage: React.FC = () => {
                     <Chip
                       label={`Can manage roles: ${userRole ? canPerformAction(userRole, Permission.MANAGE_ROLES) : 'N/A'}`}
                       size="small"
-                      sx={{ 
+                      sx={{
                         ml: 1,
                         background: 'rgba(255, 255, 255, 0.1)',
                         color: 'white',
@@ -603,7 +603,7 @@ export const TeamManagePage: React.FC = () => {
             {error && (
               <Alert
                 severity="error"
-                sx={{ 
+                sx={{
                   mb: 3,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
@@ -619,7 +619,7 @@ export const TeamManagePage: React.FC = () => {
             {successMessage && (
               <Alert
                 severity="success"
-                sx={{ 
+                sx={{
                   mb: 3,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
@@ -670,20 +670,18 @@ export const TeamManagePage: React.FC = () => {
                       mb: 2,
                     }}
                   >
-                    <GroupIcon
-                      sx={{ color: 'white', fontSize: 28 }}
-                    />
+                    <GroupIcon sx={{ color: 'white', fontSize: 28 }} />
                   </Box>
-                  <Typography 
-                    variant="h4" 
-                    fontWeight={700} 
+                  <Typography
+                    variant="h4"
+                    fontWeight={700}
                     mb={1}
                     sx={{ color: 'white' }}
                   >
                     {members?.length || 0}
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                   >
                     Total Members
@@ -716,20 +714,18 @@ export const TeamManagePage: React.FC = () => {
                       mb: 2,
                     }}
                   >
-                    <PersonIcon
-                      sx={{ color: 'white', fontSize: 28 }}
-                    />
+                    <PersonIcon sx={{ color: 'white', fontSize: 28 }} />
                   </Box>
-                  <Typography 
-                    variant="h4" 
-                    fontWeight={700} 
+                  <Typography
+                    variant="h4"
+                    fontWeight={700}
                     mb={1}
                     sx={{ color: 'white' }}
                   >
                     {members.filter((m) => m.role === 'developer').length}
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                   >
                     Developers
@@ -754,9 +750,9 @@ export const TeamManagePage: React.FC = () => {
             }}
           >
             <CardContent sx={{ p: 4 }}>
-              <Typography 
-                variant="h5" 
-                fontWeight={600} 
+              <Typography
+                variant="h5"
+                fontWeight={600}
                 mb={3}
                 sx={{ color: 'white' }}
               >
@@ -809,8 +805,8 @@ export const TeamManagePage: React.FC = () => {
                     <ListItemText
                       primary={
                         <Box display="flex" alignItems="center" gap={1}>
-                          <Typography 
-                            variant="h6" 
+                          <Typography
+                            variant="h6"
                             fontWeight={600}
                             sx={{ color: 'white' }}
                           >
@@ -832,8 +828,8 @@ export const TeamManagePage: React.FC = () => {
                       }
                       secondary={
                         <Box>
-                          <Typography 
-                            variant="body2" 
+                          <Typography
+                            variant="body2"
                             sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                           >
                             {member.email}
@@ -859,7 +855,7 @@ export const TeamManagePage: React.FC = () => {
                                 label={member.projectRole}
                                 size="small"
                                 variant="outlined"
-                                sx={{ 
+                                sx={{
                                   fontSize: '0.75rem',
                                   borderColor: 'rgba(255, 255, 255, 0.3)',
                                   color: 'white',
