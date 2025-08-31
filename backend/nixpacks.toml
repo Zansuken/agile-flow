@@ -1,15 +1,15 @@
-# Force Railway to use Nixpacks instead of Docker
+# Railway Shared Monorepo Configuration
 [phases.setup]
 nixPkgs = ['nodejs_18']
 
 [phases.install]
-cmds = ['npm ci']
+cmds = ['npm install']
 
 [phases.build]
-cmds = ['npm run build']
+cmds = ['npm run build:backend']
 
 [start]
-cmd = 'bash start.sh'
+cmd = 'npm run start:backend'
 
 [variables]
 NODE_ENV = 'production'
