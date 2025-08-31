@@ -1,4 +1,4 @@
-# Railway Shared Monorepo Configuration
+# Nixpacks configuration for AgileFlow monorepo
 [phases.setup]
 nixPkgs = ['nodejs_18']
 

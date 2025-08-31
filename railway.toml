@@ -9,5 +9,7 @@ startCommand = "npm run start:backend"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
-[env]
+# Force Railway to use npm install instead of npm ci for workspaces
+[variables]
 NODE_ENV = "production"
+NIXPACKS_NO_CACHE = "1"
