@@ -1,7 +1,6 @@
 import { Add as AddIcon, FolderOpen as ProjectIcon } from '@mui/icons-material';
 import {
   Alert,
-  alpha,
   Box,
   Button,
   Card,
@@ -78,340 +77,455 @@ export const ProjectsPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: `linear-gradient(135deg, 
-          ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-          ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-        px: { xs: 1, sm: 1.5, md: 2 },
-        py: { xs: 2, sm: 2.5, md: 3 },
-        width: '100%',
-        maxWidth: '100vw',
-      }}
-    >
-      {!currentUser ? (
-        <SlideIn direction="up">
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="60vh"
-            gap={4}
-          >
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{
-                fontWeight: 700,
-                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textAlign: 'center',
-              }}
-            >
-              Welcome to AgileFlow
-            </Typography>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              textAlign="center"
-              maxWidth={400}
-            >
-              Please sign in to access your projects and start collaborating
-              with your team.
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={loginWithGoogle}
-              sx={{
-                borderRadius: 3,
-                px: 4,
-                py: 1.5,
-                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.3)}`,
-                '&:hover': {
-                  boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.4)}`,
-                  transform: 'translateY(-2px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-            >
-              Sign in with Google
-            </Button>
-          </Box>
-        </SlideIn>
-      ) : (
-        <>
-          {loading && (
+    <>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
+          @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-180deg); }
+          }
+          @keyframes floatMedium {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(90deg); }
+          }
+        `}
+      </style>
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 64px)',
+          position: 'relative',
+          overflow: 'hidden',
+          px: { xs: 1, sm: 1.5, md: 2 },
+          py: { xs: 2, sm: 2.5, md: 3 },
+          width: '100%',
+          maxWidth: '100vw',
+        }}
+      >
+        {/* Background Circles */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '-10%',
+            right: '-5%',
+            width: '250px',
+            height: '250px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.1)',
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '-3%',
+            width: '180px',
+            height: '180px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            animation: 'floatSlow 8s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '40%',
+            left: '85%',
+            width: '120px',
+            height: '120px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.06)',
+            animation: 'floatMedium 7s ease-in-out infinite',
+          }}
+        />
+        {!currentUser ? (
+          <SlideIn direction="up">
             <Box
               display="flex"
-              justifyContent="center"
+              flexDirection="column"
               alignItems="center"
-              minHeight="50vh"
+              justifyContent="center"
+              minHeight="60vh"
+              gap={4}
+              sx={{ position: 'relative', zIndex: 2 }}
             >
-              <CircularProgress size={60} />
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 700,
+                  color: 'white',
+                  textAlign: 'center',
+                }}
+              >
+                Welcome to AgileFlow
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  textAlign: 'center',
+                  maxWidth: 400,
+                }}
+              >
+                Please sign in to access your projects and start collaborating
+                with your team.
+              </Typography>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={loginWithGoogle}
+                sx={{
+                  borderRadius: '50px',
+                  px: 4,
+                  py: 1.5,
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: 'white',
+                  fontWeight: 600,
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.25)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                Sign in with Google
+              </Button>
             </Box>
-          )}
+          </SlideIn>
+        ) : (
+          <>
+            {loading && (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="50vh"
+                sx={{ position: 'relative', zIndex: 2 }}
+              >
+                <CircularProgress size={60} sx={{ color: 'white' }} />
+              </Box>
+            )}
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 4 }}>
-              {error}
-            </Alert>
-          )}
+            {error && (
+              <Alert
+                severity="error"
+                sx={{
+                  mb: 4,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  position: 'relative',
+                  zIndex: 2,
+                  '& .MuiAlert-icon': {
+                    color: 'white',
+                  },
+                }}
+              >
+                {error}
+              </Alert>
+            )}
 
-          {!loading && (
-            <>
-              <SlideIn direction="up">
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb={6}
-                >
-                  <Box>
-                    <Typography
-                      variant="h3"
-                      component="h1"
+            {!loading && (
+              <>
+                <SlideIn direction="up">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={6}
+                    sx={{ position: 'relative', zIndex: 2 }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="h3"
+                        component="h1"
+                        sx={{
+                          fontWeight: 700,
+                          color: 'white',
+                          mb: 1,
+                        }}
+                      >
+                        Projects
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
+                        Manage and track your team's projects
+                      </Typography>
+                    </Box>
+                    <Button
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                      onClick={() => setIsCreateModalOpen(true)}
                       sx={{
-                        fontWeight: 700,
-                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                        backgroundClip: 'text',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        mb: 1,
+                        borderRadius: '50px',
+                        px: 4,
+                        py: 1.5,
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: 'white',
+                        fontWeight: 600,
+                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        '&:hover': {
+                          background: 'rgba(255, 255, 255, 0.25)',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                        },
+                        transition: 'all 0.3s ease',
                       }}
                     >
-                      Projects
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      Manage and track your team's projects
-                    </Typography>
+                      New Project
+                    </Button>
                   </Box>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => setIsCreateModalOpen(true)}
+                </SlideIn>
+
+                <StaggerContainer>
+                  <Box
                     sx={{
-                      borderRadius: 3,
-                      px: 3,
-                      py: 1.5,
-                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                      boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.3)}`,
-                      '&:hover': {
-                        boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.4)}`,
-                        transform: 'translateY(-2px)',
-                      },
-                      transition: 'all 0.3s ease',
+                      display: 'grid',
+                      gap: 3,
+                      gridTemplateColumns:
+                        'repeat(auto-fill, minmax(350px, 1fr))',
                     }}
                   >
-                    New Project
-                  </Button>
-                </Box>
-              </SlideIn>
-
-              <StaggerContainer>
-                <Box
-                  sx={{
-                    display: 'grid',
-                    gap: 3,
-                    gridTemplateColumns:
-                      'repeat(auto-fill, minmax(350px, 1fr))',
-                  }}
-                >
-                  {projects.map((project) => (
-                    <SlideIn key={project.id} direction="up">
-                      <Box>
-                        <Card
-                          sx={{
-                            background: alpha(
-                              theme.palette.background.paper,
-                              0.7,
-                            ),
-                            backdropFilter: 'blur(20px)',
-                            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                            boxShadow: theme.shadows[2],
-                            overflow: 'hidden',
-                            position: 'relative',
-                            '&::before': {
-                              content: '""',
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              height: 4,
-                              background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                            },
-                          }}
-                        >
-                          <CardContent sx={{ p: 3 }}>
-                            <Box
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="space-between"
-                              mb={2}
-                            >
-                              <Box display="flex" alignItems="center" gap={2}>
-                                <Box
-                                  sx={{
-                                    p: 1.5,
-                                    borderRadius: 2,
-                                    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.accent?.main || theme.palette.secondary.main, 0.1)})`,
-                                  }}
-                                >
-                                  <ProjectIcon
-                                    sx={{
-                                      color: theme.palette.primary.main,
-                                      fontSize: 24,
-                                    }}
-                                  />
-                                </Box>
-                                <Box>
-                                  <Typography variant="h6" fontWeight={600}>
-                                    {project.name}
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                  >
-                                    {project.key}
-                                  </Typography>
-                                </Box>
-                              </Box>
-                              {(() => {
-                                const statusInfo = getProjectStatus(project);
-                                return (
-                                  <Chip
-                                    label={statusInfo.status}
-                                    size="small"
-                                    sx={{
-                                      backgroundColor: alpha(
-                                        statusInfo.color,
-                                        0.1,
-                                      ),
-                                      color: statusInfo.color,
-                                      border: `1px solid ${alpha(statusInfo.color, 0.3)}`,
-                                      fontWeight: 500,
-                                    }}
-                                  />
-                                );
-                              })()}
-                            </Box>
-
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              mb={3}
-                              lineHeight={1.6}
-                            >
-                              {project.description}
-                            </Typography>
-
-                            <Box mb={3}>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
+                    {projects.map((project) => (
+                      <SlideIn key={project.id} direction="up">
+                        <Box>
+                          <Card
+                            sx={{
+                              background: 'rgba(255, 255, 255, 0.15)',
+                              backdropFilter: 'blur(15px)',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              borderRadius: 3,
+                              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                              overflow: 'hidden',
+                              position: 'relative',
+                              '&:hover': {
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                transform: 'translateY(-5px)',
+                                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                              },
+                              transition: 'all 0.3s ease',
+                              '&::before': {
+                                content: '""',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: 4,
+                                background:
+                                  'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
+                              },
+                            }}
+                          >
+                            <CardContent sx={{ p: 3 }}>
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                mb={2}
                               >
-                                Created {formatDate(project.createdAt)}
-                              </Typography>
-                            </Box>
+                                <Box display="flex" alignItems="center" gap={2}>
+                                  <Box
+                                    sx={{
+                                      p: 1.5,
+                                      borderRadius: 2,
+                                      background: 'rgba(255, 255, 255, 0.2)',
+                                    }}
+                                  >
+                                    <ProjectIcon
+                                      sx={{
+                                        color: 'white',
+                                        fontSize: 24,
+                                      }}
+                                    />
+                                  </Box>
+                                  <Box>
+                                    <Typography
+                                      variant="h6"
+                                      fontWeight={600}
+                                      sx={{ color: 'white' }}
+                                    >
+                                      {project.name}
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                                    >
+                                      {project.key}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                {(() => {
+                                  const statusInfo = getProjectStatus(project);
+                                  return (
+                                    <Chip
+                                      label={statusInfo.status}
+                                      size="small"
+                                      sx={{
+                                        backgroundColor:
+                                          'rgba(255, 255, 255, 0.2)',
+                                        color: 'white',
+                                        border:
+                                          '1px solid rgba(255, 255, 255, 0.3)',
+                                        fontWeight: 600,
+                                      }}
+                                    />
+                                  );
+                                })()}
+                              </Box>
 
-                            <Box display="flex" gap={3} mb={3}>
-                              <Box display="flex" alignItems="center" gap={1}>
-                                <ProjectIcon
-                                  sx={{
-                                    fontSize: 18,
-                                    color: theme.palette.text.secondary,
-                                  }}
-                                />
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: 'rgba(255, 255, 255, 0.8)',
+                                  mb: 3,
+                                  lineHeight: 1.6,
+                                }}
+                              >
+                                {project.description}
+                              </Typography>
+
+                              <Box mb={3}>
                                 <Typography
                                   variant="caption"
-                                  color="text.secondary"
+                                  sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
                                 >
-                                  Project Key: {project.key}
+                                  Created {formatDate(project.createdAt)}
                                 </Typography>
                               </Box>
-                            </Box>
 
-                            <Box display="flex" justifyContent="flex-end">
-                              <Button
-                                size="small"
-                                variant="contained"
-                                onClick={() => {
-                                  navigate(`/projects/${project.id}`);
-                                }}
-                                sx={{
-                                  borderRadius: 2,
-                                  textTransform: 'none',
-                                  background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.8)}, ${alpha(theme.palette.accent?.main || theme.palette.secondary.main, 0.8)})`,
-                                  '&:hover': {
-                                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                                  },
-                                }}
-                              >
-                                Open
-                              </Button>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Box>
-                    </SlideIn>
-                  ))}
-                </Box>
-              </StaggerContainer>
+                              <Box display="flex" gap={3} mb={3}>
+                                <Box display="flex" alignItems="center" gap={1}>
+                                  <ProjectIcon
+                                    sx={{
+                                      fontSize: 18,
+                                      color: 'rgba(255, 255, 255, 0.7)',
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="caption"
+                                    sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                                  >
+                                    Project Key: {project.key}
+                                  </Typography>
+                                </Box>
+                              </Box>
 
-              {/* Empty State */}
-              {projects.length === 0 && (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  py={8}
-                  textAlign="center"
-                >
-                  <ProjectIcon
+                              <Box display="flex" justifyContent="flex-end">
+                                <Button
+                                  size="small"
+                                  variant="contained"
+                                  onClick={() => {
+                                    navigate(`/projects/${project.id}`);
+                                  }}
+                                  sx={{
+                                    borderRadius: '25px',
+                                    textTransform: 'none',
+                                    px: 3,
+                                    py: 1,
+                                    background: 'rgba(255, 255, 255, 0.2)',
+                                    backdropFilter: 'blur(10px)',
+                                    border:
+                                      '1px solid rgba(255, 255, 255, 0.3)',
+                                    color: 'white',
+                                    fontWeight: 600,
+                                    '&:hover': {
+                                      background: 'rgba(255, 255, 255, 0.25)',
+                                    },
+                                  }}
+                                >
+                                  Open
+                                </Button>
+                              </Box>
+                            </CardContent>
+                          </Card>
+                        </Box>
+                      </SlideIn>
+                    ))}
+                  </Box>
+                </StaggerContainer>
+
+                {/* Empty State */}
+                {projects.length === 0 && (
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    py={8}
+                    textAlign="center"
                     sx={{
-                      fontSize: 64,
-                      color: theme.palette.text.secondary,
-                      mb: 2,
-                    }}
-                  />
-                  <Typography variant="h6" color="text.secondary" mb={1}>
-                    No projects yet
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mb={3}>
-                    Create your first project to get started
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => setIsCreateModalOpen(true)}
-                    sx={{
+                      position: 'relative',
+                      zIndex: 2,
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(10px)',
                       borderRadius: 3,
-                      px: 3,
-                      py: 1.5,
-                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
-                    Create Project
-                  </Button>
-                </Box>
-              )}
-            </>
-          )}
-        </>
-      )}
+                    <ProjectIcon
+                      sx={{
+                        fontSize: 64,
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        mb: 2,
+                      }}
+                    />
+                    <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>
+                      No projects yet
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}
+                    >
+                      Create your first project to get started
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                      onClick={() => setIsCreateModalOpen(true)}
+                      sx={{
+                        borderRadius: '50px',
+                        px: 4,
+                        py: 1.5,
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: 'white',
+                        fontWeight: 600,
+                        '&:hover': {
+                          background: 'rgba(255, 255, 255, 0.25)',
+                        },
+                      }}
+                    >
+                      Create Project
+                    </Button>
+                  </Box>
+                )}
+              </>
+            )}
+          </>
+        )}
 
-      {/* Create Project Modal */}
-      <CreateProjectModal
-        open={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreateProject}
-      />
-    </Box>
+        {/* Create Project Modal */}
+        <CreateProjectModal
+          open={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSubmit={handleCreateProject}
+        />
+      </Box>
+    </>
   );
 };

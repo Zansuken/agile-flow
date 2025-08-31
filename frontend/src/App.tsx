@@ -38,9 +38,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        position: 'relative',
+      }}
+    >
       <Navbar />
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
         {children}
       </Box>
     </Box>

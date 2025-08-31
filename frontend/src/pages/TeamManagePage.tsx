@@ -11,7 +11,6 @@ import {
 } from '@mui/icons-material';
 import {
   Alert,
-  alpha,
   Avatar,
   Box,
   Button,
@@ -34,7 +33,6 @@ import {
   TextField,
   Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -59,7 +57,6 @@ export const TeamManagePage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const theme = useTheme();
 
   const [project, setProject] = useState<Project | null>(null);
   const [members, setMembers] = useState<ProjectMember[]>([]);
@@ -234,21 +231,6 @@ export const TeamManagePage: React.FC = () => {
     }
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role.toLowerCase()) {
-      case 'project_manager':
-        return theme.palette.primary.main;
-      case 'developer':
-        return theme.palette.info.main;
-      case 'tester':
-        return theme.palette.warning.main;
-      case 'viewer':
-        return theme.palette.text.secondary;
-      default:
-        return theme.palette.secondary.main;
-    }
-  };
-
   const getRoleDisplayName = (role: string) => {
     switch (role.toLowerCase()) {
       case 'project_manager':
@@ -269,231 +251,388 @@ export const TeamManagePage: React.FC = () => {
   // Loading state
   if (loading) {
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          background: `linear-gradient(135deg, 
-            ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-            ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <CircularProgress size={60} />
-      </Box>
+      <>
+        <style>
+          {`
+            @keyframes float {
+              0%, 100% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-20px) rotate(180deg); }
+            }
+          `}
+        </style>
+        <Box
+          sx={{
+            minHeight: 'calc(100vh - 64px)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '20%',
+              right: '10%',
+              width: '150px',
+              height: '150px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              animation: 'float 6s ease-in-out infinite',
+            }}
+          />
+          <CircularProgress size={60} sx={{ color: 'white' }} />
+        </Box>
+      </>
     );
   }
 
   // Error state
   if (!project) {
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          background: `linear-gradient(135deg, 
-            ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-            ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-          px: { xs: 1, sm: 1.5, md: 2 },
-          py: { xs: 2, sm: 2.5, md: 3 },
-        }}
-      >
-        <Box mb={4}>
-          <IconButton onClick={handleGoBack} sx={{ mb: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
-        </Box>
-        <Alert severity="error">Project not found</Alert>
-      </Box>
-    );
-  }
-
-  return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: `linear-gradient(135deg, 
-          ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-          ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-        px: { xs: 1, sm: 1.5, md: 2 },
-        py: { xs: 2, sm: 2.5, md: 3 },
-        width: '100%',
-        maxWidth: '100vw',
-      }}
-    >
-      <SlideIn direction="up">
-        {/* Header */}
-        <Box mb={6}>
-          <Box mb={3}>
+      <>
+        <style>
+          {`
+            @keyframes float {
+              0%, 100% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-20px) rotate(180deg); }
+            }
+          `}
+        </style>
+        <Box
+          sx={{
+            minHeight: 'calc(100vh - 64px)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            overflow: 'hidden',
+            px: { xs: 1, sm: 2, md: 3 },
+            py: { xs: 2, sm: 3, md: 4 },
+          }}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '20%',
+              right: '10%',
+              width: '150px',
+              height: '150px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              animation: 'float 6s ease-in-out infinite',
+            }}
+          />
+          <Box mb={4} sx={{ position: 'relative', zIndex: 2 }}>
             <IconButton
               onClick={handleGoBack}
               sx={{
                 mb: 2,
+                color: 'white',
+                background: 'rgba(255, 255, 255, 0.1)',
                 '&:hover': {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                  background: 'rgba(255, 255, 255, 0.2)',
                 },
               }}
             >
               <ArrowBackIcon />
             </IconButton>
           </Box>
-
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="flex-start"
-            mb={3}
+          <Alert
+            severity="error"
+            sx={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(15px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              position: 'relative',
+              zIndex: 2,
+            }}
           >
-            <Box display="flex" alignItems="center" gap={3}>
-              <Box
+            Project not found
+          </Alert>
+        </Box>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
+          @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-180deg); }
+          }
+          @keyframes floatMedium {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(90deg); }
+          }
+        `}
+      </style>
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 64px)',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+          px: { xs: 1, sm: 2, md: 3 },
+          py: { xs: 2, sm: 3, md: 4 },
+          width: '100%',
+          maxWidth: '100vw',
+        }}
+      >
+        {/* Background Circles */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '-10%',
+            right: '-5%',
+            width: '250px',
+            height: '250px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.1)',
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '-3%',
+            width: '180px',
+            height: '180px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            animation: 'floatSlow 8s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '40%',
+            left: '85%',
+            width: '120px',
+            height: '120px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.06)',
+            animation: 'floatMedium 7s ease-in-out infinite',
+          }}
+        />
+        <SlideIn direction="up">
+          {/* Header */}
+          <Box mb={6} sx={{ position: 'relative', zIndex: 2 }}>
+            <Box mb={3}>
+              <IconButton
+                onClick={handleGoBack}
                 sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.accent?.main || theme.palette.secondary.main, 0.1)})`,
+                  mb: 2,
+                  color: 'white',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                  },
                 }}
               >
-                <GroupIcon
-                  sx={{
-                    color: theme.palette.primary.main,
-                    fontSize: 32,
-                  }}
-                />
-              </Box>
-              <Box>
-                <Typography
-                  variant="h3"
-                  component="h1"
-                  sx={{
-                    fontWeight: 700,
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    mb: 1,
-                  }}
-                >
-                  Team Management
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  Manage team members for {project.name}
-                  {userRole && (
-                    <Chip
-                      label={`Your role: ${userRole}`}
-                      size="small"
-                      color="primary"
-                      sx={{ ml: 2 }}
-                    />
-                  )}
-                  {!userRole && (
-                    <Chip
-                      label="Role: Loading..."
-                      size="small"
-                      color="default"
-                      sx={{ ml: 2 }}
-                    />
-                  )}
-                  {/* Debug info */}
-                  <Chip
-                    label={`Can manage roles: ${userRole ? canPerformAction(userRole, Permission.MANAGE_ROLES) : 'N/A'}`}
-                    size="small"
-                    color="secondary"
-                    sx={{ ml: 1 }}
-                  />
-                </Typography>
-              </Box>
+                <ArrowBackIcon />
+              </IconButton>
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => setIsAddMemberDialogOpen(true)}
-                sx={{
-                  borderRadius: 3,
-                  px: 3,
-                  py: 1.5,
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-                  boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.3)}`,
-                  '&:hover': {
-                    boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.4)}`,
-                    transform: 'translateY(-2px)',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                Add Member
-              </Button>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              mb={3}
+            >
+              <Box display="flex" alignItems="center" gap={3}>
+                <Box
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                  }}
+                >
+                  <GroupIcon
+                    sx={{
+                      color: 'white',
+                      fontSize: 32,
+                    }}
+                  />
+                </Box>
+                <Box>
+                  <Typography
+                    variant="h3"
+                    component="h1"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'white',
+                      mb: 1,
+                    }}
+                  >
+                    Team Management
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  >
+                    Manage team members for {project.name}
+                    {userRole && (
+                      <Chip
+                        label={`Your role: ${userRole}`}
+                        size="small"
+                        sx={{
+                          ml: 2,
+                          background: 'rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
+                        }}
+                      />
+                    )}
+                    {!userRole && (
+                      <Chip
+                        label="Role: Loading..."
+                        size="small"
+                        sx={{
+                          ml: 2,
+                          background: 'rgba(255, 255, 255, 0.15)',
+                          color: 'white',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                        }}
+                      />
+                    )}
+                    {/* Debug info */}
+                    <Chip
+                      label={`Can manage roles: ${userRole ? canPerformAction(userRole, Permission.MANAGE_ROLES) : 'N/A'}`}
+                      size="small"
+                      sx={{
+                        ml: 1,
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'white',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                      }}
+                    />
+                  </Typography>
+                </Box>
+              </Box>
 
-              {/* Project Settings Button - show for all users but with different states */}
-              {userRole &&
-              canPerformAction(userRole, Permission.MANAGE_ROLES) ? (
+              <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button
-                  variant="outlined"
-                  startIcon={<SettingsIcon />}
-                  onClick={() => navigate(`/projects/${projectId}/settings`)}
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setIsAddMemberDialogOpen(true)}
                   sx={{
                     borderRadius: 3,
                     px: 3,
                     py: 1.5,
-                    borderColor: alpha(theme.palette.primary.main, 0.3),
-                    color: theme.palette.primary.main,
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: 'white',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                     '&:hover': {
-                      borderColor: theme.palette.primary.main,
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                      background: 'rgba(255, 255, 255, 0.3)',
                       transform: 'translateY(-2px)',
+                      boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
                     },
                     transition: 'all 0.3s ease',
                   }}
                 >
-                  Project Settings
+                  Add Member
                 </Button>
-              ) : (
-                <Tooltip
-                  title={
-                    !userRole
-                      ? 'Loading user permissions...'
-                      : 'You need role management permissions to access project settings'
-                  }
-                >
-                  <span>
-                    <Button
-                      variant="outlined"
-                      startIcon={<SettingsIcon />}
-                      disabled
-                      sx={{
-                        borderRadius: 3,
-                        px: 3,
-                        py: 1.5,
-                      }}
-                    >
-                      Project Settings
-                    </Button>
-                  </span>
-                </Tooltip>
-              )}
+
+                {/* Project Settings Button - show for all users but with different states */}
+                {userRole &&
+                canPerformAction(userRole, Permission.MANAGE_ROLES) ? (
+                  <Button
+                    variant="outlined"
+                    startIcon={<SettingsIcon />}
+                    onClick={() => navigate(`/projects/${projectId}/settings`)}
+                    sx={{
+                      borderRadius: 3,
+                      px: 3,
+                      py: 1.5,
+                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                      color: 'white',
+                      '&:hover': {
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        transform: 'translateY(-2px)',
+                      },
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    Project Settings
+                  </Button>
+                ) : (
+                  <Tooltip
+                    title={
+                      !userRole
+                        ? 'Loading user permissions...'
+                        : 'You need role management permissions to access project settings'
+                    }
+                  >
+                    <span>
+                      <Button
+                        variant="outlined"
+                        startIcon={<SettingsIcon />}
+                        disabled
+                        sx={{
+                          borderRadius: 3,
+                          px: 3,
+                          py: 1.5,
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                          color: 'rgba(255, 255, 255, 0.5)',
+                        }}
+                      >
+                        Project Settings
+                      </Button>
+                    </span>
+                  </Tooltip>
+                )}
+              </Box>
             </Box>
+
+            {error && (
+              <Alert
+                severity="error"
+                sx={{
+                  mb: 3,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                }}
+                onClose={() => setError(null)}
+              >
+                {error}
+              </Alert>
+            )}
+
+            {successMessage && (
+              <Alert
+                severity="success"
+                sx={{
+                  mb: 3,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                }}
+                onClose={() => setSuccessMessage(null)}
+              >
+                {successMessage}
+              </Alert>
+            )}
           </Box>
-
-          {error && (
-            <Alert
-              severity="error"
-              sx={{ mb: 3 }}
-              onClose={() => setError(null)}
-            >
-              {error}
-            </Alert>
-          )}
-
-          {successMessage && (
-            <Alert
-              severity="success"
-              sx={{ mb: 3 }}
-              onClose={() => setSuccessMessage(null)}
-            >
-              {successMessage}
-            </Alert>
-          )}
-        </Box>
+        </SlideIn>
 
         {/* Team Statistics */}
         <StaggerContainer>
@@ -503,17 +642,19 @@ export const TeamManagePage: React.FC = () => {
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: 3,
               mb: 6,
+              position: 'relative',
+              zIndex: 2,
             }}
           >
             <SlideIn direction="up">
               <HoverCard>
                 <Card
                   sx={{
-                    borderRadius: 2,
-                    background: alpha(theme.palette.background.paper, 0.7),
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                    boxShadow: theme.shadows[8],
+                    borderRadius: 4,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(15px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                     p: 3,
                     textAlign: 'center',
                   }}
@@ -522,19 +663,27 @@ export const TeamManagePage: React.FC = () => {
                     sx={{
                       p: 2,
                       borderRadius: 3,
-                      background: alpha(theme.palette.primary.main, 0.1),
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
                       display: 'inline-flex',
                       mb: 2,
                     }}
                   >
-                    <GroupIcon
-                      sx={{ color: theme.palette.primary.main, fontSize: 28 }}
-                    />
+                    <GroupIcon sx={{ color: 'white', fontSize: 28 }} />
                   </Box>
-                  <Typography variant="h4" fontWeight={700} mb={1}>
+                  <Typography
+                    variant="h4"
+                    fontWeight={700}
+                    mb={1}
+                    sx={{ color: 'white' }}
+                  >
                     {members?.length || 0}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  >
                     Total Members
                   </Typography>
                 </Card>
@@ -545,11 +694,11 @@ export const TeamManagePage: React.FC = () => {
               <HoverCard>
                 <Card
                   sx={{
-                    borderRadius: 2,
-                    background: alpha(theme.palette.background.paper, 0.7),
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                    boxShadow: theme.shadows[8],
+                    borderRadius: 4,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(15px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                     p: 3,
                     textAlign: 'center',
                   }}
@@ -558,19 +707,27 @@ export const TeamManagePage: React.FC = () => {
                     sx={{
                       p: 2,
                       borderRadius: 3,
-                      background: alpha(theme.palette.info.main, 0.1),
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
                       display: 'inline-flex',
                       mb: 2,
                     }}
                   >
-                    <PersonIcon
-                      sx={{ color: theme.palette.info.main, fontSize: 28 }}
-                    />
+                    <PersonIcon sx={{ color: 'white', fontSize: 28 }} />
                   </Box>
-                  <Typography variant="h4" fontWeight={700} mb={1}>
+                  <Typography
+                    variant="h4"
+                    fontWeight={700}
+                    mb={1}
+                    sx={{ color: 'white' }}
+                  >
                     {members.filter((m) => m.role === 'developer').length}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  >
                     Developers
                   </Typography>
                 </Card>
@@ -583,15 +740,22 @@ export const TeamManagePage: React.FC = () => {
         <SlideIn direction="up">
           <Card
             sx={{
-              borderRadius: 2,
-              background: alpha(theme.palette.background.paper, 0.7),
-              backdropFilter: 'blur(20px)',
-              border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-              boxShadow: theme.shadows[8],
+              borderRadius: 4,
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(15px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+              position: 'relative',
+              zIndex: 2,
             }}
           >
             <CardContent sx={{ p: 4 }}>
-              <Typography variant="h5" fontWeight={600} mb={3}>
+              <Typography
+                variant="h5"
+                fontWeight={600}
+                mb={3}
+                sx={{ color: 'white' }}
+              >
                 Team Members ({members.length})
               </Typography>
 
@@ -602,8 +766,9 @@ export const TeamManagePage: React.FC = () => {
                     sx={{
                       borderRadius: 2,
                       mb: index < members.length - 1 ? 2 : 0,
-                      background: alpha(theme.palette.background.default, 0.3),
-                      border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
                     }}
                     secondaryAction={
                       member.id !== project.ownerId &&
@@ -612,10 +777,10 @@ export const TeamManagePage: React.FC = () => {
                           edge="end"
                           onClick={() => handleRemoveMember(member.id)}
                           sx={{
-                            color: theme.palette.error.main,
+                            color: 'rgba(255, 255, 255, 0.8)',
                             mr: 1,
                             '&:hover': {
-                              bgcolor: alpha(theme.palette.error.main, 0.1),
+                              bgcolor: 'rgba(255, 255, 255, 0.2)',
                             },
                           }}
                         >
@@ -628,8 +793,9 @@ export const TeamManagePage: React.FC = () => {
                       <Avatar
                         src={member.photoURL}
                         sx={{
-                          bgcolor: alpha(theme.palette.primary.main, 0.2),
-                          color: theme.palette.primary.main,
+                          bgcolor: 'rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
                         }}
                       >
                         {member.displayName.charAt(0).toUpperCase()}
@@ -639,7 +805,11 @@ export const TeamManagePage: React.FC = () => {
                     <ListItemText
                       primary={
                         <Box display="flex" alignItems="center" gap={1}>
-                          <Typography variant="h6" fontWeight={600}>
+                          <Typography
+                            variant="h6"
+                            fontWeight={600}
+                            sx={{ color: 'white' }}
+                          >
                             {member.displayName}
                           </Typography>
                           {member.id === project.ownerId && (
@@ -647,8 +817,9 @@ export const TeamManagePage: React.FC = () => {
                               label="Owner"
                               size="small"
                               sx={{
-                                bgcolor: alpha(theme.palette.warning.main, 0.1),
-                                color: theme.palette.warning.main,
+                                bgcolor: 'rgba(255, 255, 255, 0.2)',
+                                color: 'white',
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
                                 fontSize: '0.75rem',
                               }}
                             />
@@ -657,7 +828,10 @@ export const TeamManagePage: React.FC = () => {
                       }
                       secondary={
                         <Box>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography
+                            variant="body2"
+                            sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                          >
                             {member.email}
                           </Typography>
                           <Box
@@ -670,8 +844,9 @@ export const TeamManagePage: React.FC = () => {
                               label={getRoleDisplayName(member.role)}
                               size="small"
                               sx={{
-                                bgcolor: alpha(getRoleColor(member.role), 0.1),
-                                color: getRoleColor(member.role),
+                                bgcolor: 'rgba(255, 255, 255, 0.15)',
+                                color: 'white',
+                                border: '1px solid rgba(255, 255, 255, 0.2)',
                                 fontSize: '0.75rem',
                               }}
                             />
@@ -680,7 +855,11 @@ export const TeamManagePage: React.FC = () => {
                                 label={member.projectRole}
                                 size="small"
                                 variant="outlined"
-                                sx={{ fontSize: '0.75rem' }}
+                                sx={{
+                                  fontSize: '0.75rem',
+                                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                                  color: 'white',
+                                }}
                               />
                             )}
                           </Box>
@@ -693,129 +872,131 @@ export const TeamManagePage: React.FC = () => {
             </CardContent>
           </Card>
         </SlideIn>
-      </SlideIn>
 
-      {/* Add Member Dialog */}
-      <Dialog
-        open={isAddMemberDialogOpen}
-        onClose={() => setIsAddMemberDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            background: alpha(theme.palette.background.paper, 0.95),
-            backdropFilter: 'blur(20px)',
-          },
-        }}
-      >
-        <DialogTitle>
-          <Typography variant="h5" fontWeight={600}>
-            Add Team Member
-          </Typography>
-        </DialogTitle>
-
-        <DialogContent sx={{ pb: 2 }}>
-          {/* Search Users */}
-          <Box mb={3}>
-            <Typography variant="h6" mb={2}>
-              Search Users
+        {/* Add Member Dialog */}
+        <Dialog
+          open={isAddMemberDialogOpen}
+          onClose={() => setIsAddMemberDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: 3,
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+            },
+          }}
+        >
+          <DialogTitle>
+            <Typography variant="h5" fontWeight={600}>
+              Add Team Member
             </Typography>
-            <TextField
-              fullWidth
-              placeholder="Search by name or email..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: searchLoading && (
-                  <InputAdornment position="end">
-                    <CircularProgress size={20} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 2 }}
-            />
+          </DialogTitle>
 
-            {searchResults.length > 0 && (
-              <Paper
-                sx={{
-                  maxHeight: 200,
-                  overflow: 'auto',
-                  border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+          <DialogContent sx={{ pb: 2 }}>
+            {/* Search Users */}
+            <Box mb={3}>
+              <Typography variant="h6" mb={2}>
+                Search Users
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Search by name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchLoading && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ),
                 }}
-              >
-                <List dense>
-                  {searchResults.map((user) => (
-                    <ListItemButton
-                      key={user.id}
-                      onClick={() => handleAddMember(user.id)}
-                    >
-                      <ListItemAvatar>
-                        <Avatar
-                          src={user.photoURL}
-                          sx={{ width: 32, height: 32 }}
-                        >
-                          {user.displayName.charAt(0).toUpperCase()}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={user.displayName}
-                        secondary={user.email}
-                      />
-                    </ListItemButton>
-                  ))}
-                </List>
-              </Paper>
-            )}
-          </Box>
+                sx={{ mb: 2 }}
+              />
 
-          {/* Invite by Email */}
-          <Box>
-            <Typography variant="h6" mb={2}>
-              Invite by Email
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Enter email address..."
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon />
-                  </InputAdornment>
-                ),
+              {searchResults.length > 0 && (
+                <Paper
+                  sx={{
+                    maxHeight: 200,
+                    overflow: 'auto',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                  }}
+                >
+                  <List dense>
+                    {searchResults.map((user) => (
+                      <ListItemButton
+                        key={user.id}
+                        onClick={() => handleAddMember(user.id)}
+                      >
+                        <ListItemAvatar>
+                          <Avatar
+                            src={user.photoURL}
+                            sx={{ width: 32, height: 32 }}
+                          >
+                            {user.displayName.charAt(0).toUpperCase()}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={user.displayName}
+                          secondary={user.email}
+                        />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Paper>
+              )}
+            </Box>
+
+            {/* Invite by Email */}
+            <Box>
+              <Typography variant="h6" mb={2}>
+                Invite by Email
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Enter email address..."
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+          </DialogContent>
+
+          <DialogActions sx={{ p: 3 }}>
+            <Button
+              onClick={() => setIsAddMemberDialogOpen(false)}
+              sx={{ borderRadius: 2 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<SendIcon />}
+              onClick={handleInviteByEmail}
+              disabled={!inviteEmail.trim()}
+              sx={{
+                borderRadius: 2,
+                background: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
               }}
-            />
-          </Box>
-        </DialogContent>
-
-        <DialogActions sx={{ p: 3 }}>
-          <Button
-            onClick={() => setIsAddMemberDialogOpen(false)}
-            sx={{ borderRadius: 2 }}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<SendIcon />}
-            onClick={handleInviteByEmail}
-            disabled={!inviteEmail.trim()}
-            sx={{
-              borderRadius: 2,
-              background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            }}
-          >
-            Send Invitation
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+            >
+              Send Invitation
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </>
   );
 };

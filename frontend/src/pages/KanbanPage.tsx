@@ -4,7 +4,6 @@ import {
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import {
-  alpha,
   Avatar,
   Box,
   Card,
@@ -98,210 +97,272 @@ export const KanbanPage: React.FC = () => {
     },
   ];
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return theme.palette.error.main;
-      case 'medium':
-        return theme.palette.warning.main;
-      case 'low':
-        return theme.palette.success.main;
-      default:
-        return theme.palette.grey[500];
-    }
-  };
-
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: `linear-gradient(135deg, 
-          ${alpha(theme.palette.primary.main, 0.1)} 0%, 
-          ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-        px: { xs: 1, sm: 2, md: 3 },
-        py: { xs: 2, sm: 3, md: 4 },
-        width: '100%',
-        maxWidth: '100vw',
-      }}
-    >
-      <SlideIn direction="up">
-        <Box mb={4}>
-          <Typography
-            variant="h3"
-            component="h1"
-            sx={{
-              fontWeight: 700,
-              background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              mb: 1,
-            }}
-          >
-            Kanban Board
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Project ID: {projectId} • Drag and drop tasks to update their status
-          </Typography>
-        </Box>
-      </SlideIn>
-
-      <StaggerContainer>
+    <>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
+          @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-180deg); }
+          }
+          @keyframes floatMedium {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(90deg); }
+          }
+        `}
+      </style>
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 64px)',
+          position: 'relative',
+          overflow: 'hidden',
+          px: { xs: 1, sm: 2, md: 3 },
+          py: { xs: 2, sm: 3, md: 4 },
+          width: '100%',
+          maxWidth: '100vw',
+        }}
+      >
+        {/* Background Circles */}
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: { xs: 2, sm: 3 },
-            width: '100%',
-            maxWidth: '100%',
-            overflowX: 'auto',
-            pb: 2,
+            position: 'absolute',
+            top: '-10%',
+            right: '-5%',
+            width: '250px',
+            height: '250px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.1)',
+            animation: 'float 6s ease-in-out infinite',
           }}
-        >
-          {columns.map((column) => (
-            <SlideIn key={column.id} direction="up">
-              <Paper
-                sx={{
-                  borderRadius: 4,
-                  background: alpha(theme.palette.background.paper, 0.7),
-                  backdropFilter: 'blur(20px)',
-                  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                  boxShadow: theme.shadows[8],
-                  minHeight: 500,
-                  position: 'relative',
-                  width: '100%',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 4,
-                    background: column.color,
-                    borderRadius: '16px 16px 0 0',
-                  },
-                }}
-              >
-                <Box sx={{ p: 3 }}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={3}
-                  >
-                    <Typography variant="h6" fontWeight={600}>
-                      {column.title}
-                    </Typography>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Chip
-                        label={column.tasks.length}
-                        size="small"
-                        sx={{
-                          backgroundColor: alpha(column.color, 0.1),
-                          color: column.color,
-                          fontWeight: 600,
-                        }}
-                      />
-                      <IconButton size="small">
-                        <AddIcon />
-                      </IconButton>
-                    </Box>
-                  </Box>
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '-3%',
+            width: '180px',
+            height: '180px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            animation: 'floatSlow 8s ease-in-out infinite',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '40%',
+            left: '85%',
+            width: '120px',
+            height: '120px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.06)',
+            animation: 'floatMedium 7s ease-in-out infinite',
+          }}
+        />
 
-                  <Box
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-                  >
-                    {column.tasks.map((task) => (
-                      <HoverCard key={task.id}>
-                        <Card
+        <SlideIn direction="up">
+          <Box mb={4} sx={{ position: 'relative', zIndex: 2 }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              sx={{
+                fontWeight: 700,
+                color: 'white',
+                mb: 1,
+              }}
+            >
+              Kanban Board
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+            >
+              Project ID: {projectId} • Drag and drop tasks to update their
+              status
+            </Typography>
+          </Box>
+        </SlideIn>
+
+        <StaggerContainer>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: { xs: 2, sm: 3 },
+              width: '100%',
+              maxWidth: '100%',
+              overflowX: 'auto',
+              pb: 2,
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            {columns.map((column) => (
+              <SlideIn key={column.id} direction="up">
+                <Paper
+                  sx={{
+                    borderRadius: 4,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(15px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    minHeight: 500,
+                    position: 'relative',
+                    width: '100%',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 4,
+                      background:
+                        'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
+                      borderRadius: '16px 16px 0 0',
+                    },
+                  }}
+                >
+                  <Box sx={{ p: 3 }}>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb={3}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        sx={{ color: 'white' }}
+                      >
+                        {column.title}
+                      </Typography>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Chip
+                          label={column.tasks.length}
+                          size="small"
                           sx={{
-                            borderRadius: 3,
-                            background: theme.palette.background.paper,
-                            border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                            boxShadow: theme.shadows[2],
-                            cursor: 'grab',
-                            '&:active': {
-                              cursor: 'grabbing',
-                            },
+                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                            color: 'white',
+                            fontWeight: 600,
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
                           }}
-                        >
-                          <CardContent sx={{ p: 2.5 }}>
-                            <Box
-                              display="flex"
-                              justifyContent="space-between"
-                              alignItems="flex-start"
-                              mb={2}
-                            >
-                              <Typography
-                                variant="subtitle1"
-                                fontWeight={600}
-                                lineHeight={1.3}
+                        />
+                        <IconButton size="small" sx={{ color: 'white' }}>
+                          <AddIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+
+                    <Box
+                      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                    >
+                      {column.tasks.map((task) => (
+                        <HoverCard key={task.id}>
+                          <Card
+                            sx={{
+                              borderRadius: 3,
+                              background: 'rgba(255, 255, 255, 0.1)',
+                              backdropFilter: 'blur(10px)',
+                              border: '1px solid rgba(255, 255, 255, 0.15)',
+                              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+                              cursor: 'grab',
+                              '&:hover': {
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                              },
+                              '&:active': {
+                                cursor: 'grabbing',
+                              },
+                              transition: 'all 0.3s ease',
+                            }}
+                          >
+                            <CardContent sx={{ p: 2.5 }}>
+                              <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
+                                mb={2}
                               >
-                                {task.title}
-                              </Typography>
-                              <IconButton size="small">
-                                <MoreVertIcon fontSize="small" />
-                              </IconButton>
-                            </Box>
-
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              mb={3}
-                              lineHeight={1.5}
-                            >
-                              {task.description}
-                            </Typography>
-
-                            <Box
-                              display="flex"
-                              justifyContent="space-between"
-                              alignItems="center"
-                            >
-                              <Box display="flex" alignItems="center" gap={1}>
-                                <FlagIcon
-                                  sx={{
-                                    fontSize: 16,
-                                    color: getPriorityColor(task.priority),
-                                  }}
-                                />
                                 <Typography
-                                  variant="caption"
-                                  sx={{
-                                    color: getPriorityColor(task.priority),
-                                    fontWeight: 600,
-                                    textTransform: 'capitalize',
-                                  }}
+                                  variant="subtitle1"
+                                  fontWeight={600}
+                                  lineHeight={1.3}
+                                  sx={{ color: 'white' }}
                                 >
-                                  {task.priority}
+                                  {task.title}
                                 </Typography>
+                                <IconButton
+                                  size="small"
+                                  sx={{ color: 'white' }}
+                                >
+                                  <MoreVertIcon fontSize="small" />
+                                </IconButton>
                               </Box>
 
-                              <Box display="flex" alignItems="center" gap={1}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: 'rgba(255, 255, 255, 0.8)',
+                                  mb: 3,
+                                  lineHeight: 1.5,
+                                }}
+                              >
+                                {task.description}
+                              </Typography>
+
+                              <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                              >
+                                <Box display="flex" alignItems="center" gap={1}>
+                                  <FlagIcon
+                                    sx={{
+                                      fontSize: 16,
+                                      color: 'rgba(255, 255, 255, 0.8)',
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      color: 'rgba(255, 255, 255, 0.8)',
+                                      textTransform: 'capitalize',
+                                    }}
+                                  >
+                                    {task.priority}
+                                  </Typography>
+                                </Box>
                                 <Avatar
                                   sx={{
-                                    width: 24,
-                                    height: 24,
-                                    fontSize: 10,
-                                    fontWeight: 600,
-                                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
+                                    width: 28,
+                                    height: 28,
+                                    fontSize: '0.75rem',
+                                    background: 'rgba(255, 255, 255, 0.2)',
+                                    color: 'white',
+                                    border:
+                                      '1px solid rgba(255, 255, 255, 0.3)',
                                   }}
                                 >
                                   {task.avatar}
                                 </Avatar>
                               </Box>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </HoverCard>
-                    ))}
+                            </CardContent>
+                          </Card>
+                        </HoverCard>
+                      ))}
+                    </Box>
                   </Box>
-                </Box>
-              </Paper>
-            </SlideIn>
-          ))}
-        </Box>
-      </StaggerContainer>
-    </Box>
+                </Paper>
+              </SlideIn>
+            ))}
+          </Box>
+        </StaggerContainer>
+      </Box>
+    </>
   );
 };

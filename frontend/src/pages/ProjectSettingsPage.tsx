@@ -7,7 +7,6 @@ import {
 } from '@mui/icons-material';
 import {
   Alert,
-  alpha,
   Box,
   Button,
   Card,
@@ -33,7 +32,6 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -61,7 +59,6 @@ interface ProjectMember {
 }
 
 export const ProjectSettingsPage: React.FC = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
   const { currentUser } = useAuth();
@@ -170,330 +167,597 @@ export const ProjectSettingsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '60vh',
-        }}
-      >
-        <Typography>Loading project settings...</Typography>
-      </Box>
+      <>
+        <style>
+          {`
+            @keyframes float {
+              0%, 100% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-20px) rotate(180deg); }
+            }
+          `}
+        </style>
+        <Box
+          sx={{
+            minHeight: 'calc(100vh - 64px)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            p: 3,
+          }}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '20%',
+              right: '10%',
+              width: '150px',
+              height: '150px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              animation: 'float 6s ease-in-out infinite',
+            }}
+          />
+          <Typography sx={{ color: 'white' }}>
+            Loading project settings...
+          </Typography>
+        </Box>
+      </>
     );
   }
 
   if (!userRole || !canPerformAction(userRole, Permission.MANAGE_ROLES)) {
     return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error" icon={<SecurityIcon />}>
-          <Typography variant="h6" gutterBottom>
-            Access Denied
-          </Typography>
-          <Typography>
-            You do not have permission to access project settings. Only users
-            with role management permissions can view this page.
-          </Typography>
-          <Box sx={{ mt: 2 }}>
-            <Button
-              variant="outlined"
-              startIcon={<ArrowBackIcon />}
-              onClick={handleGoBack}
-            >
-              Back to Team Management
-            </Button>
-          </Box>
-        </Alert>
-      </Box>
+      <>
+        <style>
+          {`
+            @keyframes float {
+              0%, 100% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-20px) rotate(180deg); }
+            }
+          `}
+        </style>
+        <Box
+          sx={{
+            minHeight: 'calc(100vh - 64px)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            overflow: 'hidden',
+            p: 3,
+          }}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '20%',
+              right: '10%',
+              width: '150px',
+              height: '150px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              animation: 'float 6s ease-in-out infinite',
+            }}
+          />
+          <Alert
+            severity="error"
+            icon={<SecurityIcon />}
+            sx={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(15px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            <Typography variant="h6" gutterBottom sx={{ color: 'white' }}>
+              Access Denied
+            </Typography>
+            <Typography sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+              You do not have permission to access project settings. Only users
+              with role management permissions can view this page.
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon />}
+                onClick={handleGoBack}
+                sx={{
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                  color: 'white',
+                  '&:hover': {
+                    borderColor: 'rgba(255, 255, 255, 0.5)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+              >
+                Back to Team Management
+              </Button>
+            </Box>
+          </Alert>
+        </Box>
+      </>
     );
   }
 
   const availableRoles = getRoleOptions();
 
   return (
-    <StaggerContainer>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.secondary.main, 0.1)})`,
-          p: 3,
-        }}
-      >
-        {/* Header */}
-        <SlideIn direction="up">
-          <Box sx={{ mb: 4 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <IconButton
-                onClick={handleGoBack}
-                sx={{
-                  mr: 2,
-                  backgroundColor: alpha(theme.palette.background.paper, 0.9),
-                  backdropFilter: 'blur(10px)',
-                  '&:hover': {
-                    backgroundColor: alpha(theme.palette.background.paper, 1),
-                  },
-                }}
+    <>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
+          @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-180deg); }
+          }
+          @keyframes floatMedium {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(90deg); }
+          }
+        `}
+      </style>
+      <StaggerContainer>
+        <Box
+          sx={{
+            minHeight: 'calc(100vh - 64px)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            overflow: 'hidden',
+            p: 3,
+          }}
+        >
+          {/* Background Circles */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '-10%',
+              right: '-5%',
+              width: '250px',
+              height: '250px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              animation: 'float 6s ease-in-out infinite',
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: '-10%',
+              left: '-3%',
+              width: '180px',
+              height: '180px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.08)',
+              animation: 'floatSlow 8s ease-in-out infinite',
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '40%',
+              left: '85%',
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.06)',
+              animation: 'floatMedium 7s ease-in-out infinite',
+            }}
+          />
+
+          {/* Header */}
+          <SlideIn direction="up">
+            <Box sx={{ mb: 4, position: 'relative', zIndex: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <IconButton
+                  onClick={handleGoBack}
+                  sx={{
+                    mr: 2,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    color: 'white',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.25)',
+                    },
+                  }}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+                <SettingsIcon sx={{ mr: 2, fontSize: 28, color: 'white' }} />
+                <Typography
+                  variant="h4"
+                  fontWeight="bold"
+                  sx={{ color: 'white' }}
+                >
+                  Project Settings
+                </Typography>
+              </Box>
+              <Typography
+                variant="subtitle1"
+                sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
               >
-                <ArrowBackIcon />
-              </IconButton>
-              <SettingsIcon sx={{ mr: 2, fontSize: 28 }} />
-              <Typography variant="h4" fontWeight="bold">
-                Project Settings
+                Manage project permissions and member roles for{' '}
+                <strong>{project?.name}</strong>
               </Typography>
             </Box>
-            <Typography variant="subtitle1" color="text.secondary">
-              Manage project permissions and member roles for{' '}
-              <strong>{project?.name}</strong>
-            </Typography>
-          </Box>
-        </SlideIn>
-
-        {/* Alert Messages */}
-        {error && (
-          <SlideIn direction="up">
-            <Alert
-              severity="error"
-              sx={{ mb: 3 }}
-              onClose={() => setError(null)}
-            >
-              {error}
-            </Alert>
           </SlideIn>
-        )}
 
-        {success && (
-          <SlideIn direction="up">
-            <Alert
-              severity="success"
-              sx={{ mb: 3 }}
-              onClose={() => setSuccess(null)}
-            >
-              {success}
-            </Alert>
-          </SlideIn>
-        )}
+          {/* Alert Messages */}
+          {error && (
+            <SlideIn direction="up">
+              <Alert
+                severity="error"
+                sx={{
+                  mb: 3,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  position: 'relative',
+                  zIndex: 2,
+                }}
+                onClose={() => setError(null)}
+              >
+                {error}
+              </Alert>
+            </SlideIn>
+          )}
 
-        <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-          {/* Role Definitions Card */}
-          <SlideIn direction="left">
-            <Card
-              sx={{
-                flex: '1 1 400px',
-                backgroundColor: alpha(theme.palette.background.paper, 0.9),
-                backdropFilter: 'blur(10px)',
-                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-              }}
-            >
-              <CardHeader
-                title="Role Definitions"
-                subheader="Available roles and their permissions"
-                avatar={<SecurityIcon />}
-              />
-              <CardContent>
-                <List>
-                  {availableRoles.map((role, index) => (
-                    <React.Fragment key={role.value}>
-                      <ListItem>
-                        <ListItemIcon>
-                          <Chip
-                            label={ROLE_DEFINITIONS[role.value].hierarchy}
-                            size="small"
-                            color="primary"
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Typography variant="subtitle1" fontWeight="medium">
-                              {role.label}
-                            </Typography>
-                          }
-                          secondary={
-                            <Box>
+          {success && (
+            <SlideIn direction="up">
+              <Alert
+                severity="success"
+                sx={{
+                  mb: 3,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  position: 'relative',
+                  zIndex: 2,
+                }}
+                onClose={() => setSuccess(null)}
+              >
+                {success}
+              </Alert>
+            </SlideIn>
+          )}
+
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 3,
+              flexWrap: 'wrap',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            {/* Role Definitions Card */}
+            <SlideIn direction="left">
+              <Card
+                sx={{
+                  flex: '1 1 400px',
+                  borderRadius: 4,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <CardHeader
+                  title={
+                    <Typography variant="h6" sx={{ color: 'white' }}>
+                      Role Definitions
+                    </Typography>
+                  }
+                  subheader={
+                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                      Available roles and their permissions
+                    </Typography>
+                  }
+                  avatar={<SecurityIcon sx={{ color: 'white' }} />}
+                />
+                <CardContent>
+                  <List>
+                    {availableRoles.map((role, index) => (
+                      <React.Fragment key={role.value}>
+                        <ListItem>
+                          <ListItemIcon>
+                            <Chip
+                              label={ROLE_DEFINITIONS[role.value].hierarchy}
+                              size="small"
+                              sx={{
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                color: 'white',
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                              }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
                               <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ mb: 1 }}
+                                variant="subtitle1"
+                                fontWeight="medium"
+                                sx={{ color: 'white' }}
                               >
-                                {role.description}
+                                {role.label}
                               </Typography>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexWrap: 'wrap',
-                                  gap: 0.5,
-                                }}
-                              >
-                                {ROLE_DEFINITIONS[role.value].permissions.map(
-                                  (permission) => (
-                                    <Chip
-                                      key={permission}
-                                      label={permission.replace('_', ' ')}
-                                      size="small"
-                                      variant="outlined"
-                                      sx={{ fontSize: '0.7rem' }}
-                                    />
-                                  ),
-                                )}
-                              </Box>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                      {index < availableRoles.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </List>
-              </CardContent>
-            </Card>
-          </SlideIn>
-
-          {/* Member Role Management Card */}
-          <SlideIn direction="right">
-            <Card
-              sx={{
-                flex: '1 1 600px',
-                backgroundColor: alpha(theme.palette.background.paper, 0.9),
-                backdropFilter: 'blur(10px)',
-                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-              }}
-            >
-              <CardHeader
-                title="Member Role Management"
-                subheader="Manage roles for project members"
-                avatar={<GroupIcon />}
-              />
-              <CardContent>
-                <TableContainer component={Paper} elevation={0}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Member</TableCell>
-                        <TableCell>Current Role</TableCell>
-                        <TableCell>Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {members.map((member) => {
-                        const memberRole =
-                          member.projectRole || ProjectRole.VIEWER;
-
-                        // Safety check to ensure userRole and memberRole are valid
-                        const canEditThisRole =
-                          userRole &&
-                          memberRole &&
-                          canManageRole(userRole, memberRole);
-                        const isCurrentUser = member.id === currentUser?.uid;
-
-                        return (
-                          <TableRow key={member.id}>
-                            <TableCell>
-                              <Box
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                              >
-                                <Typography variant="body2" fontWeight="medium">
-                                  {member.displayName}
+                            }
+                            secondary={
+                              <Box>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    mb: 1,
+                                    color: 'rgba(255, 255, 255, 0.8)',
+                                  }}
+                                >
+                                  {role.description}
                                 </Typography>
-                                {isCurrentUser && (
-                                  <Chip
-                                    label="You"
-                                    size="small"
-                                    color="primary"
-                                    sx={{ ml: 1 }}
-                                  />
-                                )}
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 0.5,
+                                  }}
+                                >
+                                  {ROLE_DEFINITIONS[role.value].permissions.map(
+                                    (permission) => (
+                                      <Chip
+                                        key={permission}
+                                        label={permission.replace('_', ' ')}
+                                        size="small"
+                                        variant="outlined"
+                                        sx={{
+                                          fontSize: '0.7rem',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.3)',
+                                          color: 'white',
+                                        }}
+                                      />
+                                    ),
+                                  )}
+                                </Box>
                               </Box>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
+                            }
+                          />
+                        </ListItem>
+                        {index < availableRoles.length - 1 && (
+                          <Divider
+                            sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }}
+                          />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            </SlideIn>
+
+            {/* Member Role Management Card */}
+            <SlideIn direction="right">
+              <Card
+                sx={{
+                  flex: '1 1 600px',
+                  borderRadius: 4,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <CardHeader
+                  title={
+                    <Typography variant="h6" sx={{ color: 'white' }}>
+                      Member Role Management
+                    </Typography>
+                  }
+                  subheader={
+                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                      Manage roles for project members
+                    </Typography>
+                  }
+                  avatar={<GroupIcon sx={{ color: 'white' }} />}
+                />
+                <CardContent>
+                  <TableContainer
+                    component={Paper}
+                    elevation={0}
+                    sx={{
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ color: 'white', fontWeight: 600 }}>
+                            Member
+                          </TableCell>
+                          <TableCell sx={{ color: 'white', fontWeight: 600 }}>
+                            Current Role
+                          </TableCell>
+                          <TableCell sx={{ color: 'white', fontWeight: 600 }}>
+                            Actions
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {members.map((member) => {
+                          const memberRole =
+                            member.projectRole || ProjectRole.VIEWER;
+
+                          // Safety check to ensure userRole and memberRole are valid
+                          const canEditThisRole =
+                            userRole &&
+                            memberRole &&
+                            canManageRole(userRole, memberRole);
+                          const isCurrentUser = member.id === currentUser?.uid;
+
+                          return (
+                            <TableRow key={member.id}>
+                              <TableCell
+                                sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
                               >
-                                {member.email}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Chip
-                                label={getRoleDisplayName(memberRole)}
-                                color={
-                                  memberRole === ProjectRole.OWNER
-                                    ? 'error'
-                                    : 'default'
-                                }
-                                variant={
-                                  memberRole === ProjectRole.OWNER
-                                    ? 'filled'
-                                    : 'outlined'
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              {canEditThisRole &&
-                              !isCurrentUser &&
-                              memberRole !== ProjectRole.OWNER ? (
-                                <FormControl
-                                  size="small"
-                                  sx={{ minWidth: 120 }}
+                                <Box
+                                  sx={{ display: 'flex', alignItems: 'center' }}
                                 >
-                                  <InputLabel>Change Role</InputLabel>
-                                  <Select
-                                    value={memberRole}
-                                    label="Change Role"
-                                    onChange={(e) =>
-                                      handleUpdateMemberRole(
-                                        member.id,
-                                        e.target.value as ProjectRole,
-                                      )
-                                    }
-                                    disabled={saving}
+                                  <Typography
+                                    variant="body2"
+                                    fontWeight="medium"
+                                    sx={{ color: 'white' }}
                                   >
-                                    {availableRoles
-                                      .filter(
-                                        (role) =>
-                                          role.value !== ProjectRole.OWNER &&
-                                          userRole &&
-                                          canManageRole(userRole, role.value),
-                                      )
-                                      .map((role) => (
-                                        <MenuItem
-                                          key={role.value}
-                                          value={role.value}
-                                        >
-                                          {role.label}
-                                        </MenuItem>
-                                      ))}
-                                  </Select>
-                                </FormControl>
-                              ) : (
-                                <Tooltip
-                                  title={
-                                    isCurrentUser
-                                      ? 'You cannot change your own role'
-                                      : memberRole === ProjectRole.OWNER
-                                        ? 'Project owner role cannot be changed'
-                                        : "You cannot manage this user's role"
-                                  }
-                                >
-                                  <span>
-                                    <Button
+                                    {member.displayName}
+                                  </Typography>
+                                  {isCurrentUser && (
+                                    <Chip
+                                      label="You"
                                       size="small"
-                                      disabled
-                                      startIcon={<WarningIcon />}
+                                      sx={{
+                                        ml: 1,
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        color: 'white',
+                                        border:
+                                          '1px solid rgba(255, 255, 255, 0.3)',
+                                      }}
+                                    />
+                                  )}
+                                </Box>
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                                >
+                                  {member.email}
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                              >
+                                <Chip
+                                  label={getRoleDisplayName(memberRole)}
+                                  sx={{
+                                    background:
+                                      memberRole === ProjectRole.OWNER
+                                        ? 'rgba(255, 255, 255, 0.25)'
+                                        : 'rgba(255, 255, 255, 0.15)',
+                                    color: 'white',
+                                    border:
+                                      '1px solid rgba(255, 255, 255, 0.3)',
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell
+                                sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                              >
+                                {canEditThisRole &&
+                                !isCurrentUser &&
+                                memberRole !== ProjectRole.OWNER ? (
+                                  <FormControl
+                                    size="small"
+                                    sx={{
+                                      minWidth: 120,
+                                      '& .MuiOutlinedInput-root': {
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        color: 'white',
+                                        '& fieldset': {
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.3)',
+                                        },
+                                        '&:hover fieldset': {
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.5)',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.7)',
+                                        },
+                                      },
+                                      '& .MuiInputLabel-root': {
+                                        color: 'rgba(255, 255, 255, 0.8)',
+                                      },
+                                    }}
+                                  >
+                                    <InputLabel
+                                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                                     >
-                                      Cannot Edit
-                                    </Button>
-                                  </span>
-                                </Tooltip>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </Card>
-          </SlideIn>
+                                      Change Role
+                                    </InputLabel>
+                                    <Select
+                                      value={memberRole}
+                                      label="Change Role"
+                                      onChange={(e) =>
+                                        handleUpdateMemberRole(
+                                          member.id,
+                                          e.target.value as ProjectRole,
+                                        )
+                                      }
+                                      disabled={saving}
+                                      sx={{ color: 'white' }}
+                                    >
+                                      {availableRoles
+                                        .filter(
+                                          (role) =>
+                                            role.value !== ProjectRole.OWNER &&
+                                            userRole &&
+                                            canManageRole(userRole, role.value),
+                                        )
+                                        .map((role) => (
+                                          <MenuItem
+                                            key={role.value}
+                                            value={role.value}
+                                          >
+                                            {role.label}
+                                          </MenuItem>
+                                        ))}
+                                    </Select>
+                                  </FormControl>
+                                ) : (
+                                  <Tooltip
+                                    title={
+                                      isCurrentUser
+                                        ? 'You cannot change your own role'
+                                        : memberRole === ProjectRole.OWNER
+                                          ? 'Project owner role cannot be changed'
+                                          : "You cannot manage this user's role"
+                                    }
+                                  >
+                                    <span>
+                                      <Button
+                                        size="small"
+                                        disabled
+                                        startIcon={<WarningIcon />}
+                                        sx={{
+                                          color: 'rgba(255, 255, 255, 0.5)',
+                                          borderColor:
+                                            'rgba(255, 255, 255, 0.2)',
+                                        }}
+                                      >
+                                        Cannot Edit
+                                      </Button>
+                                    </span>
+                                  </Tooltip>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </CardContent>
+              </Card>
+            </SlideIn>
+          </Box>
         </Box>
-      </Box>
-    </StaggerContainer>
+      </StaggerContainer>
+    </>
   );
 };
