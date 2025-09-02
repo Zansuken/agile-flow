@@ -1,8 +1,8 @@
 export {
-  StaggerContainer,
-  HoverCard,
-  SlideIn,
-  PageTransition,
-  LoadingSpinner,
   AnimatedCounter,
-} from './AnimationComponents.js';
+  HoverCard,
+  LoadingSpinner,
+  PageTransition,
+  SlideIn,
+  StaggerContainer,
+} from './AnimationComponents';

@@ -49,15 +49,16 @@ export const Navbar: React.FC = () => {
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       elevation={0}
       sx={{
         background: 'rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar sx={{ py: 1 }}>
+      <Toolbar sx={{ py: 1, px: { xs: 1, sm: 2 } }}>
         <Typography
           variant="h5"
           component="div"
@@ -65,6 +66,7 @@ export const Navbar: React.FC = () => {
             flexGrow: 1,
             fontWeight: 700,
             color: 'white',
+            fontSize: { xs: '1.25rem', sm: '1.5rem' },
             background:
               'linear-gradient(45deg, #ffffff, rgba(255, 255, 255, 0.8))',
             backgroundClip: 'text',
@@ -75,7 +77,14 @@ export const Navbar: React.FC = () => {
           AgileFlow
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: 1, mr: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: { xs: 0.5, sm: 1 },
+            mr: { xs: 1, sm: 3 },
+            flexWrap: 'wrap',
+          }}
+        >
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname.startsWith(item.path);
@@ -83,15 +92,19 @@ export const Navbar: React.FC = () => {
             return (
               <Button
                 key={item.path}
-                startIcon={<Icon />}
+                startIcon={
+                  <Icon sx={{ fontSize: { xs: '18px', sm: '20px' } }} />
+                }
                 onClick={() => navigate(item.path)}
                 sx={{
                   color: 'white',
                   borderRadius: '25px',
-                  px: 3,
+                  px: { xs: 1.5, sm: 3 },
                   py: 1,
                   textTransform: 'none',
                   fontWeight: 600,
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  minWidth: { xs: 'auto', sm: 'auto' },
                   border: isActive
                     ? '1px solid rgba(255, 255, 255, 0.4)'
                     : '1px solid transparent',
@@ -104,15 +117,22 @@ export const Navbar: React.FC = () => {
                     border: '1px solid rgba(255, 255, 255, 0.3)',
                   },
                   transition: 'all 0.3s ease',
+                  '& .MuiButton-startIcon': {
+                    mr: { xs: 0.5, sm: 1 },
+                  },
                 }}
               >
-                {item.label}
+                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                  {item.label}
+                </Box>
               </Button>
             );
           })}
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}
+        >
           <Typography
             variant="body2"
             sx={{
@@ -131,6 +151,7 @@ export const Navbar: React.FC = () => {
             onClick={handleMenu}
             sx={{
               border: '2px solid rgba(255, 255, 255, 0.3)',
+              p: { xs: 0.5, sm: 1 },
               '&:hover': {
                 bgcolor: 'rgba(255, 255, 255, 0.1)',
                 border: '2px solid rgba(255, 255, 255, 0.4)',
@@ -142,10 +163,18 @@ export const Navbar: React.FC = () => {
               <Avatar
                 src={currentUserData.photoURL}
                 alt={currentUserData.displayName}
-                sx={{ width: 36, height: 36 }}
+                sx={{
+                  width: { xs: 32, sm: 36 },
+                  height: { xs: 32, sm: 36 },
+                }}
               />
             ) : (
-              <AccountIcon sx={{ color: 'white', fontSize: 28 }} />
+              <AccountIcon
+                sx={{
+                  color: 'white',
+                  fontSize: { xs: 24, sm: 28 },
+                }}
+              />
             )}
           </IconButton>
           <Menu

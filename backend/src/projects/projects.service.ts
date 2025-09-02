@@ -145,13 +145,15 @@ export class ProjectsService {
                 memberId === data.ownerId
                   ? ProjectRole.OWNER
                   : ProjectRole.DEVELOPER,
-              joinedAt: (data.createdAt as Date) || new Date(),
+              joinedAt: this.convertTimestamp(data.createdAt) || new Date(),
             }),
           );
         }
         return {
           id: doc.id,
           ...data,
+          createdAt: this.convertTimestamp(data.createdAt),
+          updatedAt: this.convertTimestamp(data.updatedAt),
         };
       },
     ) as Project[];
@@ -166,7 +168,16 @@ export class ProjectsService {
     }
 
     const data = doc.data();
-    const project = { id: doc.id, ...data } as Project;
+    if (!data) {
+      throw new NotFoundException('Project data not found');
+    }
+
+    const project = {
+      id: doc.id,
+      ...data,
+      createdAt: this.convertTimestamp(data.createdAt),
+      updatedAt: this.convertTimestamp(data.updatedAt),
+    } as Project;
 
     // Ensure backward compatibility - if members array doesn't exist, create it from memberIds
     if (!project.members && Array.isArray(project.memberIds)) {
@@ -534,5 +545,25 @@ export class ProjectsService {
       console.error('Error in getUserProjectRole:', error);
       return null;
     }
+  }
+
+  private convertTimestamp(timestamp: any): Date {
+    if (
+      timestamp &&
+      typeof timestamp === 'object' &&
+      '_seconds' in timestamp &&
+      '_nanoseconds' in timestamp
+    ) {
+      // Firestore Timestamp object
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const seconds = timestamp['_seconds'] as number;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const nanoseconds = timestamp['_nanoseconds'] as number;
+      return new Date(seconds * 1000 + nanoseconds / 1000000);
+    }
+    if (timestamp instanceof Date) {
+      return timestamp;
+    }
+    return new Date();
   }
 }

@@ -178,14 +178,15 @@ export const ProjectSettingsPage: React.FC = () => {
         </style>
         <Box
           sx={{
-            minHeight: 'calc(100vh - 64px)',
+            minHeight: '100vh',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             position: 'relative',
             overflow: 'hidden',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            p: 3,
+            px: { xs: 1, sm: 1.5, md: 2 },
+            py: { xs: 2, sm: 2.5, md: 3 },
           }}
         >
           <Box
@@ -221,11 +222,12 @@ export const ProjectSettingsPage: React.FC = () => {
         </style>
         <Box
           sx={{
-            minHeight: 'calc(100vh - 64px)',
+            minHeight: '100vh',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             position: 'relative',
             overflow: 'hidden',
-            p: 3,
+            px: { xs: 1, sm: 1.5, md: 2 },
+            py: { xs: 2, sm: 2.5, md: 3 },
           }}
         >
           <Box
@@ -265,6 +267,7 @@ export const ProjectSettingsPage: React.FC = () => {
                 startIcon={<ArrowBackIcon />}
                 onClick={handleGoBack}
                 sx={{
+                  mt: 2,
                   borderColor: 'rgba(255, 255, 255, 0.3)',
                   color: 'white',
                   '&:hover': {
@@ -305,7 +308,7 @@ export const ProjectSettingsPage: React.FC = () => {
       <StaggerContainer>
         <Box
           sx={{
-            minHeight: 'calc(100vh - 64px)',
+            minHeight: '100vh',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             position: 'relative',
             overflow: 'hidden',
@@ -353,7 +356,7 @@ export const ProjectSettingsPage: React.FC = () => {
           {/* Header */}
           <SlideIn direction="up">
             <Box sx={{ mb: 4, position: 'relative', zIndex: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, pt: 2 }}>
                 <IconButton
                   onClick={handleGoBack}
                   sx={{
@@ -431,9 +434,9 @@ export const ProjectSettingsPage: React.FC = () => {
 
           <Box
             sx={{
-              display: 'flex',
-              gap: 3,
-              flexWrap: 'wrap',
+              display: { xs: 'flex', md: 'flex' },
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: { xs: 2, sm: 2.5, md: 3 },
               position: 'relative',
               zIndex: 2,
             }}
@@ -442,7 +445,8 @@ export const ProjectSettingsPage: React.FC = () => {
             <SlideIn direction="left">
               <Card
                 sx={{
-                  flex: '1 1 400px',
+                  flex: { xs: '1 1 auto', md: '1 1 400px' },
+                  minWidth: { xs: '100%', md: '400px' },
                   borderRadius: 4,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
@@ -544,7 +548,8 @@ export const ProjectSettingsPage: React.FC = () => {
             <SlideIn direction="right">
               <Card
                 sx={{
-                  flex: '1 1 600px',
+                  flex: { xs: '1 1 auto', md: '1 1 600px' },
+                  minWidth: { xs: '100%', md: '600px' },
                   borderRadius: 4,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',

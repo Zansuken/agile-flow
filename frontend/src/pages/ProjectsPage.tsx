@@ -12,12 +12,14 @@ import {
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SlideIn, StaggerContainer } from '../components/animations/index.js';
+import { SlideIn, StaggerContainer } from '../components/animations';
 import { CreateProjectModal } from '../components/CreateProjectModal';
 import { useAuth } from '../hooks/useAuth';
 import { projectService } from '../services/projectService';
-import type { CreateProjectDto, Project } from '../types/project';
-import { formatDate, getDateAge } from '../utils/dateUtils';
+import type { Project } from '../types';
+import type { CreateProjectDto } from '../types/project';
+import { formatDate } from '../utils';
+import { getDateAge } from '../utils/dateUtils';
 
 export const ProjectsPage: React.FC = () => {
   const theme = useTheme();
@@ -96,10 +98,10 @@ export const ProjectsPage: React.FC = () => {
       </style>
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: '100vh',
           position: 'relative',
           overflow: 'hidden',
-          px: { xs: 1, sm: 1.5, md: 2 },
+          px: 2,
           py: { xs: 2, sm: 2.5, md: 3 },
           width: '100%',
           maxWidth: '100vw',
@@ -240,9 +242,11 @@ export const ProjectsPage: React.FC = () => {
                 <SlideIn direction="up">
                   <Box
                     display="flex"
+                    flexDirection={{ xs: 'column', sm: 'row' }}
                     justifyContent="space-between"
-                    alignItems="center"
-                    mb={6}
+                    alignItems={{ xs: 'flex-start', sm: 'center' }}
+                    gap={{ xs: 3, sm: 2 }}
+                    mb={{ xs: 4, sm: 5, md: 6 }}
                     sx={{ position: 'relative', zIndex: 2 }}
                   >
                     <Box>
@@ -253,13 +257,21 @@ export const ProjectsPage: React.FC = () => {
                           fontWeight: 700,
                           color: 'white',
                           mb: 1,
+                          fontSize: {
+                            xs: '1.75rem',
+                            sm: '2.25rem',
+                            md: '3rem',
+                          },
                         }}
                       >
                         Projects
                       </Typography>
                       <Typography
                         variant="body1"
-                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                        sx={{
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
                       >
                         Manage and track your team's projects
                       </Typography>
@@ -270,14 +282,16 @@ export const ProjectsPage: React.FC = () => {
                       onClick={() => setIsCreateModalOpen(true)}
                       sx={{
                         borderRadius: '50px',
-                        px: 4,
-                        py: 1.5,
+                        px: { xs: 3, sm: 4 },
+                        py: { xs: 1.25, sm: 1.5 },
                         background: 'rgba(255, 255, 255, 0.2)',
                         backdropFilter: 'blur(10px)',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
                         color: 'white',
                         fontWeight: 600,
+                        fontSize: { xs: '0.875rem', sm: '0.9375rem' },
                         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        alignSelf: { xs: 'flex-start', sm: 'auto' },
                         '&:hover': {
                           background: 'rgba(255, 255, 255, 0.25)',
                           transform: 'translateY(-2px)',
@@ -295,9 +309,12 @@ export const ProjectsPage: React.FC = () => {
                   <Box
                     sx={{
                       display: 'grid',
-                      gap: 3,
-                      gridTemplateColumns:
-                        'repeat(auto-fill, minmax(350px, 1fr))',
+                      gap: { xs: 2, sm: 2.5, md: 3 },
+                      gridTemplateColumns: {
+                        xs: '1fr',
+                        sm: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        md: 'repeat(auto-fill, minmax(350px, 1fr))',
+                      },
                     }}
                   >
                     {projects.map((project) => (

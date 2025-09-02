@@ -169,7 +169,7 @@ export const DashboardPage: React.FC = () => {
       </style>
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)', // Subtract navbar height
+          minHeight: '100vh', // Full viewport height since navbar is now fixed
           position: 'relative',
           overflow: 'hidden',
         }}

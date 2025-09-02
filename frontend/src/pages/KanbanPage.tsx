@@ -117,11 +117,11 @@ export const KanbanPage: React.FC = () => {
       </style>
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: '100vh',
           position: 'relative',
           overflow: 'hidden',
-          px: { xs: 1, sm: 2, md: 3 },
-          py: { xs: 2, sm: 3, md: 4 },
+          px: { xs: 1, sm: 1.5, md: 2 },
+          py: { xs: 2, sm: 2.5, md: 3 },
           width: '100%',
           maxWidth: '100vw',
         }}

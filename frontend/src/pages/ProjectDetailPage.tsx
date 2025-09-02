@@ -7,7 +7,6 @@ import {
 } from '@mui/icons-material';
 import {
   Alert,
-  alpha,
   Box,
   Button,
   Card,
@@ -21,16 +20,13 @@ import {
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  HoverCard,
-  SlideIn,
-  StaggerContainer,
-} from '../components/animations/index.js';
+import { HoverCard, SlideIn, StaggerContainer } from '../components/animations';
 import { useAuth } from '../hooks/useAuth';
 import { projectService } from '../services/projectService';
 import { teamService } from '../services/teamService';
-import type { Project } from '../types/project';
-import { formatDate, formatDateTime, getDateAge } from '../utils/dateUtils';
+import type { Project } from '../types';
+import { formatDate, formatDateTime } from '../utils';
+import { getDateAge } from '../utils/dateUtils';
 import { canPerformAction, Permission, ProjectRole } from '../utils/rbac';
 
 export const ProjectDetailPage: React.FC = () => {
@@ -101,10 +97,11 @@ export const ProjectDetailPage: React.FC = () => {
     return (
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         }}
       >
         <CircularProgress size={60} sx={{ color: 'white' }} />
@@ -117,8 +114,9 @@ export const ProjectDetailPage: React.FC = () => {
     return (
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)',
-          px: { xs: 1, sm: 1.5, md: 2 },
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          px: 2,
           py: { xs: 2, sm: 2.5, md: 3 },
         }}
       >
@@ -126,7 +124,7 @@ export const ProjectDetailPage: React.FC = () => {
           <IconButton
             onClick={handleGoBack}
             sx={{
-              mb: 2,
+              mt: 2,
               color: 'white',
               background: 'rgba(255, 255, 255, 0.1)',
               border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -206,10 +204,11 @@ export const ProjectDetailPage: React.FC = () => {
       </style>
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           position: 'relative',
           overflow: 'hidden',
-          px: { xs: 1, sm: 1.5, md: 2 },
+          px: 2,
           py: { xs: 2, sm: 2.5, md: 3 },
           width: '100%',
           maxWidth: '100vw',
@@ -259,7 +258,7 @@ export const ProjectDetailPage: React.FC = () => {
               <IconButton
                 onClick={handleGoBack}
                 sx={{
-                  mb: 2,
+                  mt: 2,
                   color: 'white',
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -273,24 +272,26 @@ export const ProjectDetailPage: React.FC = () => {
             </Box>
             <Box
               display="flex"
+              flexDirection={{ xs: 'column', sm: 'row' }}
               justifyContent="space-between"
-              alignItems="flex-start"
+              alignItems={{ xs: 'flex-start', sm: 'flex-start' }}
+              gap={{ xs: 3, sm: 2 }}
               mb={3}
             >
-              <Box display="flex" alignItems="center" gap={3}>
+              <Box display="flex" alignItems="center" gap={{ xs: 2, sm: 3 }}>
                 <Box
                   sx={{
-                    width: 56,
-                    height: 56,
-                    p: 1.5,
-                    borderRadius: 2,
-                    background: 'rgba(255, 255, 255, 0.2)',
+                    p: { xs: 1.5, sm: 2 },
+                    borderRadius: 3,
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
                   }}
                 >
                   <ProjectIcon
                     sx={{
                       color: 'white',
-                      fontSize: 32,
+                      fontSize: { xs: 24, sm: 32 },
                     }}
                   />
                 </Box>
@@ -302,11 +303,29 @@ export const ProjectDetailPage: React.FC = () => {
                       fontWeight: 700,
                       color: 'white',
                       mb: 1,
+                      fontSize: { xs: '1.75rem', sm: '2.25rem', md: '3rem' },
                     }}
                   >
                     {project.name}
                   </Typography>
-                  <Box display="flex" alignItems="center" gap={2}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                      mb: { xs: 1, sm: 0 },
+                    }}
+                  >
+                    Project Key: {project.key}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: { xs: 0.5, sm: 1 },
+                      mt: { xs: 1, sm: 0.5 },
+                    }}
+                  >
                     <Chip
                       label={statusInfo.status}
                       sx={{
@@ -314,69 +333,85 @@ export const ProjectDetailPage: React.FC = () => {
                         color: 'white',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
                         fontWeight: 600,
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
                       }}
                     />
-                    <Typography
-                      variant="body2"
-                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                    >
-                      Project Key: {project.key}
-                    </Typography>
                   </Box>
                 </Box>
               </Box>
-              {userRole &&
-              canPerformAction(userRole, Permission.MANAGE_ROLES) ? (
-                <Button
-                  variant="contained"
-                  startIcon={<SettingsIcon />}
-                  onClick={() => navigate(`/projects/${projectId}/settings`)}
-                  sx={{
-                    borderRadius: '50px',
-                    px: 4,
-                    py: 1.5,
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    color: 'white',
-                    fontWeight: 600,
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                    '&:hover': {
-                      background: 'rgba(255, 255, 255, 0.25)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                    },
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  Project Settings
-                </Button>
-              ) : (
-                <Tooltip
-                  title={
-                    !userRole
-                      ? 'Loading user permissions...'
-                      : 'You need role management permissions to access project settings'
-                  }
-                >
-                  <span>
-                    <Button
-                      variant="contained"
-                      startIcon={<SettingsIcon />}
-                      disabled
-                      sx={{
-                        borderRadius: '50px',
-                        px: 4,
-                        py: 1.5,
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        color: 'rgba(255, 255, 255, 0.5)',
-                      }}
-                    >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: { xs: 1.5, sm: 2 },
+                  alignSelf: { xs: 'stretch', sm: 'auto' },
+                }}
+              >
+                {userRole &&
+                canPerformAction(userRole, Permission.MANAGE_ROLES) ? (
+                  <Button
+                    variant="contained"
+                    startIcon={<SettingsIcon />}
+                    onClick={() => navigate(`/projects/${projectId}/settings`)}
+                    sx={{
+                      borderRadius: 3,
+                      px: { xs: 2.5, sm: 3 },
+                      py: { xs: 1.25, sm: 1.5 },
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      color: 'white',
+                      fontWeight: 600,
+                      fontSize: { xs: '0.875rem', sm: '0.9375rem' },
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                      '&:hover': {
+                        background: 'rgba(255, 255, 255, 0.3)',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                      },
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                       Project Settings
-                    </Button>
-                  </span>
-                </Tooltip>
-              )}
+                    </Box>
+                    <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                      Settings
+                    </Box>
+                  </Button>
+                ) : (
+                  <Tooltip
+                    title={
+                      !userRole
+                        ? 'Loading user permissions...'
+                        : 'You need role management permissions to access project settings'
+                    }
+                  >
+                    <span>
+                      <Button
+                        variant="outlined"
+                        startIcon={<SettingsIcon />}
+                        disabled
+                        sx={{
+                          borderRadius: 3,
+                          px: { xs: 2.5, sm: 3 },
+                          py: { xs: 1.25, sm: 1.5 },
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                          color: 'rgba(255, 255, 255, 0.5)',
+                          fontSize: { xs: '0.875rem', sm: '0.9375rem' },
+                        }}
+                      >
+                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                          Project Settings
+                        </Box>
+                        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                          Settings
+                        </Box>
+                      </Button>
+                    </span>
+                  </Tooltip>
+                )}
+              </Box>
             </Box>
 
             <Typography
@@ -385,6 +420,9 @@ export const ProjectDetailPage: React.FC = () => {
                 color: 'rgba(255, 255, 255, 0.9)',
                 lineHeight: 1.7,
                 mb: 4,
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                maxWidth: '100%',
+                wordBreak: 'break-word',
               }}
             >
               {project.description}
@@ -395,32 +433,72 @@ export const ProjectDetailPage: React.FC = () => {
                 variant="h6"
                 fontWeight={600}
                 mb={2}
-                sx={{ color: 'white' }}
+                sx={{
+                  color: 'white',
+                  fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                }}
               >
                 Project Information
               </Typography>
               <Box
                 sx={{
-                  p: 3,
-                  borderRadius: 2,
+                  p: { xs: 2, sm: 3 },
+                  borderRadius: 3,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                 }}
               >
-                <Box display="flex" justifyContent="space-between" mb={2}>
-                  <Typography variant="body2" color="text.secondary">
+                <Box
+                  display="flex"
+                  flexDirection={{ xs: 'column', sm: 'row' }}
+                  justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
+                  gap={{ xs: 0.5, sm: 0 }}
+                  mb={2}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    }}
+                  >
                     Created
                   </Typography>
-                  <Typography variant="body2" fontWeight={500}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={500}
+                    sx={{
+                      color: 'white',
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    }}
+                  >
                     {formatDateTime(project.createdAt)}
                   </Typography>
                 </Box>
-                <Box display="flex" justifyContent="space-between">
-                  <Typography variant="body2" color="text.secondary">
+                <Box
+                  display="flex"
+                  flexDirection={{ xs: 'column', sm: 'row' }}
+                  justifyContent={{ xs: 'flex-start', sm: 'space-between' }}
+                  gap={{ xs: 0.5, sm: 0 }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    }}
+                  >
                     Last Updated
                   </Typography>
-                  <Typography variant="body2" fontWeight={500}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={500}
+                    sx={{
+                      color: 'white',
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    }}
+                  >
                     {formatDateTime(project.updatedAt)}
                   </Typography>
                 </Box>
@@ -433,8 +511,12 @@ export const ProjectDetailPage: React.FC = () => {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: 3,
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(auto-fit, minmax(250px, 1fr))',
+              },
+              gap: { xs: 2, sm: 2.5, md: 3 },
               mb: 6,
             }}
           >
@@ -499,54 +581,78 @@ export const ProjectDetailPage: React.FC = () => {
             <SlideIn direction="up">
               <Card
                 sx={{
-                  borderRadius: 2,
-                  background: alpha(theme.palette.background.paper, 0.7),
-                  backdropFilter: 'blur(20px)',
-                  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                  boxShadow: theme.shadows[8],
+                  borderRadius: 3,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                  },
+                  transition: 'all 0.3s ease',
                 }}
               >
                 <CardContent sx={{ p: 4 }}>
-                  <Typography variant="h5" fontWeight={600} mb={3}>
+                  <Typography
+                    variant="h5"
+                    fontWeight={600}
+                    mb={3}
+                    sx={{ color: 'white' }}
+                  >
                     Project Details
                   </Typography>
                   <Box display="flex" flexDirection="column" gap={3}>
                     <Box>
-                      <Typography variant="body2" color="text.secondary" mb={1}>
+                      <Typography
+                        variant="body2"
+                        mb={1}
+                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
                         Description
                       </Typography>
-                      <Typography variant="body1" lineHeight={1.6}>
+                      <Typography
+                        variant="body1"
+                        lineHeight={1.6}
+                        sx={{ color: 'white' }}
+                      >
                         {project.description}
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography variant="body2" color="text.secondary" mb={1}>
+                      <Typography
+                        variant="body2"
+                        mb={1}
+                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
                         Project Key
                       </Typography>
                       <Chip
                         label={project.key}
                         sx={{
-                          backgroundColor: alpha(
-                            theme.palette.primary.main,
-                            0.1,
-                          ),
-                          color: theme.palette.primary.main,
-                          border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
                           fontWeight: 600,
                           fontSize: '0.875rem',
                         }}
                       />
                     </Box>
                     <Box>
-                      <Typography variant="body2" color="text.secondary" mb={1}>
+                      <Typography
+                        variant="body2"
+                        mb={1}
+                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
                         Current Status
                       </Typography>
                       <Chip
                         label={statusInfo.status}
                         sx={{
-                          backgroundColor: alpha(statusInfo.color, 0.1),
-                          color: statusInfo.color,
-                          border: `1px solid ${alpha(statusInfo.color, 0.3)}`,
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
                           fontWeight: 600,
                         }}
                       />
@@ -559,15 +665,26 @@ export const ProjectDetailPage: React.FC = () => {
             <SlideIn direction="up">
               <Card
                 sx={{
-                  borderRadius: 2,
-                  background: alpha(theme.palette.background.paper, 0.7),
-                  backdropFilter: 'blur(20px)',
-                  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                  boxShadow: theme.shadows[8],
+                  borderRadius: 3,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                  },
+                  transition: 'all 0.3s ease',
                 }}
               >
                 <CardContent sx={{ p: 4 }}>
-                  <Typography variant="h5" fontWeight={600} mb={3}>
+                  <Typography
+                    variant="h5"
+                    fontWeight={600}
+                    mb={3}
+                    sx={{ color: 'white' }}
+                  >
                     Quick Actions
                   </Typography>
                   <Box display="flex" flexDirection="column" gap={2}>
@@ -575,16 +692,15 @@ export const ProjectDetailPage: React.FC = () => {
                       variant="outlined"
                       fullWidth
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: '50px',
                         py: 1.5,
                         textTransform: 'none',
-                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        color: 'white',
+                        fontWeight: 600,
                         '&:hover': {
-                          borderColor: theme.palette.primary.main,
-                          backgroundColor: alpha(
-                            theme.palette.primary.main,
-                            0.05,
-                          ),
+                          borderColor: 'rgba(255, 255, 255, 0.5)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         },
                       }}
                     >
@@ -595,17 +711,15 @@ export const ProjectDetailPage: React.FC = () => {
                       fullWidth
                       onClick={() => navigate(`/projects/${projectId}/team`)}
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: '50px',
                         py: 1.5,
                         textTransform: 'none',
-                        borderColor: alpha(theme.palette.secondary.main, 0.3),
-                        color: theme.palette.secondary.main,
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        color: 'white',
+                        fontWeight: 600,
                         '&:hover': {
-                          borderColor: theme.palette.secondary.main,
-                          backgroundColor: alpha(
-                            theme.palette.secondary.main,
-                            0.05,
-                          ),
+                          borderColor: 'rgba(255, 255, 255, 0.5)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         },
                       }}
                     >
@@ -615,13 +729,21 @@ export const ProjectDetailPage: React.FC = () => {
                       variant="contained"
                       fullWidth
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: '50px',
                         py: 1.5,
                         textTransform: 'none',
-                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.accent?.main || theme.palette.secondary.main})`,
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        color: 'white',
+                        fontWeight: 600,
+                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                         '&:hover': {
-                          background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
+                          background: 'rgba(255, 255, 255, 0.25)',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
                         },
+                        transition: 'all 0.3s ease',
                       }}
                     >
                       Edit Project

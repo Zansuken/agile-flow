@@ -98,12 +98,12 @@ export const SprintsPage: React.FC = () => {
       </style>
       <Box
         sx={{
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: '100vh',
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           position: 'relative',
           overflow: 'hidden',
-          px: { xs: 1, sm: 2, md: 3 },
-          py: { xs: 2, sm: 3, md: 4 },
+          px: { xs: 1, sm: 1.5, md: 2 },
+          py: { xs: 2, sm: 2.5, md: 3 },
           width: '100%',
           maxWidth: '100vw',
         }}
@@ -320,9 +320,12 @@ export const SprintsPage: React.FC = () => {
                       <Box
                         sx={{
                           display: 'grid',
-                          gridTemplateColumns:
-                            'repeat(auto-fit, minmax(150px, 1fr))',
-                          gap: 3,
+                          gridTemplateColumns: {
+                            xs: '1fr',
+                            sm: 'repeat(2, 1fr)',
+                            md: 'repeat(auto-fit, minmax(150px, 1fr))',
+                          },
+                          gap: { xs: 2, sm: 2.5, md: 3 },
                         }}
                       >
                         <Box display="flex" alignItems="center" gap={2}>
