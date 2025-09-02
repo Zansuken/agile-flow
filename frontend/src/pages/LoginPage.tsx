@@ -191,35 +191,42 @@ export const LoginPage: React.FC = () => {
       />
 
       {/* Main Content */}
-      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container
+        maxWidth="sm"
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          px: { xs: 2, sm: 3 },
+        }}
+      >
         <SlideIn direction="up">
           <Paper
             elevation={24}
             sx={{
-              p: 4,
+              p: { xs: 3, sm: 4 },
               borderRadius: 1,
               background: 'rgba(255, 255, 255, 0.95)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255, 255, 255, 0.2)',
-              maxWidth: 400,
+              maxWidth: { xs: '100%', sm: 400 },
               mx: 'auto',
             }}
           >
             {/* Header */}
-            <Box textAlign="center" mb={3}>
+            <Box textAlign="center" mb={{ xs: 2, sm: 3 }}>
               <Box
                 sx={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 60,
-                  height: 60,
+                  width: { xs: 50, sm: 60 },
+                  height: { xs: 50, sm: 60 },
                   borderRadius: '50%',
                   background:
                     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   mb: 2,
                   color: 'white',
-                  fontSize: 24,
+                  fontSize: { xs: 20, sm: 24 },
                   fontWeight: 'bold',
                 }}
               >
@@ -230,6 +237,7 @@ export const LoginPage: React.FC = () => {
                 fontWeight="bold"
                 color="text.primary"
                 mb={1}
+                sx={{ fontSize: { xs: '1.75rem', sm: '2.125rem' } }}
               >
                 AgileFlow
               </Typography>
@@ -238,10 +246,15 @@ export const LoginPage: React.FC = () => {
                 color="text.secondary"
                 fontWeight="normal"
                 mb={0.5}
+                sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
               >
                 Welcome back
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
+              >
                 Sign in to your project management workspace
               </Typography>
             </Box>
@@ -254,10 +267,11 @@ export const LoginPage: React.FC = () => {
               onClick={handleGoogleLogin}
               disabled={loading}
               sx={{
-                py: 1.5,
-                mb: 3,
+                py: { xs: 1.25, sm: 1.5 },
+                mb: { xs: 2.5, sm: 3 },
                 borderColor: '#dadce0',
                 color: '#3c4043',
+                fontSize: { xs: '0.875rem', sm: '0.9375rem' },
                 '&:hover': {
                   backgroundColor: '#f8f9fa',
                   borderColor: '#dadce0',
@@ -268,9 +282,14 @@ export const LoginPage: React.FC = () => {
             </Button>
 
             {/* Divider */}
-            <Box display="flex" alignItems="center" mb={3}>
+            <Box display="flex" alignItems="center" mb={{ xs: 2.5, sm: 3 }}>
               <Divider sx={{ flex: 1 }} />
-              <Typography variant="body2" color="text.secondary" px={2}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                px={2}
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 OR CONTINUE WITH
               </Typography>
               <Divider sx={{ flex: 1 }} />
@@ -278,7 +297,7 @@ export const LoginPage: React.FC = () => {
 
             {/* Error Alert */}
             {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
+              <Alert severity="error" sx={{ mb: { xs: 1.5, sm: 2 } }}>
                 {error}
               </Alert>
             )}
@@ -293,7 +312,7 @@ export const LoginPage: React.FC = () => {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   required
-                  sx={{ mb: 2 }}
+                  sx={{ mb: { xs: 1.5, sm: 2 } }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -309,6 +328,7 @@ export const LoginPage: React.FC = () => {
                 color="text.primary"
                 mb={1}
                 fontWeight={500}
+                sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
               >
                 Email
               </Typography>
@@ -320,7 +340,7 @@ export const LoginPage: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@company.com"
-                sx={{ mb: 2 }}
+                sx={{ mb: { xs: 1.5, sm: 2 } }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -335,6 +355,7 @@ export const LoginPage: React.FC = () => {
                 color="text.primary"
                 mb={1}
                 fontWeight={500}
+                sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
               >
                 Password
               </Typography>
@@ -346,7 +367,7 @@ export const LoginPage: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Enter your password"
-                sx={{ mb: 3 }}
+                sx={{ mb: { xs: 2.5, sm: 3 } }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -363,6 +384,7 @@ export const LoginPage: React.FC = () => {
                       <IconButton
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
+                        size={window.innerWidth < 600 ? 'small' : 'medium'}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -377,8 +399,9 @@ export const LoginPage: React.FC = () => {
                 variant="contained"
                 disabled={loading}
                 sx={{
-                  py: 1.5,
-                  mb: 2,
+                  py: { xs: 1.25, sm: 1.5 },
+                  mb: { xs: 1.5, sm: 2 },
+                  fontSize: { xs: '0.875rem', sm: '0.9375rem' },
                   background:
                     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   '&:hover': {
@@ -397,7 +420,11 @@ export const LoginPage: React.FC = () => {
 
             {/* Sign up link */}
             <Box textAlign="center">
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
+              >
                 Don't have an account?{' '}
                 <Link
                   component="button"
@@ -408,6 +435,7 @@ export const LoginPage: React.FC = () => {
                     color: '#667eea',
                     fontWeight: 600,
                     textDecoration: 'none',
+                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
                     '&:hover': {
                       textDecoration: 'underline',
                     },

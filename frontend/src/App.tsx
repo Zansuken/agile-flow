@@ -54,6 +54,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           flexGrow: 1,
           position: 'relative',
           zIndex: 1,
+          paddingTop: '64px', // Add top padding to account for fixed navbar
         }}
       >
         {children}
