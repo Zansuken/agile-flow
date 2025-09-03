@@ -19,6 +19,8 @@ import { ProjectDetailPage } from './pages/ProjectDetailPage.tsx';
 import { ProjectSettingsPage } from './pages/ProjectSettingsPage.tsx';
 import { ProjectsPage } from './pages/ProjectsPage.tsx';
 import { SprintsPage } from './pages/SprintsPage.tsx';
+import { TaskDetailsPage } from './pages/TaskDetailsPage.tsx';
+import { TasksPage } from './pages/TasksPage.tsx';
 import { TeamManagePage } from './pages/TeamManagePage.tsx';
 import { theme } from './theme/theme.js';
 
@@ -143,6 +145,26 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <AppLayout>
               <KanbanPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects/:projectId/tasks/:taskId"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <TaskDetailsPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects/:projectId/tasks"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <TasksPage />
             </AppLayout>
           </ProtectedRoute>
         }
