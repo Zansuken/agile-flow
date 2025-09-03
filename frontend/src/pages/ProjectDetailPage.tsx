@@ -675,6 +675,7 @@ export const ProjectDetailPage: React.FC = () => {
                     <Button
                       variant="outlined"
                       fullWidth
+                      onClick={() => navigate(`/projects/${projectId}/tasks`)}
                       sx={{
                         borderRadius: '50px',
                         py: 1.5,
