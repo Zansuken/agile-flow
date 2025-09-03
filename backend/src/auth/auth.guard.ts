@@ -1,7 +1,7 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -37,27 +37,18 @@ export class AuthGuard implements CanActivate {
       const decodedToken = await this.firebaseService.verifyIdToken(token);
       request.user = decodedToken;
       return true;
-    } catch {
-      // In development, if we can't verify the token, create a mock user
-      if (
-        process.env.NODE_ENV === 'development' &&
-        token === process.env.DEV_BEARER_TOKEN
-      ) {
-        console.log('🔧 Using mock user for development');
-        request.user = {
-          uid: 'dev-user-123',
-          email: 'developer@agileflow.dev',
-          name: 'Development User',
-          aud: '',
-          auth_time: Math.floor(Date.now() / 1000),
-          exp: Math.floor(Date.now() / 1000) + 3600,
-          firebase: {},
-          iat: Math.floor(Date.now() / 1000),
-          iss: '',
-          sub: 'dev-user-123',
-        };
-        return true;
-      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorCode: string =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? String((error as { code: unknown }).code)
+          : 'unknown';
+
+      console.error('Token verification failed:', {
+        error: errorMessage,
+        code: errorCode,
+      });
       throw new UnauthorizedException('Invalid token');
     }
   }

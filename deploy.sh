@@ -117,8 +117,6 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nyour_private_key\n-----END PR
 # CORS Configuration
 CORS_ORIGIN=http://localhost:3000
 
-# Development Authentication (optional)
-DEV_BEARER_TOKEN=dev-token-123
 EOF
 
 echo -e "${GREEN}✅ Environment file templates created!${NC}"

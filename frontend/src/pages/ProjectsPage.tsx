@@ -31,11 +31,6 @@ export const ProjectsPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const loadProjects = useCallback(async () => {
-    if (!currentUser) {
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       const projectData = await projectService.getProjects();
@@ -46,7 +41,7 @@ export const ProjectsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentUser]);
+  }, []); // Remove currentUser dependency as it's handled by auth service
 
   useEffect(() => {
     loadProjects();

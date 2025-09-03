@@ -21,27 +21,24 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { HoverCard, SlideIn, StaggerContainer } from '../components/animations';
-import { useAuth } from '../hooks/useAuth';
+import { useProjectRole } from '../hooks/useProjectRole';
 import { projectService } from '../services/projectService';
-import { teamService } from '../services/teamService';
 import type { Project } from '../types';
 import { formatDate, formatDateTime } from '../utils';
 import { getDateAge } from '../utils/dateUtils';
-import { canPerformAction, Permission, ProjectRole } from '../utils/rbac';
 
 export const ProjectDetailPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentRole: userRole, canManageRoles } = useProjectRole(projectId!);
   const theme = useTheme();
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState<ProjectRole | null>(null);
 
   const loadProject = useCallback(async () => {
-    if (!projectId || !currentUser) {
+    if (!projectId) {
       setLoading(false);
       return;
     }
@@ -56,23 +53,11 @@ export const ProjectDetailPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [projectId, currentUser]);
-
-  const loadUserRole = useCallback(async () => {
-    if (!projectId || !currentUser) return;
-
-    try {
-      const role = await teamService.getUserProjectRole(projectId, 'me');
-      setUserRole(role);
-    } catch (err) {
-      console.error('Error loading user role:', err);
-      // Don't set error for role loading as it's not critical
-    }
-  }, [projectId, currentUser]);
+  }, [projectId]); // Remove currentUser dependency as it's handled by auth guard
 
   useEffect(() => {
-    Promise.all([loadProject(), loadUserRole()]);
-  }, [loadProject, loadUserRole]);
+    loadProject();
+  }, [loadProject]);
 
   const handleGoBack = () => {
     navigate('/projects');
@@ -347,8 +332,7 @@ export const ProjectDetailPage: React.FC = () => {
                   alignSelf: { xs: 'stretch', sm: 'auto' },
                 }}
               >
-                {userRole &&
-                canPerformAction(userRole, Permission.MANAGE_ROLES) ? (
+                {userRole && canManageRoles() ? (
                   <Button
                     variant="contained"
                     startIcon={<SettingsIcon />}

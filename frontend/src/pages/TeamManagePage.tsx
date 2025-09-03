@@ -42,11 +42,11 @@ import {
   StaggerContainer,
 } from '../components/animations/index.js';
 import { useAuth } from '../hooks/useAuth';
+import { useProjectRole } from '../hooks/useProjectRole';
 import { projectService } from '../services/projectService';
 import { teamService } from '../services/teamService';
 import type { User } from '../types';
 import type { Project } from '../types/project';
-import { canPerformAction, Permission, ProjectRole } from '../utils/rbac';
 
 interface ProjectMember extends User {
   projectRole?: string;
@@ -57,10 +57,10 @@ export const TeamManagePage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { currentRole: userRole, canManage } = useProjectRole(projectId!);
 
   const [project, setProject] = useState<Project | null>(null);
   const [members, setMembers] = useState<ProjectMember[]>([]);
-  const [userRole, setUserRole] = useState<ProjectRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -73,7 +73,7 @@ export const TeamManagePage: React.FC = () => {
   const [inviteEmail, setInviteEmail] = useState('');
 
   const loadProject = useCallback(async () => {
-    if (!projectId || !currentUser) return;
+    if (!projectId) return;
 
     try {
       const projectData = await projectService.getProject(projectId);
@@ -81,10 +81,10 @@ export const TeamManagePage: React.FC = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load project');
     }
-  }, [projectId, currentUser]);
+  }, [projectId]); // Remove currentUser dependency as it's handled by auth guard
 
   const loadMembers = useCallback(async () => {
-    if (!projectId || !currentUser) {
+    if (!projectId) {
       return;
     }
 
@@ -96,29 +96,17 @@ export const TeamManagePage: React.FC = () => {
       setError('Failed to load team members');
       setMembers([]); // Ensure members is always an array
     }
-  }, [projectId, currentUser]);
-
-  const loadUserRole = useCallback(async () => {
-    if (!projectId || !currentUser) return;
-
-    try {
-      const role = await teamService.getUserProjectRole(projectId, 'me');
-      setUserRole(role);
-    } catch (err) {
-      console.error('Error loading user role:', err);
-      // Don't set error for role loading as it's not critical
-    }
-  }, [projectId, currentUser]);
+  }, [projectId]); // Remove currentUser dependency as it's handled by auth guard
 
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      await Promise.all([loadProject(), loadMembers(), loadUserRole()]);
+      await Promise.all([loadProject(), loadMembers()]);
     } finally {
       setLoading(false);
     }
-  }, [loadProject, loadMembers, loadUserRole]);
+  }, [loadProject, loadMembers]);
 
   useEffect(() => {
     loadData();
@@ -524,7 +512,7 @@ export const TeamManagePage: React.FC = () => {
                     )}
                     {/* Debug info */}
                     <Chip
-                      label={`Can manage roles: ${userRole ? canPerformAction(userRole, Permission.MANAGE_ROLES) : 'N/A'}`}
+                      label={`Can manage roles: ${userRole ? canManage() : 'N/A'}`}
                       size="small"
                       sx={{
                         background: 'rgba(255, 255, 255, 0.1)',
@@ -574,8 +562,7 @@ export const TeamManagePage: React.FC = () => {
                 </Button>
 
                 {/* Project Settings Button - show for all users but with different states */}
-                {userRole &&
-                canPerformAction(userRole, Permission.MANAGE_ROLES) ? (
+                {userRole && canManage() ? (
                   <Button
                     variant="outlined"
                     startIcon={<SettingsIcon />}

@@ -115,21 +115,11 @@ export class ProjectsService {
   async findAll(userId: string): Promise<Project[]> {
     const firestore = this.firebaseService.getFirestore();
 
-    // In development, allow dev-user-123 to see all projects
-    const isDevUser =
-      process.env.NODE_ENV === 'development' && userId === 'dev-user-123';
-
-    let snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>;
-    if (isDevUser) {
-      // Get all projects for dev user
-      snapshot = await firestore.collection(this.collection).get();
-    } else {
-      // Get only projects where user is a member
-      snapshot = await firestore
-        .collection(this.collection)
-        .where('memberIds', 'array-contains', userId)
-        .get();
-    }
+    // Get only projects where user is a member
+    const snapshot = await firestore
+      .collection(this.collection)
+      .where('memberIds', 'array-contains', userId)
+      .get();
 
     return snapshot.docs.map(
       (
@@ -191,11 +181,7 @@ export class ProjectsService {
       }));
     }
 
-    // In development, allow dev-user-123 to access all projects
-    const isDevUser =
-      process.env.NODE_ENV === 'development' && userId === 'dev-user-123';
-
-    if (!isDevUser && !project.memberIds.includes(userId)) {
+    if (!project.memberIds.includes(userId)) {
       throw new ForbiddenException('Access denied to this project');
     }
 
@@ -323,6 +309,14 @@ export class ProjectsService {
       try {
         const userDoc = await firestore.collection('users').doc(memberId).get();
 
+        // Find the member's role from the project's members array
+        const memberInfo = project.members?.find((m) => m.userId === memberId);
+        const projectRole =
+          memberInfo?.role ||
+          (memberId === project.ownerId
+            ? ProjectRole.OWNER
+            : ProjectRole.DEVELOPER);
+
         if (userDoc.exists) {
           const userData = userDoc.data() as Record<string, any>;
 
@@ -355,9 +349,10 @@ export class ProjectsService {
             role: (userData?.role as string) || 'developer',
             createdAt: convertTimestamp(userData?.createdAt),
             updatedAt: convertTimestamp(userData?.updatedAt),
-            projectRole:
-              memberId === project.ownerId ? 'Project Owner' : 'Member',
-            joinedAt: convertTimestamp(userData?.createdAt),
+            projectRole: projectRole, // Use the actual role from project members
+            joinedAt: convertTimestamp(
+              memberInfo?.joinedAt || userData?.createdAt,
+            ),
           };
         } else {
           // Return a fallback for missing user documents
@@ -369,13 +364,20 @@ export class ProjectsService {
             role: 'developer',
             createdAt: new Date(),
             updatedAt: new Date(),
-            projectRole:
-              memberId === project.ownerId ? 'Project Owner' : 'Member',
+            projectRole: projectRole, // Use the actual role from project members
             joinedAt: new Date(),
           };
         }
       } catch (error) {
         console.error(`Error fetching user ${memberId}:`, error);
+        // Find the member's role from the project's members array for fallback too
+        const memberInfo = project.members?.find((m) => m.userId === memberId);
+        const projectRole =
+          memberInfo?.role ||
+          (memberId === project.ownerId
+            ? ProjectRole.OWNER
+            : ProjectRole.DEVELOPER);
+
         // Return a fallback for errors
         return {
           id: memberId,
@@ -385,8 +387,7 @@ export class ProjectsService {
           role: 'developer',
           createdAt: new Date(),
           updatedAt: new Date(),
-          projectRole:
-            memberId === project.ownerId ? 'Project Owner' : 'Member',
+          projectRole: projectRole, // Use the actual role from project members
           joinedAt: new Date(),
         };
       }
@@ -515,36 +516,6 @@ export class ProjectsService {
       members: updatedMembers,
       updatedAt: new Date(),
     };
-  }
-
-  async getUserProjectRole(
-    projectId: string,
-    userId: string,
-  ): Promise<ProjectRole | null> {
-    try {
-      const project = await this.findOne(projectId, userId);
-
-      // Check if user is project owner
-      if (project.ownerId === userId) {
-        return ProjectRole.OWNER;
-      }
-
-      // Check if user is in members array with a role
-      const member = project.members?.find((m) => m.userId === userId);
-      if (member?.role) {
-        return member.role;
-      }
-
-      // Fallback: if user is in memberIds but not in members array (backward compatibility)
-      if (project.memberIds?.includes(userId)) {
-        return ProjectRole.DEVELOPER;
-      }
-
-      return null;
-    } catch (error) {
-      console.error('Error in getUserProjectRole:', error);
-      return null;
-    }
   }
 
   private convertTimestamp(timestamp: any): Date {
