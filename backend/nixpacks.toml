@@ -1,0 +1,12 @@
+[providers]
+nodejs = "18"
+
+[build]
+installCommands = ["npm ci"]
+buildCommands = ["npm run build"]
+
+[start]
+cmd = "npm run start:prod"
+
+[variables]
+NODE_ENV = "production"
