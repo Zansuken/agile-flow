@@ -12,6 +12,21 @@ export interface User {
   updatedAt: Date;
 }
 
+export interface ProjectRole {
+  projectId: string;
+  projectName: string;
+  role: string;
+  joinedAt: string;
+  updatedAt: string;
+}
+
+interface ProjectMember {
+  userId: string;
+  role: string;
+  joinedAt: Date;
+  updatedAt?: Date;
+}
+
 @Injectable()
 export class UsersService {
   private readonly collection = 'users';
@@ -115,6 +130,48 @@ export class UsersService {
     } catch (error) {
       console.error('Error ensuring user profile:', error);
       throw new Error('Failed to ensure user profile');
+    }
+  }
+
+  async getUserRoles(userId: string): Promise<ProjectRole[]> {
+    try {
+      const firestore = this.firebaseService.getFirestore();
+
+      // Query all projects where user is a member
+      const projectsRef = firestore.collection('projects');
+      const projectsSnapshot = await projectsRef
+        .where('memberIds', 'array-contains', userId)
+        .get();
+
+      const userRoles: ProjectRole[] = [];
+
+      // Check each project for this user's membership details
+      for (const projectDoc of projectsSnapshot.docs) {
+        const projectData = projectDoc.data();
+        const members = (projectData.members || []) as ProjectMember[];
+
+        // Find this user's member record in the members array
+        const userMember = members.find(
+          (member: ProjectMember) => member.userId === userId,
+        );
+
+        if (userMember) {
+          userRoles.push({
+            projectId: projectDoc.id,
+            projectName: (projectData?.name as string) || 'Unknown Project',
+            role: userMember.role || 'developer',
+            joinedAt: this.convertTimestamp(userMember.joinedAt).toISOString(),
+            updatedAt: this.convertTimestamp(
+              userMember.updatedAt || userMember.joinedAt,
+            ).toISOString(),
+          });
+        }
+      }
+
+      return userRoles;
+    } catch (error) {
+      console.error('Error fetching user roles:', error);
+      throw new Error('Failed to fetch user roles');
     }
   }
 

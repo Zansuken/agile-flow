@@ -161,25 +161,4 @@ export class ProjectsController {
       user.uid,
     );
   }
-
-  @Get(':id/members/:memberId/role')
-  @ApiOperation({ summary: 'Get user role in project' })
-  @ApiResponse({ status: 200, description: 'User role retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'Project not found' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getUserRole(
-    @Param('id') projectId: string,
-    @Param('memberId') memberId: string,
-    @CurrentUser() user: DecodedIdToken,
-  ) {
-    // Users can check their own role or project members can check others
-    const targetUserId = memberId === 'me' ? user.uid : memberId;
-    const role = await this.projectsService.getUserProjectRole(
-      projectId,
-      targetUserId,
-    );
-
-    // Return a JSON object instead of a raw string
-    return { role };
-  }
 }

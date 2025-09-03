@@ -18,6 +18,33 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('roles')
+  @ApiOperation({ summary: 'Get all project roles for the current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'User roles retrieved successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          projectId: { type: 'string' },
+          projectName: { type: 'string' },
+          role: {
+            type: 'string',
+            enum: ['owner', 'admin', 'developer', 'viewer'],
+          },
+          joinedAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getUserRoles(@CurrentUser() user: DecodedIdToken) {
+    return await this.usersService.getUserRoles(user.uid);
+  }
+
   @Get('search')
   @ApiOperation({ summary: 'Search users by email or display name' })
   @ApiQuery({

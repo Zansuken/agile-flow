@@ -46,10 +46,10 @@ export class BaseApiService {
    * Clear specific request from cache
    */
   protected clearCacheForUrl(url: string): void {
-    const keysToDelete = Array.from(this.requestCache.keys()).filter((key) =>
-      key.includes(url),
+    const keysToDelete = Array.from(this.requestCache.keys()).filter(key => 
+      key.includes(url)
     );
-    keysToDelete.forEach((key) => this.requestCache.delete(key));
+    keysToDelete.forEach(key => this.requestCache.delete(key));
   }
 
   /**
@@ -107,7 +107,7 @@ export class BaseApiService {
   }
 
   /**
-   * Make HTTP request with deduplication for GET requests
+   * Make HTTP request
    */
   private async request<T>(
     method: string,
@@ -117,39 +117,39 @@ export class BaseApiService {
       params?: QueryParams;
     } = {},
   ): Promise<T> {
-    const { data, params, timeout = 10000, headers = {}, signal } = options;
+    const {
+      data,
+      params,
+      timeout = 10000,
+      headers = {},
+      signal,
+    } = options;
 
     const url = this.buildURL(endpoint, params);
-
+    
     // For GET requests, check if we already have a pending request
     if (method === 'GET') {
       const cacheKey = this.getCacheKey(method, url, data);
       const existingRequest = this.requestCache.get(cacheKey);
-
+      
       if (existingRequest) {
         console.debug(`🔄 Deduplicating request: ${method} ${url}`);
         return existingRequest as Promise<T>;
       }
-
+      
       // Create and cache the request promise
-      const requestPromise = this.executeRequest<T>(
-        url,
-        method,
-        data,
-        timeout,
-        headers,
-        signal,
-      );
+      const requestPromise = this.executeRequest<T>(url, method, data, timeout, headers, signal);
       this.requestCache.set(cacheKey, requestPromise);
-
+      
       // Clean up cache after request completes (success or failure)
-      requestPromise.finally(() => {
-        this.requestCache.delete(cacheKey);
-      });
-
+      requestPromise
+        .finally(() => {
+          this.requestCache.delete(cacheKey);
+        });
+      
       return requestPromise;
     }
-
+    
     // For non-GET requests, clear cache for this URL and execute directly
     this.clearCacheForUrl(url);
     return this.executeRequest<T>(url, method, data, timeout, headers, signal);
@@ -164,7 +164,7 @@ export class BaseApiService {
     data: unknown,
     timeout: number,
     headers: Record<string, string>,
-    signal: AbortSignal | undefined,
+    signal: AbortSignal | undefined
   ): Promise<T> {
     // Get Firebase authentication headers
     const authHeaders = await this.getAuthHeaders();

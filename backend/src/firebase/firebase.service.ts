@@ -34,6 +34,9 @@ export class FirebaseService implements OnModuleInit {
         ),
         projectId: firebaseConfig.project_id,
       });
+      console.log('✅ Firebase Admin initialized successfully');
+    } else {
+      console.log('✅ Firebase Admin already initialized');
     }
 
     this.firestore = admin.firestore();

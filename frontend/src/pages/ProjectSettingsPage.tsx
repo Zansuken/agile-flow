@@ -37,15 +37,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SlideIn, StaggerContainer } from '../components/animations/index.js';
 import { useAuth } from '../hooks/useAuth';
+import { useProjectRole } from '../hooks/useProjectRole';
 import { projectService } from '../services/projectService';
 import { teamService } from '../services/teamService';
 import type { Project } from '../types/project';
 import {
-  canManageRole,
-  canPerformAction,
   getRoleDisplayName,
   getRoleOptions,
-  Permission,
   ProjectRole,
   ROLE_DEFINITIONS,
 } from '../utils/rbac';
@@ -62,10 +60,10 @@ export const ProjectSettingsPage: React.FC = () => {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
   const { currentUser } = useAuth();
+  const { currentRole: userRole, canManageRoles } = useProjectRole(projectId!);
 
   const [project, setProject] = useState<Project | null>(null);
   const [members, setMembers] = useState<ProjectMember[]>([]);
-  const [userRole, setUserRole] = useState<ProjectRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,8 +71,18 @@ export const ProjectSettingsPage: React.FC = () => {
 
   // Load project data and user permissions
   useEffect(() => {
+    console.debug(
+      '🔄 ProjectSettingsPage: Loading project data for projectId:',
+      projectId,
+    );
+
     const loadProjectData = async () => {
-      if (!projectId || !currentUser) return;
+      if (!projectId || !currentUser) {
+        console.debug(
+          '❌ ProjectSettingsPage: Missing projectId or currentUser',
+        );
+        return;
+      }
 
       try {
         setLoading(true);
@@ -83,22 +91,19 @@ export const ProjectSettingsPage: React.FC = () => {
         // Load project details
         const projectData = await projectService.getProject(projectId);
         setProject(projectData);
+        console.debug(
+          '✅ ProjectSettingsPage: Project data loaded:',
+          projectData.name,
+        );
 
         // Load project members
         const membersData = await teamService.getProjectMembers(projectId);
         setMembers(membersData);
-
-        // Get current user's role in this project
-        const currentUserRole = await teamService.getUserProjectRole(
-          projectId,
-          'me',
+        console.debug(
+          '✅ ProjectSettingsPage: Members data loaded:',
+          membersData.length,
+          'members',
         );
-        setUserRole(currentUserRole);
-
-        // Check if user has permission to manage roles
-        if (!canPerformAction(currentUserRole, Permission.MANAGE_ROLES)) {
-          setError('You do not have permission to access project settings.');
-        }
       } catch (err) {
         console.error('Error loading project data:', err);
         setError('Failed to load project data. Please try again.');
@@ -108,7 +113,35 @@ export const ProjectSettingsPage: React.FC = () => {
     };
 
     loadProjectData();
-  }, [projectId, currentUser]);
+  }, [projectId, currentUser]); // Remove canManageRoles from dependencies
+
+  // Check permissions after role is loaded (only when userRole changes)
+  useEffect(() => {
+    console.debug(
+      '🔑 ProjectSettingsPage: Checking permissions for userRole:',
+      userRole,
+    );
+
+    if (!userRole) return; // Don't check permissions if role isn't loaded yet
+
+    if (!canManageRoles()) {
+      console.debug(
+        '❌ ProjectSettingsPage: User does not have permission to manage roles',
+      );
+      setError('You do not have permission to access project settings.');
+    } else {
+      console.debug(
+        '✅ ProjectSettingsPage: User has permission to manage roles',
+      );
+      // Clear permission error if user has permission
+      setError((prev) =>
+        prev === 'You do not have permission to access project settings.'
+          ? null
+          : prev,
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userRole]); // Only depend on userRole, call canManageRoles inside
 
   // Clear success message after 3 seconds
   useEffect(() => {
@@ -126,12 +159,8 @@ export const ProjectSettingsPage: React.FC = () => {
         setSaving(true);
         setError(null);
 
-        // Check if user can manage this role
-        const member = members.find((m) => m.id === memberId);
-        if (
-          member?.projectRole &&
-          !canManageRole(userRole, member.projectRole)
-        ) {
+        // Check if user can manage roles
+        if (!canManageRoles()) {
           throw new Error("You cannot manage this user's role.");
         }
 
@@ -146,8 +175,9 @@ export const ProjectSettingsPage: React.FC = () => {
           ),
         );
 
+        const updatedMember = members.find((m) => m.id === memberId);
         setSuccess(
-          `Successfully updated ${member?.displayName}'s role to ${getRoleDisplayName(newRole)}`,
+          `Successfully updated ${updatedMember?.displayName}'s role to ${getRoleDisplayName(newRole)}`,
         );
       } catch (err) {
         console.error('Error updating member role:', err);
@@ -158,7 +188,7 @@ export const ProjectSettingsPage: React.FC = () => {
         setSaving(false);
       }
     },
-    [projectId, userRole, members],
+    [projectId, userRole, members, canManageRoles], // canManageRoles is now stable with useCallback
   );
 
   const handleGoBack = () => {
@@ -209,7 +239,7 @@ export const ProjectSettingsPage: React.FC = () => {
     );
   }
 
-  if (!userRole || !canPerformAction(userRole, Permission.MANAGE_ROLES)) {
+  if (!userRole || !canManageRoles()) {
     return (
       <>
         <style>
@@ -600,11 +630,8 @@ export const ProjectSettingsPage: React.FC = () => {
                           const memberRole =
                             member.projectRole || ProjectRole.VIEWER;
 
-                          // Safety check to ensure userRole and memberRole are valid
-                          const canEditThisRole =
-                            userRole &&
-                            memberRole &&
-                            canManageRole(userRole, memberRole);
+                          // Safety check to ensure user can manage roles
+                          const canEditThisRole = canManageRoles();
                           const isCurrentUser = member.id === currentUser?.uid;
 
                           return (
@@ -711,8 +738,7 @@ export const ProjectSettingsPage: React.FC = () => {
                                         .filter(
                                           (role) =>
                                             role.value !== ProjectRole.OWNER &&
-                                            userRole &&
-                                            canManageRole(userRole, role.value),
+                                            canManageRoles(),
                                         )
                                         .map((role) => (
                                           <MenuItem

@@ -34,39 +34,7 @@ class TeamService {
       return response;
     } catch (error) {
       console.error('Error fetching project members:', error);
-      // For now, return mock data until we implement the backend endpoint
-      return [
-        {
-          id: 'dev-user-123',
-          email: 'developer@agileflow.dev',
-          displayName: 'Development User',
-          role: 'project_manager',
-          photoURL: undefined,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          projectRole: ProjectRole.OWNER,
-        },
-        {
-          id: 'user-456',
-          email: 'john.doe@example.com',
-          displayName: 'John Doe',
-          role: 'developer',
-          photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=john',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          projectRole: ProjectRole.DEVELOPER,
-        },
-        {
-          id: 'user-789',
-          email: 'jane.smith@example.com',
-          displayName: 'Jane Smith',
-          role: 'developer',
-          photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=jane',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          projectRole: ProjectRole.DESIGNER,
-        },
-      ] as ProjectMember[];
+      return [];
     }
   }
 
@@ -79,43 +47,8 @@ class TeamService {
       return response;
     } catch (error) {
       console.error('Error searching users:', error);
-      // For now, return mock data until we implement the backend endpoint
-      const mockUsers: User[] = [
-        {
-          id: 'search-user-1',
-          email: 'alice.johnson@example.com',
-          displayName: 'Alice Johnson',
-          role: 'developer',
-          photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alice',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: 'search-user-2',
-          email: 'bob.wilson@example.com',
-          displayName: 'Bob Wilson',
-          role: 'tester',
-          photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=bob',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: 'search-user-3',
-          email: 'carol.davis@example.com',
-          displayName: 'Carol Davis',
-          role: 'project_manager',
-          photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=carol',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ];
 
-      // Filter mock users based on query
-      return mockUsers.filter(
-        (user) =>
-          user.email.toLowerCase().includes(query.toLowerCase()) ||
-          user.displayName.toLowerCase().includes(query.toLowerCase()),
-      );
+      return [];
     }
   }
 
@@ -184,22 +117,6 @@ class TeamService {
       throw new Error(
         error instanceof Error ? error.message : 'Failed to update member role',
       );
-    }
-  }
-
-  // Get user's role in a specific project
-  async getUserProjectRole(
-    projectId: string,
-    userId: string = 'me',
-  ): Promise<ProjectRole | null> {
-    try {
-      const response = await apiService.get<{ role: ProjectRole | null }>(
-        `/projects/${projectId}/members/${userId}/role`,
-      );
-      return response.role;
-    } catch (error) {
-      console.error('Error getting user project role:', error);
-      return null;
     }
   }
 }

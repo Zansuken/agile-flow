@@ -1,6 +1,9 @@
 import type { DependencyList, RefObject } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
+// Export project role hook
+export { useProjectRole } from './useProjectRole';
+
 /**
  * useLocalStorage Hook
  * Manages state synchronized with localStorage
