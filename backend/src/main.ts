@@ -55,10 +55,18 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT || 3001;
+
+  // Enable graceful shutdown
+  app.enableShutdownHooks();
+
   await app.listen(port);
 
   console.log(`🚀 AgileFlow API is running on: http://localhost:${port}`);
   console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
+  console.log(`🏥 Health Check: http://localhost:${port}/api/health`);
+
+  // Log that the application is ready to serve requests
+  console.log(`✅ Application is ready to serve requests`);
 }
 
 bootstrap().catch((error) => {
