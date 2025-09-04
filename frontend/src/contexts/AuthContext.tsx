@@ -9,8 +9,15 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { auth, db } from '../config/firebase';
+import { apiService } from '../services/api';
 import type { User as AppUser } from '../types';
 import { UserRole } from '../types';
 
@@ -61,52 +68,63 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [rolesLoading, setRolesLoading] = useState(false);
 
+  // Track the last user ID for whom we fetched roles to prevent infinite loops
+  const lastFetchedUserIdRef = useRef<string | null>(null);
+  const rolesFetchAttempts = useRef<number>(0);
+  const maxRolesFetchAttempts = 3;
+
   // Fetch all user roles from backend
-  const fetchUserRoles = useCallback(
-    async (user: User): Promise<UserRoles> => {
-      // Prevent multiple simultaneous calls
-      if (rolesLoading) {
-        console.debug(
-          '🔄 Roles already being fetched, skipping duplicate request',
+  const fetchUserRoles = useCallback(async (): Promise<UserRoles> => {
+    // Prevent multiple simultaneous calls
+    if (rolesLoading) {
+      console.debug(
+        '🔄 Roles already being fetched, skipping duplicate request',
+      );
+      return {}; // Return empty object instead of current userRoles to avoid dependency
+    }
+
+    // Circuit breaker: prevent excessive failed attempts
+    if (rolesFetchAttempts.current >= maxRolesFetchAttempts) {
+      console.warn(
+        `🚫 Maximum roles fetch attempts (${maxRolesFetchAttempts}) reached. Skipping fetch.`,
+      );
+      return {};
+    }
+
+    try {
+      setRolesLoading(true);
+      rolesFetchAttempts.current += 1;
+
+      // Use the API service which handles environment-based URLs properly
+      const rolesData = await apiService.get<ProjectRole[]>('/users/roles');
+
+      const rolesMap: UserRoles = {};
+      rolesData.forEach((role) => {
+        rolesMap[role.projectId] = role;
+      });
+
+      // Reset attempts counter on success
+      rolesFetchAttempts.current = 0;
+      setUserRoles(rolesMap);
+      return rolesMap;
+    } catch (error) {
+      console.error(
+        `❌ Error fetching user roles (attempt ${rolesFetchAttempts.current}):`,
+        error,
+      );
+
+      // If we've reached max attempts, don't retry
+      if (rolesFetchAttempts.current >= maxRolesFetchAttempts) {
+        console.error(
+          '🚫 Maximum retry attempts reached for fetching user roles',
         );
-        return userRoles;
       }
 
-      try {
-        setRolesLoading(true);
-        const idToken = await user.getIdToken();
-        const response = await fetch('http://localhost:3001/api/users/roles', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-
-        if (response.ok) {
-          const rolesData = (await response.json()) as ProjectRole[];
-
-          // Convert array to object for easier lookup
-          const rolesMap: UserRoles = {};
-          rolesData.forEach((roleInfo) => {
-            rolesMap[roleInfo.projectId] = roleInfo;
-          });
-
-          setUserRoles(rolesMap);
-          return rolesMap;
-        } else {
-          console.warn('Failed to fetch user roles:', response.status);
-          return {};
-        }
-      } catch (error) {
-        console.error('❌ Error fetching user roles:', error);
-        return {};
-      } finally {
-        setRolesLoading(false);
-      }
-    },
-    [rolesLoading, userRoles],
-  );
+      return {};
+    } finally {
+      setRolesLoading(false);
+    }
+  }, [rolesLoading, maxRolesFetchAttempts]);
 
   // Helper function to get user role for a specific project
   const getUserRole = useCallback(
@@ -119,7 +137,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Function to refresh user roles (call when roles might have changed)
   const refreshUserRoles = useCallback(async () => {
     if (currentUser) {
-      await fetchUserRoles(currentUser);
+      // Reset circuit breaker on manual refresh
+      rolesFetchAttempts.current = 0;
+      lastFetchedUserIdRef.current = null; // Force refetch
+      await fetchUserRoles();
     }
   }, [currentUser, fetchUserRoles]);
 
@@ -137,31 +158,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     additionalData?: Partial<AppUser>,
   ) => {
     try {
-      // Get the user's ID token for authentication
-      const idToken = await user.getIdToken();
+      // Use the API service which handles environment-based URLs properly
+      const userData = await apiService.post<AppUser>('/users/ensure-profile', {
+        displayName: additionalData?.displayName || user.displayName,
+        email: user.email,
+        photoURL: additionalData?.photoURL || user.photoURL,
+        ...additionalData,
+      });
 
-      const response = await fetch(
-        'http://localhost:3001/api/users/ensure-profile',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({
-            displayName: additionalData?.displayName || user.displayName,
-            photoURL: additionalData?.photoURL || user.photoURL,
-          }),
-        },
-      );
-
-      if (response.ok) {
-        const userData = (await response.json()) as AppUser;
-        setCurrentUserData(userData);
-        return userData;
-      } else {
-        throw new Error(`Backend API error: ${response.status}`);
-      }
+      setCurrentUserData(userData);
+      return userData;
     } catch (error) {
       console.error('❌ Backend API fallback failed:', error);
       throw error;
@@ -295,13 +301,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (user) {
         await createUserDocument(user);
-        // Only fetch user roles once when user state changes
-        if (!rolesLoading && Object.keys(userRoles).length === 0) {
-          await fetchUserRoles(user);
+
+        // Only fetch user roles if we haven't fetched them for this user yet
+        // This prevents infinite loops while ensuring roles are fetched for new users
+        if (user.uid !== lastFetchedUserIdRef.current && !rolesLoading) {
+          lastFetchedUserIdRef.current = user.uid;
+          rolesFetchAttempts.current = 0; // Reset circuit breaker for new user
+          try {
+            await fetchUserRoles();
+          } catch (error) {
+            console.error(
+              'Failed to fetch user roles on auth state change:',
+              error,
+            );
+            // Reset the ref so we can try again later
+            lastFetchedUserIdRef.current = null;
+          }
         }
       } else {
         setCurrentUserData(null);
         setUserRoles({}); // Clear roles when user logs out
+        lastFetchedUserIdRef.current = null; // Reset the ref
+        rolesFetchAttempts.current = 0; // Reset circuit breaker
       }
 
       setLoading(false);
