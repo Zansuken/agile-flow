@@ -11,31 +11,31 @@ declare module '@mui/material/styles' {
   }
 }
 
-// Modern color palette - Deep Ocean Blue with complementary colors
+// Updated color palette to match your purple gradient design system
 const colors = {
   primary: {
-    50: '#e3f2fd',
-    100: '#bbdefb',
-    200: '#90caf9',
-    300: '#64b5f6',
-    400: '#42a5f5',
-    500: '#2196f3', // Main primary
-    600: '#1e88e5',
-    700: '#1976d2',
-    800: '#1565c0',
-    900: '#0d47a1',
+    50: '#f3f0ff',
+    100: '#e9e2ff',
+    200: '#d6ccff',
+    300: '#b8a6ff',
+    400: '#9575ff',
+    500: '#667eea', // Main primary (start of your gradient)
+    600: '#5a6fd8',
+    700: '#4f5cc9',
+    800: '#424ba6',
+    900: '#363d83',
   },
   secondary: {
-    50: '#f3e5f5',
-    100: '#e1bee7',
-    200: '#ce93d8',
-    300: '#ba68c8',
-    400: '#ab47bc',
-    500: '#9c27b0', // Main secondary
-    600: '#8e24aa',
-    700: '#7b1fa2',
-    800: '#6a1b9a',
-    900: '#4a148c',
+    50: '#f8f5ff',
+    100: '#f0ebff',
+    200: '#e2d9ff',
+    300: '#c9baff',
+    400: '#a991ff',
+    500: '#764ba2', // Main secondary (end of your gradient)
+    600: '#6b4293',
+    700: '#5d3a84',
+    800: '#4e326e',
+    900: '#412a5c',
   },
   accent: {
     50: '#fff3e0',
@@ -278,13 +278,13 @@ export const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: colors.primary[600],
+      main: colors.primary[500], // #667eea (your gradient start)
       light: colors.primary[400],
       dark: colors.primary[800],
       contrastText: '#ffffff',
     },
     secondary: {
-      main: colors.secondary[500],
+      main: colors.secondary[500], // #764ba2 (your gradient end)
       light: colors.secondary[300],
       dark: colors.secondary[700],
       contrastText: '#ffffff',
@@ -305,8 +305,8 @@ export const theme = createTheme({
       dark: colors.success[700],
     },
     background: {
-      default: '#fafbfc',
-      paper: '#ffffff',
+      default: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Your app's gradient
+      paper: 'rgba(255, 255, 255, 0.95)',
     },
     text: {
       primary: colors.neutral[800],
@@ -341,7 +341,9 @@ export const theme = createTheme({
           scrollBehavior: 'smooth',
         },
         body: {
-          backgroundColor: '#fafbfc',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh',
           color: colors.neutral[800],
         },
         '@keyframes fadeIn': animations.keyframes.fadeIn,
@@ -483,8 +485,8 @@ export const darkTheme = createTheme({
       contrastText: '#ffffff',
     },
     background: {
-      default: '#0a0e27',
-      paper: '#1a1f3a',
+      default: 'linear-gradient(135deg, #1a1b3a 0%, #2a1b3d 100%)',
+      paper: 'rgba(26, 31, 58, 0.9)',
     },
     text: {
       primary: alpha('#ffffff', 0.95),

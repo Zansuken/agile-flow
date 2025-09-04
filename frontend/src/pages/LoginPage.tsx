@@ -23,6 +23,7 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoadingSpinner, SlideIn } from '../components/animations/index.js';
+import { Logo } from '../components/Logo';
 import { useAuth } from '../hooks/useAuth.js';
 
 // Animation for floating circles
@@ -214,33 +215,14 @@ export const LoginPage: React.FC = () => {
           >
             {/* Header */}
             <Box textAlign="center" mb={{ xs: 2, sm: 3 }}>
-              <Box
+              <Logo
+                size={60}
+                variant="full"
                 sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: { xs: 50, sm: 60 },
-                  height: { xs: 50, sm: 60 },
-                  borderRadius: '50%',
-                  background:
-                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   mb: 2,
-                  color: 'white',
-                  fontSize: { xs: 20, sm: 24 },
-                  fontWeight: 'bold',
+                  filter: 'drop-shadow(0 4px 12px rgba(168, 85, 247, 0.3))',
                 }}
-              >
-                🎯
-              </Box>
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                color="text.primary"
-                mb={1}
-                sx={{ fontSize: { xs: '1.75rem', sm: '2.125rem' } }}
-              >
-                AgileFlow
-              </Typography>
+              />
               <Typography
                 variant="h6"
                 color="text.secondary"
