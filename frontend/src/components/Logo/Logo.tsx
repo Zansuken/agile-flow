@@ -14,7 +14,7 @@ export const Logo: React.FC<LogoProps> = ({
   variant = 'full',
   sx,
 }) => {
-  const logoSrc = variant === 'icon' ? '/favicon.svg' : '/logo.svg';
+  const logoSrc = '/logo.png';
   const aspectRatio = variant === 'icon' ? 1 : 400 / 120; // New logo is 400x120
 
   return (
