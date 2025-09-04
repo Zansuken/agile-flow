@@ -13,12 +13,16 @@ class ApiService {
       throw new Error('No authenticated user found');
     }
 
-    const token = await user.getIdToken();
-
-    return {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
+    try {
+      const token = await user.getIdToken(/* forceRefresh */ false);
+      return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+    } catch (error) {
+      console.error('Failed to get ID token:', error);
+      throw new Error('Failed to get authentication token');
+    }
   }
 
   private async request<T>(
