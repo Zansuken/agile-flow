@@ -8,6 +8,14 @@ import type {
 } from '../types/api';
 import { createErrorMessage } from '../utils';
 
+const getBaseURL = (): string => {
+  if (import.meta.env.DEV) {
+    return 'http://localhost:3001/api';
+  }
+
+  return import.meta.env.VITE_API_URL;
+};
+
 /**
  * Base API Service Class
  * Provides common HTTP methods with standardized error handling and type safety
@@ -17,10 +25,7 @@ export class BaseApiService {
   private defaultHeaders: Record<string, string>;
   private requestCache: Map<string, Promise<unknown>> = new Map();
 
-  constructor(
-    baseURL: string = import.meta.env.VITE_API_BASE_URL ||
-      'http://localhost:3001/api',
-  ) {
+  constructor(baseURL: string = getBaseURL()) {
     this.baseURL = baseURL;
     this.defaultHeaders = {
       'Content-Type': 'application/json',
