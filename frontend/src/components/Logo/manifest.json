@@ -1,0 +1,21 @@
+{
+  "name": "AgileFlow",
+  "short_name": "AgileFlow",
+  "description": "Modern Agile Project Management Platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "400x400",
+      "type": "image/svg+xml"
+    }
+  ]
+}

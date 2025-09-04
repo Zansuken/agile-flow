@@ -59,23 +59,25 @@ export const Navbar: React.FC = () => {
       }}
     >
       <Toolbar sx={{ py: 1, px: { xs: 1, sm: 2 } }}>
-        <Typography
-          variant="h5"
-          component="div"
+        <Box
           sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
             flexGrow: 1,
-            fontWeight: 700,
-            color: 'white',
-            fontSize: { xs: '1.25rem', sm: '1.5rem' },
-            background:
-              'linear-gradient(45deg, #ffffff, rgba(255, 255, 255, 0.8))',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            cursor: 'pointer',
           }}
+          onClick={() => navigate('/dashboard')}
         >
-          AgileFlow
-        </Typography>
+          <img
+            src="/logo.png"
+            alt="AgileFlow Logo"
+            style={{
+              height: '100%',
+              maxHeight: '48px',
+            }}
+          />
+        </Box>
 
         <Box
           sx={{

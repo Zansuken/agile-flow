@@ -18,7 +18,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     background: `linear-gradient(135deg, 
       ${alpha(theme.palette.background.paper, 0.95)} 0%, 
-      ${alpha(theme.palette.background.default, 0.9)} 100%)`,
+      ${alpha('#667eea', 0.1)} 100%)`,
     backdropFilter: 'blur(20px)',
     border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
     borderRadius: theme.spacing(2),
