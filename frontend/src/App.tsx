@@ -12,6 +12,7 @@ import { LoadingSpinner } from './components/common/LoadingSpinner.tsx';
 import { Navbar } from './components/layout/Navbar.tsx';
 import { AuthProvider } from './contexts/AuthContext.tsx';
 import { useAuth } from './hooks/useAuth.ts';
+import { usePageTitle } from './hooks/usePageTitle.ts';
 import { DashboardPage } from './pages/DashboardPage.tsx';
 import { KanbanPage } from './pages/KanbanPage.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
@@ -67,6 +68,9 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const AppRoutes: React.FC = () => {
   const { currentUser, loading } = useAuth();
+
+  // This hook will automatically update the page title based on the current route
+  usePageTitle();
 
   if (loading) {
     return (
