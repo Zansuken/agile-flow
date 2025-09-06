@@ -15,6 +15,7 @@ const pageTitles: PageTitleConfig = {
   '/login': 'Login',
   '/dashboard': 'Dashboard',
   '/projects': 'Projects',
+  '/profile': 'Profile',
   '/projects/:projectId': (params: RouteParams) =>
     `Project Details - ${params.projectId}`,
   '/projects/:projectId/team': (params: RouteParams) =>
