@@ -66,17 +66,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUserData, setCurrentUserData] = useState<AppUser | null>(null);
   const [userRoles, setUserRoles] = useState<UserRoles>({});
   const [loading, setLoading] = useState(true);
-  const [rolesLoading, setRolesLoading] = useState(false);
 
   // Track the last user ID for whom we fetched roles to prevent infinite loops
   const lastFetchedUserIdRef = useRef<string | null>(null);
   const rolesFetchAttempts = useRef<number>(0);
+  const rolesLoadingRef = useRef<boolean>(false);
   const maxRolesFetchAttempts = 3;
 
   // Fetch all user roles from backend
   const fetchUserRoles = useCallback(async (): Promise<UserRoles> => {
     // Prevent multiple simultaneous calls
-    if (rolesLoading) {
+    if (rolesLoadingRef.current) {
       console.debug(
         '🔄 Roles already being fetched, skipping duplicate request',
       );
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     try {
-      setRolesLoading(true);
+      rolesLoadingRef.current = true;
       rolesFetchAttempts.current += 1;
 
       // Use the API service which handles environment-based URLs properly
@@ -122,9 +122,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return {};
     } finally {
-      setRolesLoading(false);
+      rolesLoadingRef.current = false;
     }
-  }, [rolesLoading, maxRolesFetchAttempts]);
+  }, [maxRolesFetchAttempts]);
 
   // Helper function to get user role for a specific project
   const getUserRole = useCallback(
@@ -304,7 +304,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Only fetch user roles if we haven't fetched them for this user yet
         // This prevents infinite loops while ensuring roles are fetched for new users
-        if (user.uid !== lastFetchedUserIdRef.current && !rolesLoading) {
+        if (
+          user.uid !== lastFetchedUserIdRef.current &&
+          !rolesLoadingRef.current
+        ) {
           lastFetchedUserIdRef.current = user.uid;
           rolesFetchAttempts.current = 0; // Reset circuit breaker for new user
           try {
@@ -329,7 +332,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     return unsubscribe;
-  }, [createUserDocument, fetchUserRoles, rolesLoading, userRoles]);
+  }, [createUserDocument, fetchUserRoles]);
 
   const value: AuthContextType = {
     currentUser,
