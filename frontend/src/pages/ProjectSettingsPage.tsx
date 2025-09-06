@@ -1,6 +1,7 @@
 import {
   ArrowBack as ArrowBackIcon,
   Group as GroupIcon,
+  Info as InfoIcon,
   Security as SecurityIcon,
   Settings as SettingsIcon,
   Warning as WarningIcon,
@@ -20,7 +21,6 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
   MenuItem,
   Paper,
   Select,
@@ -41,6 +41,7 @@ import { useProjectRole } from '../hooks/useProjectRole';
 import { projectService } from '../services/projectService';
 import { teamService } from '../services/teamService';
 import type { Project } from '../types/project';
+import { formatDateTime } from '../utils/dateUtils';
 import {
   getRoleDisplayName,
   getRoleOptions,
@@ -462,6 +463,161 @@ export const ProjectSettingsPage: React.FC = () => {
             </SlideIn>
           )}
 
+          {/* Project Information Section */}
+          <SlideIn direction="up">
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 4,
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(15px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                position: 'relative',
+                zIndex: 2,
+              }}
+            >
+              <CardHeader
+                title={
+                  <Typography variant="h6" sx={{ color: 'white' }}>
+                    Project Information
+                  </Typography>
+                }
+                subheader={
+                  <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    General information about this project
+                  </Typography>
+                }
+                avatar={<InfoIcon sx={{ color: 'white' }} />}
+              />
+              <CardContent>
+                <Box display="flex" flexDirection="column" gap={3}>
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      mb={1}
+                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                    >
+                      Project Name
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      fontWeight={500}
+                      sx={{ color: 'white' }}
+                    >
+                      {project?.name}
+                    </Typography>
+                  </Box>
+
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      mb={1}
+                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                    >
+                      Description
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      lineHeight={1.6}
+                      sx={{ color: 'white' }}
+                    >
+                      {project?.description}
+                    </Typography>
+                  </Box>
+
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      mb={1}
+                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                    >
+                      Project Key
+                    </Typography>
+                    <Chip
+                      label={project?.key}
+                      sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        fontWeight: 600,
+                        fontSize: '0.875rem',
+                      }}
+                    />
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                      gap: 3,
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        mb={1}
+                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
+                        Created
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        fontWeight={500}
+                        sx={{ color: 'white' }}
+                      >
+                        {project?.createdAt
+                          ? formatDateTime(project.createdAt)
+                          : 'N/A'}
+                      </Typography>
+                    </Box>
+
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        mb={1}
+                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
+                        Last Updated
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        fontWeight={500}
+                        sx={{ color: 'white' }}
+                      >
+                        {project?.updatedAt
+                          ? formatDateTime(project.updatedAt)
+                          : 'N/A'}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      mb={1}
+                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                    >
+                      Status
+                    </Typography>
+                    <Chip
+                      label={project?.status?.toUpperCase() || 'UNKNOWN'}
+                      sx={{
+                        backgroundColor:
+                          project?.status === 'active'
+                            ? 'rgba(76, 175, 80, 0.3)'
+                            : 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        fontWeight: 600,
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </SlideIn>
+
           <Box
             sx={{
               display: { xs: 'flex', md: 'flex' },
@@ -513,54 +669,47 @@ export const ProjectSettingsPage: React.FC = () => {
                               }}
                             />
                           </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography
-                                variant="subtitle1"
-                                fontWeight="medium"
-                                sx={{ color: 'white' }}
-                              >
-                                {role.label}
-                              </Typography>
-                            }
-                            secondary={
-                              <Box>
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    mb: 1,
-                                    color: 'rgba(255, 255, 255, 0.8)',
-                                  }}
-                                >
-                                  {role.description}
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    gap: 0.5,
-                                  }}
-                                >
-                                  {ROLE_DEFINITIONS[role.value].permissions.map(
-                                    (permission) => (
-                                      <Chip
-                                        key={permission}
-                                        label={permission.replace('_', ' ')}
-                                        size="small"
-                                        variant="outlined"
-                                        sx={{
-                                          fontSize: '0.7rem',
-                                          borderColor:
-                                            'rgba(255, 255, 255, 0.3)',
-                                          color: 'white',
-                                        }}
-                                      />
-                                    ),
-                                  )}
-                                </Box>
-                              </Box>
-                            }
-                          />
+                          <Box sx={{ flex: 1 }}>
+                            <Typography
+                              variant="subtitle1"
+                              fontWeight="medium"
+                              sx={{ color: 'white' }}
+                            >
+                              {role.label}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                mb: 1,
+                                color: 'rgba(255, 255, 255, 0.8)',
+                              }}
+                            >
+                              {role.description}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 0.5,
+                              }}
+                            >
+                              {ROLE_DEFINITIONS[role.value].permissions.map(
+                                (permission) => (
+                                  <Chip
+                                    key={permission}
+                                    label={permission.replace('_', ' ')}
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{
+                                      fontSize: '0.7rem',
+                                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                                      color: 'white',
+                                    }}
+                                  />
+                                ),
+                              )}
+                            </Box>
+                          </Box>
                         </ListItem>
                         {index < availableRoles.length - 1 && (
                           <Divider
