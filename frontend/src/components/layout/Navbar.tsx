@@ -32,6 +32,11 @@ export const Navbar: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleProfile = () => {
+    navigate('/profile');
+    handleClose();
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -212,7 +217,7 @@ export const Navbar: React.FC = () => {
               },
             }}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleProfile}>Profile</MenuItem>
             <MenuItem onClick={handleClose}>Settings</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>

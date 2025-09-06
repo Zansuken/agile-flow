@@ -16,6 +16,7 @@ import { usePageTitle } from './hooks/usePageTitle.ts';
 import { DashboardPage } from './pages/DashboardPage.tsx';
 import { KanbanPage } from './pages/KanbanPage.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
+import { ProfilePage } from './pages/ProfilePage.tsx';
 import { ProjectDetailPage } from './pages/ProjectDetailPage.tsx';
 import { ProjectSettingsPage } from './pages/ProjectSettingsPage.tsx';
 import { ProjectsPage } from './pages/ProjectsPage.tsx';
@@ -109,6 +110,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <AppLayout>
               <ProjectsPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <ProfilePage />
             </AppLayout>
           </ProtectedRoute>
         }
