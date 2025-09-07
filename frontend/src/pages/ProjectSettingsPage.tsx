@@ -35,7 +35,7 @@ import {
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SlideIn, StaggerContainer } from '../components/animations/index.js';
+import { SlideIn, StaggerContainer, FloatingCircles } from '../components/animations/index.js';
 import { useAuth } from '../hooks/useAuth';
 import { useProjectRole } from '../hooks/useProjectRole';
 import { projectService } from '../services/projectService';
@@ -347,42 +347,7 @@ export const ProjectSettingsPage: React.FC = () => {
           }}
         >
           {/* Background Circles */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '-10%',
-              right: '-5%',
-              width: '250px',
-              height: '250px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.1)',
-              animation: 'float 6s ease-in-out infinite',
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: '-10%',
-              left: '-3%',
-              width: '180px',
-              height: '180px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.08)',
-              animation: 'floatSlow 8s ease-in-out infinite',
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '40%',
-              left: '85%',
-              width: '120px',
-              height: '120px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.06)',
-              animation: 'floatMedium 7s ease-in-out infinite',
-            }}
-          />
+          <FloatingCircles variant="default" />
 
           {/* Header */}
           <SlideIn direction="up">

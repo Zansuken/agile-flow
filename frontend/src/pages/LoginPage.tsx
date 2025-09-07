@@ -18,41 +18,12 @@ import {
   Paper,
   TextField,
   Typography,
-  keyframes,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoadingSpinner, SlideIn } from '../components/animations/index.js';
+import { LoadingSpinner, SlideIn, FloatingCircles } from '../components/animations/index.js';
 import { Logo } from '../components/Logo';
 import { useAuth } from '../hooks/useAuth.js';
-
-// Animation for floating circles
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-`;
-
-const floatSlow = keyframes`
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-30px) rotate(180deg);
-  }
-`;
-
-const floatMedium = keyframes`
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-15px) scale(1.1);
-  }
-`;
 
 export const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -113,83 +84,7 @@ export const LoginPage: React.FC = () => {
       }}
     >
       {/* Animated Background Circles */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '10%',
-          left: '15%',
-          width: 120,
-          height: 120,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.1)',
-          animation: `${float} 6s ease-in-out infinite`,
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '60%',
-          left: '5%',
-          width: 80,
-          height: 80,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.08)',
-          animation: `${floatSlow} 8s ease-in-out infinite`,
-          animationDelay: '2s',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '20%',
-          right: '10%',
-          width: 100,
-          height: 100,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.06)',
-          animation: `${floatMedium} 7s ease-in-out infinite`,
-          animationDelay: '1s',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '20%',
-          right: '20%',
-          width: 60,
-          height: 60,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.12)',
-          animation: `${float} 5s ease-in-out infinite`,
-          animationDelay: '3s',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '70%',
-          left: '60%',
-          width: 90,
-          height: 90,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.05)',
-          animation: `${floatSlow} 9s ease-in-out infinite`,
-          animationDelay: '4s',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '40%',
-          left: '80%',
-          width: 70,
-          height: 70,
-          borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.09)',
-          animation: `${floatMedium} 6.5s ease-in-out infinite`,
-          animationDelay: '1.5s',
-        }}
-      />
+      <FloatingCircles variant="login" />
 
       {/* Main Content */}
       <Container

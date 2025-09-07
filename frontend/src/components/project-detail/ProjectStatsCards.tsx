@@ -8,7 +8,7 @@ import React from 'react';
 import type { Project } from '../../types';
 import { formatDate } from '../../utils';
 import { getDateAge } from '../../utils/dateUtils';
-import { HoverCard, SlideIn, StaggerContainer } from '../animations';
+import { SlideIn, StaggerContainer } from '../animations';
 
 interface ProjectStatsCardsProps {
   project: Project;
@@ -71,10 +71,10 @@ export const ProjectStatsCards: React.FC<ProjectStatsCardsProps> = ({
       >
         {stats.map((stat, index) => (
           <SlideIn key={index} direction="up">
-            <HoverCard>
+            <Box>
               <Card
                 sx={{
-                  borderRadius: 2.5,
+                  borderRadius: 2,
                   background: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(15px)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -83,7 +83,6 @@ export const ProjectStatsCards: React.FC<ProjectStatsCardsProps> = ({
                   textAlign: 'center',
                   '&:hover': {
                     background: 'rgba(255, 255, 255, 0.2)',
-                    transform: 'translateY(-3px)',
                     boxShadow: '0 12px 36px rgba(0, 0, 0, 0.15)',
                   },
                   transition: 'all 0.3s ease',
@@ -121,7 +120,7 @@ export const ProjectStatsCards: React.FC<ProjectStatsCardsProps> = ({
                   {stat.title}
                 </Typography>
               </Card>
-            </HoverCard>
+            </Box>
           </SlideIn>
         ))}
       </Box>

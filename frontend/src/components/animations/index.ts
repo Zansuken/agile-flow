@@ -1,5 +1,6 @@
 export {
   AnimatedCounter,
+  FloatingCircles,
   HoverCard,
   LoadingSpinner,
   PageTransition,
