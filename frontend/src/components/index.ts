@@ -10,7 +10,7 @@ export { FloatingCircles } from './common/FloatingCircles';
 export { LoadingSpinner } from './common/LoadingSpinner';
 
 // Shared Components
-export * from './shared';
+export { TeamAvatars, type TeamAvatarsProps } from './shared/TeamAvatars';
 
 // Animation Components
 export * from './animations';
