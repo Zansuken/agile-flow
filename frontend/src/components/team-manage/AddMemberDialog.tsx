@@ -49,12 +49,38 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
   onAddMember,
   onInviteByEmail,
 }) => {
+  const handleClose = () => {
+    // Clear focus from any focused element before closing
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    onClose();
+  };
+
+  const handleAddMember = (userId: string) => {
+    onAddMember(userId);
+    // Clear focus before potential dialog close
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  };
+
+  const handleInviteByEmail = () => {
+    onInviteByEmail();
+    // Clear focus before potential dialog close
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="sm"
       fullWidth
+      disableRestoreFocus={true}
+      keepMounted={false}
       PaperProps={{
         sx: {
           borderRadius: 3,
@@ -63,10 +89,8 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
         },
       }}
     >
-      <DialogTitle>
-        <Typography variant="h6" fontWeight={600}>
-          Add Team Member
-        </Typography>
+      <DialogTitle sx={{ fontWeight: 600 }}>
+        Add Team Member
         <Typography variant="body2" color="text.secondary" mt={0.5}>
           Search for existing users or invite by email
         </Typography>
@@ -75,7 +99,7 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
       <DialogContent>
         {/* Search Users */}
         <Box mb={3}>
-          <Typography variant="h6" mb={2}>
+          <Typography variant="subtitle1" fontWeight={600} mb={2}>
             Search Users
           </Typography>
           <TextField
@@ -110,7 +134,7 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
                 {searchResults.map((user) => (
                   <ListItemButton
                     key={user.id}
-                    onClick={() => onAddMember(user.id)}
+                    onClick={() => handleAddMember(user.id)}
                   >
                     <ListItemAvatar>
                       <Avatar
@@ -133,7 +157,7 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
 
         {/* Invite by Email */}
         <Box>
-          <Typography variant="h6" mb={2}>
+          <Typography variant="subtitle1" fontWeight={600} mb={2}>
             Invite by Email
           </Typography>
           <TextField
@@ -153,7 +177,7 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
           <Button
             variant="contained"
             startIcon={<SendIcon />}
-            onClick={onInviteByEmail}
+            onClick={handleInviteByEmail}
             disabled={!inviteEmail.trim()}
             fullWidth
           >
@@ -163,7 +187,7 @@ export const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleClose}>Cancel</Button>
       </DialogActions>
     </Dialog>
   );
