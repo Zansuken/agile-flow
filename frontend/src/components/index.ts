@@ -6,7 +6,6 @@ export { PageLayout } from './layout/PageLayout';
 export * from './ui';
 
 // Common Components
-export { FloatingCircles } from './common/FloatingCircles';
 export { LoadingSpinner } from './common/LoadingSpinner';
 
 // Animation Components

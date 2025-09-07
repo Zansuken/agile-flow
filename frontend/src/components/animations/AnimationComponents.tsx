@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useInViewAnimation } from '../../hooks/useAnimations.js';
+import { FLOATING_ANIMATIONS } from '../../constants';
 
 // Animation variants
 const fadeInUp: Variants = {
@@ -233,5 +234,77 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
     <span ref={ref}>
       {count}
     </span>
+  );
+};
+
+interface FloatingCirclesProps {
+  variant?: 'default' | 'dense' | 'minimal' | 'login';
+}
+
+export const FloatingCircles: React.FC<FloatingCirclesProps> = ({ 
+  variant = 'default' 
+}) => {
+  const getCircleConfig = () => {
+    switch (variant) {
+      case 'login':
+        return [
+          { top: '10%', left: '15%', size: 120, opacity: 0.1, delay: 0 },
+          { top: '60%', left: '5%', size: 80, opacity: 0.08, delay: 2 },
+          { top: '20%', right: '10%', size: 100, opacity: 0.06, delay: 1 },
+          { bottom: '20%', right: '20%', size: 60, opacity: 0.12, delay: 3 },
+          { top: '70%', left: '60%', size: 90, opacity: 0.05, delay: 4 },
+        ];
+      case 'dense':
+        return [
+          { top: '-20%', right: '-10%', size: 300, opacity: 0.1, delay: 0 },
+          { bottom: '-15%', left: '-5%', size: 200, opacity: 0.08, delay: 0 },
+          { top: '30%', left: '80%', size: 150, opacity: 0.06, delay: 0 },
+          { top: '60%', right: '70%', size: 100, opacity: 0.04, delay: 2 },
+        ];
+      case 'minimal':
+        return [
+          { top: '-10%', right: '-5%', size: 250, opacity: 0.1, delay: 0 },
+          { bottom: '-10%', left: '-3%', size: 180, opacity: 0.08, delay: 0 },
+        ];
+      default:
+        return [
+          { top: '-10%', right: '-5%', size: 250, opacity: 0.1, delay: 0 },
+          { bottom: '-10%', left: '-3%', size: 180, opacity: 0.08, delay: 0 },
+          { top: '40%', left: '85%', size: 120, opacity: 0.06, delay: 0 },
+        ];
+    }
+  };
+
+  const circles = getCircleConfig();
+
+  return (
+    <>
+      <style>{FLOATING_ANIMATIONS.keyframes}</style>
+      {circles.map((circle, index) => (
+        <div
+          key={index}
+          style={{
+            position: 'absolute',
+            ...(circle.top && { top: circle.top }),
+            ...(circle.bottom && { bottom: circle.bottom }),
+            ...(circle.left && { left: circle.left }),
+            ...(circle.right && { right: circle.right }),
+            width: circle.size,
+            height: circle.size,
+            borderRadius: '50%',
+            background: `rgba(255, 255, 255, ${circle.opacity})`,
+            animation: `${
+              circle.size >= 200 ? 'float' : 
+              circle.size >= 150 ? 'floatSlow' : 'floatMedium'
+            } ${
+              circle.size >= 200 ? '6s' : 
+              circle.size >= 150 ? '8s' : '7s'
+            } ease-in-out infinite`,
+            animationDelay: `${circle.delay}s`,
+            zIndex: 1,
+          }}
+        />
+      ))}
+    </>
   );
 };

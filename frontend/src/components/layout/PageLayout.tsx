@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import React from 'react';
 import { contentContainer, pageBackground } from '../../styles/glassStyles';
-import { FloatingCircles } from '../common/FloatingCircles';
+import { FloatingCircles } from '../animations';
 
 interface PageLayoutProps {
   children: React.ReactNode;
