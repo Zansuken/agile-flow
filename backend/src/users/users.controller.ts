@@ -64,6 +64,32 @@ export class UsersController {
     return this.usersService.searchUsers(query, user.uid);
   }
 
+  @Post('by-ids')
+  @ApiOperation({ summary: 'Get users by their IDs' })
+  @ApiResponse({
+    status: 200,
+    description: 'Users retrieved successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          email: { type: 'string' },
+          displayName: { type: 'string' },
+          photoURL: { type: 'string' },
+          role: { type: 'string' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getUsersByIds(@Body() body: { ids: string[] }) {
+    return await this.usersService.getUsersByIds(body.ids);
+  }
+
   @Post('ensure-profile')
   @ApiOperation({ summary: 'Ensure user profile exists in Firestore' })
   @ApiResponse({

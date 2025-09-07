@@ -9,6 +9,9 @@ export * from './ui';
 export { FloatingCircles } from './common/FloatingCircles';
 export { LoadingSpinner } from './common/LoadingSpinner';
 
+// Shared Components
+export * from './shared';
+
 // Animation Components
 export * from './animations';
 
