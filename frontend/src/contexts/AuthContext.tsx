@@ -279,18 +279,51 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const updateUserProfile = async (displayName: string, photoURL?: string) => {
     if (!currentUser) return;
 
-    await updateProfile(currentUser, { displayName, photoURL });
+    // Create profile update object, only including photoURL if it has a value
+    const profileUpdate: { displayName: string; photoURL?: string } = {
+      displayName,
+    };
+    if (photoURL) {
+      profileUpdate.photoURL = photoURL;
+    }
+
+    await updateProfile(currentUser, profileUpdate);
 
     if (currentUserData) {
-      const updatedUserData = {
-        ...currentUserData,
+      // Create Firestore update object, only including photoURL if it has a value
+      const firestoreUpdate: {
+        id: string;
+        email: string;
+        displayName: string;
+        role: string;
+        createdAt: Date;
+        updatedAt: Date;
+        photoURL?: string;
+      } = {
+        id: currentUserData.id,
+        email: currentUserData.email,
         displayName,
-        photoURL,
+        role: currentUserData.role,
+        createdAt: currentUserData.createdAt,
         updatedAt: new Date(),
       };
 
+      // Only include photoURL in Firestore document if it has a value
+      if (photoURL) {
+        firestoreUpdate.photoURL = photoURL;
+      }
+
       const userDocRef = doc(db, 'users', currentUser.uid);
-      await setDoc(userDocRef, updatedUserData, { merge: true });
+      await setDoc(userDocRef, firestoreUpdate, { merge: true });
+
+      // Update local state with the complete user object
+      const updatedUserData: AppUser = {
+        ...currentUserData,
+        displayName,
+        photoURL: photoURL || currentUserData.photoURL,
+        updatedAt: new Date(),
+      };
+
       setCurrentUserData(updatedUserData);
     }
   };
