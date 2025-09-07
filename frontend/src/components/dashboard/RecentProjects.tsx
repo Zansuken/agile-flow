@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import type { RecentProject } from '../../services/dashboardService.js';
 import { HoverCard, SlideIn, StaggerContainer } from '../animations/index.js';
+import { TeamAvatars } from '../shared/TeamAvatars.js';
 
 interface RecentProjectsProps {
   projects: RecentProject[];
@@ -76,7 +77,7 @@ export const RecentProjects: React.FC<RecentProjectsProps> = ({ projects }) => {
                     background: 'rgba(255, 255, 255, 0.15)',
                     backdropFilter: 'blur(15px)',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: 3,
+                    borderRadius: 2,
                     cursor: 'pointer',
                     position: 'relative',
                     overflow: 'hidden',
@@ -121,12 +122,11 @@ export const RecentProjects: React.FC<RecentProjectsProps> = ({ projects }) => {
                           border: '1px solid rgba(255, 255, 255, 0.3)',
                         }}
                       />
-                      <Typography
-                        variant="body2"
-                        sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                      >
-                        {project.team} members
-                      </Typography>
+                      <TeamAvatars
+                        memberIds={project.memberIds}
+                        maxAvatars={3}
+                        size="small"
+                      />
                     </Box>
 
                     <Typography
