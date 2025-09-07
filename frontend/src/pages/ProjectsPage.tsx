@@ -3,27 +3,24 @@ import {
   Alert,
   Box,
   Button,
-  Card,
-  CardContent,
-  Chip,
   CircularProgress,
   Typography,
-  useTheme,
 } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SlideIn, StaggerContainer, FloatingCircles } from '../components/animations';
+import {
+  FloatingCircles,
+  SlideIn,
+  StaggerContainer,
+} from '../components/animations';
 import { CreateProjectModal } from '../components/CreateProjectModal';
+import { ProjectCard } from '../components/dashboard/ProjectCard';
 import { useAuth } from '../hooks/useAuth';
+import type { RecentProject } from '../services/dashboardService';
 import { projectService } from '../services/projectService';
 import type { Project } from '../types';
 import type { CreateProjectDto } from '../types/project';
-import { formatDate } from '../utils';
-import { getDateAge } from '../utils/dateUtils';
 
 export const ProjectsPage: React.FC = () => {
-  const theme = useTheme();
-  const navigate = useNavigate();
   const { currentUser, loginWithGoogle } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,19 +57,25 @@ export const ProjectsPage: React.FC = () => {
   };
 
   const getProjectStatus = (project: Project) => {
-    const daysSinceCreated = getDateAge(project.createdAt);
-
-    if (daysSinceCreated === null) {
-      return { status: 'Unknown', color: theme.palette.text.secondary };
-    }
-
-    if (daysSinceCreated < 7)
-      return { status: 'New', color: theme.palette.info.main };
-    if (daysSinceCreated < 30)
-      return { status: 'Active', color: theme.palette.success.main };
-    return { status: 'Established', color: theme.palette.warning.main };
+    return project.status === 'active'
+      ? 'Active'
+      : project.status === 'archived'
+        ? 'Completed'
+        : 'Inactive';
   };
 
+  // Convert Project to RecentProject for ProjectCard compatibility
+  const convertToRecentProject = (project: Project): RecentProject => {
+    return {
+      ...project,
+      progress: 0, // We'll calculate this based on tasks later, for now default to 0
+      team: project.memberIds.length,
+      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // Default to 30 days from now
+      status: getProjectStatus(project),
+      createdAt: new Date(project.createdAt),
+      updatedAt: new Date(project.updatedAt),
+    };
+  };
   return (
     <>
       <style>
@@ -104,7 +107,7 @@ export const ProjectsPage: React.FC = () => {
       >
         {/* Background Circles */}
         <FloatingCircles variant="default" />
-        
+
         {!currentUser ? (
           <SlideIn direction="up">
             <Box
@@ -279,158 +282,10 @@ export const ProjectsPage: React.FC = () => {
                     }}
                   >
                     {projects.map((project) => (
-                      <SlideIn key={project.id} direction="up">
-                        <Box>
-                          <Card
-                            sx={{
-                              background: 'rgba(255, 255, 255, 0.15)',
-                              backdropFilter: 'blur(15px)',
-                              border: '1px solid rgba(255, 255, 255, 0.2)',
-                              borderRadius: 2,
-                              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                              overflow: 'hidden',
-                              position: 'relative',
-                              '&:hover': {
-                                background: 'rgba(255, 255, 255, 0.2)',
-                                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-                              },
-                              transition: 'all 0.3s ease',
-                              '&::before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                height: 4,
-                                background:
-                                  'linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3))',
-                              },
-                            }}
-                          >
-                            <CardContent sx={{ p: 3 }}>
-                              <Box
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="space-between"
-                                mb={2}
-                              >
-                                <Box display="flex" alignItems="center" gap={2}>
-                                  <Box
-                                    sx={{
-                                      p: 1.5,
-                                      borderRadius: 2,
-                                      background: 'rgba(255, 255, 255, 0.2)',
-                                    }}
-                                  >
-                                    <ProjectIcon
-                                      sx={{
-                                        color: 'white',
-                                        fontSize: 24,
-                                      }}
-                                    />
-                                  </Box>
-                                  <Box>
-                                    <Typography
-                                      variant="h6"
-                                      fontWeight={600}
-                                      sx={{ color: 'white' }}
-                                    >
-                                      {project.name}
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                                    >
-                                      {project.key}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                                {(() => {
-                                  const statusInfo = getProjectStatus(project);
-                                  return (
-                                    <Chip
-                                      label={statusInfo.status}
-                                      size="small"
-                                      sx={{
-                                        backgroundColor:
-                                          'rgba(255, 255, 255, 0.2)',
-                                        color: 'white',
-                                        border:
-                                          '1px solid rgba(255, 255, 255, 0.3)',
-                                        fontWeight: 600,
-                                      }}
-                                    />
-                                  );
-                                })()}
-                              </Box>
-
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  color: 'rgba(255, 255, 255, 0.8)',
-                                  mb: 3,
-                                  lineHeight: 1.6,
-                                }}
-                              >
-                                {project.description}
-                              </Typography>
-
-                              <Box mb={3}>
-                                <Typography
-                                  variant="caption"
-                                  sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                                >
-                                  Created {formatDate(project.createdAt)}
-                                </Typography>
-                              </Box>
-
-                              <Box display="flex" gap={3} mb={3}>
-                                <Box display="flex" alignItems="center" gap={1}>
-                                  <ProjectIcon
-                                    sx={{
-                                      fontSize: 18,
-                                      color: 'rgba(255, 255, 255, 0.7)',
-                                    }}
-                                  />
-                                  <Typography
-                                    variant="caption"
-                                    sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                                  >
-                                    Project Key: {project.key}
-                                  </Typography>
-                                </Box>
-                              </Box>
-
-                              <Box display="flex" justifyContent="flex-end">
-                                <Button
-                                  size="small"
-                                  variant="contained"
-                                  onClick={() => {
-                                    navigate(`/projects/${project.id}`);
-                                  }}
-                                  sx={{
-                                    borderRadius: '25px',
-                                    textTransform: 'none',
-                                    px: 3,
-                                    py: 1,
-                                    background: 'rgba(255, 255, 255, 0.2)',
-                                    backdropFilter: 'blur(10px)',
-                                    border:
-                                      '1px solid rgba(255, 255, 255, 0.3)',
-                                    color: 'white',
-                                    fontWeight: 600,
-                                    '&:hover': {
-                                      background: 'rgba(255, 255, 255, 0.25)',
-                                    },
-                                  }}
-                                >
-                                  Open
-                                </Button>
-                              </Box>
-                            </CardContent>
-                          </Card>
-                        </Box>
-                      </SlideIn>
+                      <ProjectCard
+                        key={project.id}
+                        project={convertToRecentProject(project)}
+                      />
                     ))}
                   </Box>
                 </StaggerContainer>
