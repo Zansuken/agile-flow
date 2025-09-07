@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { FirebaseService } from '../firebase/firebase.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { UsersService } from '../users/users.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import type { Comment } from './interfaces/comment.interface';
@@ -41,6 +42,7 @@ export class CommentsService {
   constructor(
     private firebaseService: FirebaseService,
     private notificationsService: NotificationsService,
+    private usersService: UsersService,
   ) {}
 
   async create(
@@ -132,11 +134,10 @@ export class CommentsService {
     // Verify user has access to the project
     await this.verifyProjectAccess(taskData.projectId, userId);
 
-    // Get all comments for this task
+    // Get all comments for this task (without orderBy to avoid index requirement)
     const snapshot = await firestore
       .collection(this.collection)
       .where('taskId', '==', taskId)
-      .orderBy('createdAt', 'asc')
       .get();
 
     const comments = await Promise.all(
@@ -155,6 +156,9 @@ export class CommentsService {
         return this.populateAuthorData(comment);
       }),
     );
+
+    // Sort comments by createdAt in memory
+    comments.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
     // Build threaded structure
     return this.buildThreadedComments(comments);
@@ -340,9 +344,17 @@ export class CommentsService {
     projectId: string,
     commentId: string,
     authorId: string,
-    mentionedUserIds: string[],
+    mentionedUsernames: string[],
   ): Promise<void> {
     try {
+      // Resolve mentioned usernames to Firebase UIDs
+      let mentionedUserIds: string[] = [];
+      if (mentionedUsernames.length > 0) {
+        const mentionedUsers =
+          await this.usersService.findUsersByDisplayNames(mentionedUsernames);
+        mentionedUserIds = mentionedUsers.map((user) => user.id);
+      }
+
       const firestore = this.firebaseService.getFirestore();
 
       // Get task details
@@ -355,11 +367,33 @@ export class CommentsService {
       const authorData = authorDoc.data() as UserData;
       const authorName = authorData?.displayName || 'Unknown User';
 
-      // Get assigned user ID
-      const assignedUserId = taskData?.assignedTo as string;
+      // Resolve assigned user ID (check if it's a Firebase UID or username)
+      let assignedUserId = taskData?.assignedTo as string;
 
-      // Create comment notifications
       if (assignedUserId) {
+        // Check if it's a Firebase UID (exists in users collection)
+        const assignedUserDoc = await firestore
+          .collection('users')
+          .doc(assignedUserId)
+          .get();
+
+        if (!assignedUserDoc.exists) {
+          // Try to find user by displayName
+          const usersByDisplayName = await firestore
+            .collection('users')
+            .where('displayName', '==', assignedUserId)
+            .get();
+
+          if (!usersByDisplayName.empty) {
+            assignedUserId = usersByDisplayName.docs[0].id;
+          } else {
+            assignedUserId = '';
+          }
+        }
+      }
+
+      // Create comment notifications for assignee
+      if (assignedUserId && assignedUserId !== authorId) {
         await this.notificationsService.createCommentNotification(
           taskId,
           projectId,

@@ -84,6 +84,57 @@ export class UsersService {
     }
   }
 
+  async findUsersByDisplayNames(displayNames: string[]): Promise<User[]> {
+    if (displayNames.length === 0) return [];
+
+    const firestore = this.firebaseService.getFirestore();
+
+    try {
+      // Get all users and filter by display name in memory
+      // (Firestore doesn't support 'in' operator with case-insensitive search)
+      const snapshot = await firestore.collection(this.collection).get();
+
+      const users: User[] = [];
+      const lowerDisplayNames = displayNames.map((name) => name.toLowerCase());
+
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data();
+
+        const email = (data?.email as string) || '';
+        const displayName = (data?.displayName as string) || '';
+
+        // Check if display name matches any of the requested names
+        if (
+          displayName &&
+          lowerDisplayNames.includes(displayName.toLowerCase())
+        ) {
+          users.push({
+            id: doc.id,
+            email,
+            displayName,
+            photoURL: (data?.photoURL as string) || undefined,
+            role: (data?.role as string) || 'developer',
+            createdAt: this.convertTimestamp(data?.createdAt),
+            updatedAt: this.convertTimestamp(data?.updatedAt),
+          });
+        }
+      });
+
+      console.log(
+        `🔍 [UsersService] Found ${users.length} users for display names:`,
+        displayNames,
+      );
+      users.forEach((user) => {
+        console.log(`  - ${user.displayName} -> ${user.id}`);
+      });
+
+      return users;
+    } catch (error) {
+      console.error('Error finding users by display names:', error);
+      return [];
+    }
+  }
+
   async ensureUserProfile(
     authUser: DecodedIdToken,
     profileData?: { displayName?: string; photoURL?: string },

@@ -174,6 +174,33 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                   }
                   onInputChange={(_, value) => onSearchUsers(value)}
                   loading={searchingUsers}
+                  renderOption={(props, option) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <Box component="li" key={key} {...optionProps}>
+                        <Box
+                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                        >
+                          <Avatar
+                            src={option.photoURL}
+                            sx={{ width: 24, height: 24 }}
+                          >
+                            {(option.displayName ||
+                              option.email ||
+                              'U')[0].toUpperCase()}
+                          </Avatar>
+                          <Box>
+                            <Typography variant="body2">
+                              {option.displayName || 'Unknown User'}
+                            </Typography>
+                            <Typography variant="caption" color="textPrimary">
+                              {option.email}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    );
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -204,12 +231,22 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
               </Box>
             ) : (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Avatar sx={{ width: 24, height: 24 }}>
+                <Avatar
+                  src={task.assignedToUser?.photoURL}
+                  sx={{ width: 24, height: 24 }}
+                >
                   {task.assignedToUser?.displayName?.charAt(0) || 'U'}
                 </Avatar>
-                <Typography sx={{ color: 'white' }}>
-                  {task.assignedToUser?.displayName || 'Unassigned'}
-                </Typography>
+                <Box>
+                  <Typography sx={{ color: 'white' }}>
+                    {task.assignedToUser?.displayName || 'Unassigned'}
+                  </Typography>
+                  {task.assignedToUser?.email && (
+                    <Typography variant="caption" color="textPrimary">
+                      {task.assignedToUser.email}
+                    </Typography>
+                  )}
+                </Box>
               </Box>
             )}
           </Box>
@@ -312,12 +349,22 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
               Created By
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ width: 24, height: 24 }}>
+              <Avatar
+                src={task.createdByUser?.photoURL}
+                sx={{ width: 24, height: 24 }}
+              >
                 {task.createdByUser?.displayName?.charAt(0) || 'U'}
               </Avatar>
-              <Typography sx={{ color: 'white' }}>
-                {task.createdByUser?.displayName || 'Unknown'}
-              </Typography>
+              <Box>
+                <Typography sx={{ color: 'white' }}>
+                  {task.createdByUser?.displayName || 'Unknown'}
+                </Typography>
+                {task.createdByUser?.email && (
+                  <Typography variant="caption" color="textPrimary">
+                    {task.createdByUser.email}
+                  </Typography>
+                )}
+              </Box>
             </Box>
           </Box>
 

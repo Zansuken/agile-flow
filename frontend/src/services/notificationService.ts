@@ -22,17 +22,22 @@ class NotificationService {
 
   // Mark notification as read
   async markAsRead(notificationId: string): Promise<void> {
-    await apiService.patch(`/notifications/${notificationId}/read`, {});
+    await apiService.put(`/notifications/${notificationId}/read`, {});
   }
 
   // Mark all notifications as read
   async markAllAsRead(): Promise<void> {
-    await apiService.patch('/notifications/mark-all-read', {});
+    await apiService.put('/notifications/mark-all-read', {});
   }
 
   // Delete notification
   async deleteNotification(notificationId: string): Promise<void> {
     await apiService.delete(`/notifications/${notificationId}`);
+  }
+
+  // Delete all notifications
+  async deleteAllNotifications(): Promise<void> {
+    await apiService.delete('/notifications');
   }
 
   // Cleanup old notifications

@@ -1,6 +1,8 @@
 import {
   AccountCircle as AccountIcon,
+  ClearAll as ClearAllIcon,
   Dashboard as DashboardIcon,
+  Delete as DeleteIcon,
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
   FolderOpen as ProjectsIcon,
@@ -11,6 +13,7 @@ import {
   Badge,
   Box,
   Button,
+  Chip,
   Drawer,
   IconButton,
   List,
@@ -56,7 +59,7 @@ export const Navbar: React.FC = () => {
         setNotifications(userNotifications);
         setUnreadCount(userNotifications.filter((n) => !n.isRead).length);
       } catch (error) {
-        console.error('Failed to load notifications:', error);
+        console.error('❌ Failed to load notifications:', error);
       }
     };
 
@@ -81,15 +84,78 @@ export const Navbar: React.FC = () => {
     setNotificationAnchor(null);
   };
 
-  const handleMarkNotificationRead = async (notificationId: string) => {
+  const handleClearAllNotifications = async () => {
     try {
-      await notificationService.markAsRead(notificationId);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n)),
-      );
-      setUnreadCount((prev) => Math.max(0, prev - 1));
+      await notificationService.deleteAllNotifications();
+      setNotifications([]);
+      setUnreadCount(0);
     } catch (error) {
-      console.error('Failed to mark notification as read:', error);
+      console.error('Failed to clear all notifications:', error);
+    }
+  };
+
+  const handleDeleteNotification = async (
+    notificationId: string,
+    event: React.MouseEvent,
+  ) => {
+    event.stopPropagation(); // Prevent notification click
+    try {
+      await notificationService.deleteNotification(notificationId);
+
+      // Remove from local state
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+
+      // Update unread count if the deleted notification was unread
+      const deletedNotification = notifications.find(
+        (n) => n.id === notificationId,
+      );
+      if (deletedNotification && !deletedNotification.isRead) {
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      }
+    } catch (error) {
+      console.error('Failed to delete notification:', error);
+    }
+  };
+
+  const handleNotificationItemClick = async (notification: Notification) => {
+    try {
+      // Delete the notification when clicked (user has seen it)
+      await notificationService.deleteNotification(notification.id);
+
+      // Remove from local state
+      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+
+      // Update unread count if the deleted notification was unread
+      if (!notification.isRead) {
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      }
+
+      // Navigate to task and focus on comment
+      if (notification.taskId && notification.projectId) {
+        const projectId = notification.projectId;
+        const taskId = notification.taskId;
+        const commentId = notification.commentId;
+
+        // Close notification dropdown
+        handleNotificationClose();
+
+        // Navigate to task details with comment focus
+        if (commentId) {
+          navigate(
+            `/projects/${projectId}/tasks/${taskId}?focusComment=${commentId}`,
+          );
+        } else {
+          navigate(`/projects/${projectId}/tasks/${taskId}`);
+        }
+      } else {
+        console.warn('⚠️ Notification missing required data:', {
+          taskId: notification.taskId,
+          projectId: notification.projectId,
+          notification,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to handle notification click:', error);
     }
   };
 
@@ -347,16 +413,35 @@ export const Navbar: React.FC = () => {
               </Badge>
             </IconButton>
 
-            <Typography
-              variant="body2"
+            <Box
               sx={{
-                color: 'rgba(255, 255, 255, 0.9)',
-                fontWeight: 500,
-                display: { xs: 'none', sm: 'block' },
+                display: { xs: 'none', sm: 'flex' },
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                mr: 1,
               }}
             >
-              {currentUserData?.displayName || currentUser?.email}
-            </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontWeight: 500,
+                  lineHeight: 1.2,
+                }}
+              >
+                {currentUserData?.displayName || 'User'}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: '0.75rem',
+                  lineHeight: 1,
+                }}
+              >
+                {currentUser?.email}
+              </Typography>
+            </Box>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -445,89 +530,250 @@ export const Navbar: React.FC = () => {
               }}
               sx={{
                 '& .MuiPaper-root': {
-                  background: 'rgba(255, 255, 255, 0.15)',
+                  background: 'rgba(15, 15, 25, 0.95)',
                   backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: 2,
-                  mt: 1,
-                  maxWidth: 400,
-                  maxHeight: 500,
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: 1,
+                  minWidth: 420,
+                  maxHeight: 600,
                   overflow: 'hidden',
+                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
                 },
               }}
             >
               <Paper
                 sx={{
                   background: 'transparent',
-                  maxHeight: 400,
+                  maxHeight: 520,
                   overflow: 'auto',
+                  '&::-webkit-scrollbar': {
+                    width: '6px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '3px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    borderRadius: '3px',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.3)',
+                    },
+                  },
                 }}
               >
                 <Box
                   sx={{
                     p: 2,
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                    pb: 1,
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    background: 'rgba(255, 255, 255, 0.02)',
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    sx={{ color: 'white', fontWeight: 600 }}
-                  >
-                    Notifications
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <NotificationsIcon sx={{ color: 'white', fontSize: 20 }} />
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: 'white',
+                        fontWeight: 600,
+                        fontSize: '1.1rem',
+                      }}
+                    >
+                      Notifications
+                    </Typography>
+                    {unreadCount > 0 && (
+                      <Chip
+                        label={unreadCount}
+                        size="small"
+                        sx={{
+                          backgroundColor: 'rgba(255, 64, 64, 0.8)',
+                          color: 'white',
+                          fontSize: '0.75rem',
+                          height: 20,
+                          '& .MuiChip-label': { px: 1 },
+                        }}
+                      />
+                    )}
+                  </Box>
+                  {notifications.length > 0 && (
+                    <Button
+                      size="small"
+                      startIcon={<ClearAllIcon sx={{ fontSize: 16 }} />}
+                      onClick={handleClearAllNotifications}
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontSize: '0.8rem',
+                        textTransform: 'none',
+                        borderRadius: 2,
+                        px: 2,
+                        py: 0.5,
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                          color: 'rgba(255, 255, 255, 0.9)',
+                        },
+                      }}
+                    >
+                      Clear all
+                    </Button>
+                  )}
                 </Box>
                 {notifications.length === 0 ? (
-                  <Box sx={{ p: 3, textAlign: 'center' }}>
-                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <Box
+                    sx={{
+                      p: 4,
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 2,
+                    }}
+                  >
+                    <NotificationsIcon
+                      sx={{
+                        fontSize: 48,
+                        color: 'rgba(255, 255, 255, 0.3)',
+                        mb: 1,
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontSize: '0.9rem',
+                        fontWeight: 500,
+                      }}
+                    >
                       No notifications yet
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        fontSize: '0.8rem',
+                      }}
+                    >
+                      We'll notify you when something happens
                     </Typography>
                   </Box>
                 ) : (
                   <List sx={{ p: 0 }}>
-                    {notifications.slice(0, 10).map((notification) => (
+                    {notifications.slice(0, 10).map((notification, index) => (
                       <ListItemButton
                         key={notification.id}
                         onClick={() =>
-                          handleMarkNotificationRead(notification.id)
+                          handleNotificationItemClick(notification)
                         }
                         sx={{
-                          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderBottom:
+                            index < notifications.slice(0, 10).length - 1
+                              ? '1px solid rgba(255, 255, 255, 0.06)'
+                              : 'none',
                           backgroundColor: notification.isRead
                             ? 'transparent'
-                            : 'rgba(255, 255, 255, 0.05)',
+                            : 'rgba(102, 146, 255, 0.08)',
+                          borderLeft: notification.isRead
+                            ? 'none'
+                            : '3px solid rgba(102, 146, 255, 0.6)',
+                          py: 2,
+                          px: 3,
                           '&:hover': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            backgroundColor: notification.isRead
+                              ? 'rgba(255, 255, 255, 0.05)'
+                              : 'rgba(102, 146, 255, 0.12)',
                           },
+                          pr: 7, // Add padding to make room for delete button
+                          position: 'relative',
+                          transition: 'all 0.2s ease-in-out',
                         }}
                       >
-                        <ListItemText
-                          primary={notification.title}
-                          secondary={
-                            <Box>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  color: 'rgba(255, 255, 255, 0.8)',
-                                  mb: 0.5,
-                                }}
-                              >
-                                {notification.message}
-                              </Typography>
-                              <Typography
-                                variant="caption"
-                                sx={{ color: 'rgba(255, 255, 255, 0.6)' }}
-                              >
-                                {formatDate(notification.createdAt)}
-                              </Typography>
-                            </Box>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: 2,
+                            width: '100%',
+                          }}
+                        >
+                          {/* Notification Icon */}
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: notification.isRead
+                                ? 'rgba(255, 255, 255, 0.3)'
+                                : 'rgba(102, 146, 255, 0.8)',
+                              mt: 1,
+                              flexShrink: 0,
+                            }}
+                          />
+
+                          {/* Content */}
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                color: 'white',
+                                fontWeight: notification.isRead ? 500 : 600,
+                                fontSize: '0.9rem',
+                                lineHeight: 1.3,
+                                mb: 0.5,
+                              }}
+                            >
+                              {notification.title}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                fontSize: '0.8rem',
+                                lineHeight: 1.4,
+                                mb: 1,
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                              }}
+                            >
+                              {notification.message}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                fontSize: '0.75rem',
+                                fontWeight: 500,
+                              }}
+                            >
+                              {formatDate(notification.createdAt)}
+                            </Typography>
+                          </Box>
+                        </Box>
+
+                        {/* Delete Button */}
+                        <IconButton
+                          size="small"
+                          onClick={(event) =>
+                            handleDeleteNotification(notification.id, event)
                           }
                           sx={{
-                            '& .MuiListItemText-primary': {
-                              color: 'white',
-                              fontWeight: notification.isRead ? 400 : 600,
+                            position: 'absolute',
+                            right: 8,
+                            top: 12,
+                            color: 'rgba(255, 255, 255, 0.4)',
+                            width: 28,
+                            height: 28,
+                            '&:hover': {
+                              color: 'rgba(255, 64, 64, 0.8)',
+                              backgroundColor: 'rgba(255, 64, 64, 0.1)',
                             },
+                            transition: 'all 0.2s ease-in-out',
                           }}
-                        />
+                        >
+                          <DeleteIcon sx={{ fontSize: 16 }} />
+                        </IconButton>
                       </ListItemButton>
                     ))}
                   </List>

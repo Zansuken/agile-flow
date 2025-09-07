@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseService } from '../firebase/firebase.service';
-import type { Notification } from './interfaces/notification.interface';
+import { Notification } from './interfaces/notification.interface';
 
 interface FirestoreTimestamp {
   _seconds: number;
@@ -118,15 +118,17 @@ export class NotificationsService {
   async getUserNotifications(userId: string): Promise<Notification[]> {
     const firestore = this.firebaseService.getFirestore();
 
+    // Get notifications without orderBy to avoid index requirement
     const snapshot = await firestore
       .collection(this.collection)
       .where('userId', '==', userId)
-      .orderBy('createdAt', 'desc')
-      .limit(50) // Limit to last 50 notifications
       .get();
 
-    return snapshot.docs.map((doc) => {
+    const notifications = snapshot.docs.map((doc) => {
       const data = doc.data();
+      console.log(
+        `📝 [DEBUG] Processing notification ${doc.id} for user ${data.userId}`,
+      );
       return {
         id: doc.id,
         ...data,
@@ -134,6 +136,16 @@ export class NotificationsService {
         readAt: data.readAt ? this.convertTimestamp(data.readAt) : undefined,
       } as Notification;
     });
+
+    // Sort by createdAt descending in memory and limit to 50
+    const sortedNotifications = notifications
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 50);
+
+    console.log(
+      `✅ [NotificationService] Returning ${sortedNotifications.length} sorted notifications`,
+    );
+    return sortedNotifications;
   }
 
   async getUnreadCount(userId: string): Promise<number> {
@@ -218,6 +230,26 @@ export class NotificationsService {
     }
 
     await firestore.collection(this.collection).doc(notificationId).delete();
+  }
+
+  async deleteAllNotifications(userId: string): Promise<void> {
+    const firestore = this.firebaseService.getFirestore();
+
+    const snapshot = await firestore
+      .collection(this.collection)
+      .where('userId', '==', userId)
+      .get();
+
+    if (snapshot.empty) {
+      return;
+    }
+
+    const batch = firestore.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
   }
 
   async cleanupOldNotifications(): Promise<void> {

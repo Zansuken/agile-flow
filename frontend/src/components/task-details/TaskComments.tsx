@@ -14,14 +14,14 @@ import {
   Divider,
   IconButton,
   List,
-  ListItem,
   Menu,
   MenuItem,
   Paper,
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { commentService } from '../../services/commentService';
 import type { Comment } from '../../types/comment';
 import type { TaskUser } from '../../types/task';
@@ -103,16 +103,21 @@ const CommentItem: React.FC<CommentItemProps> = ({
   };
 
   return (
-    <Box sx={{ ml: depth * 3 }}>
-      <ListItem sx={{ p: 0, mb: 2, alignItems: 'flex-start' }}>
+    <Box
+      id={`comment-${comment.id}`}
+      sx={{
+        ml: depth * 3,
+        scrollMarginTop: '100px', // Space for sticky headers
+      }}
+    >
+      <Box sx={{ p: 0, mb: 2, alignItems: 'flex-start' }}>
         <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
           <Avatar
             src={comment.author?.photoURL}
             sx={{ width: 32, height: 32, mt: 0.5 }}
           >
             {comment.author?.displayName?.charAt(0) || 'U'}
-          </Avatar>
-
+          </Avatar>{' '}
           <Box sx={{ flexGrow: 1, minWidth: 0 }}>
             {/* Comment Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -225,7 +230,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
               <Box
                 sx={{ mt: 2, display: 'flex', gap: 1, alignItems: 'flex-end' }}
               >
-                <Avatar sx={{ width: 24, height: 24 }}>
+                <Avatar
+                  src={currentUser?.photoURL}
+                  alt={currentUser?.displayName}
+                  sx={{ width: 24, height: 24 }}
+                >
                   {currentUser?.displayName?.charAt(0) || 'U'}
                 </Avatar>
                 <TextField
@@ -275,7 +284,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
             )}
           </Box>
         </Box>
-      </ListItem>
+      </Box>
 
       {/* Context Menu */}
       <Menu
@@ -322,6 +331,8 @@ export const TaskComments: React.FC<TaskCommentsProps> = ({
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const focusTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadComments = useCallback(async () => {
     try {
@@ -340,6 +351,69 @@ export const TaskComments: React.FC<TaskCommentsProps> = ({
   useEffect(() => {
     loadComments();
   }, [loadComments]);
+
+  // Handle comment focusing from notifications
+  useEffect(() => {
+    const focusComment = searchParams.get('focusComment');
+
+    if (focusComment && comments.length > 0) {
+      // Clear any existing timeout
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+
+      // Delay to ensure comments are rendered
+      focusTimeoutRef.current = setTimeout(() => {
+        const commentElement = document.getElementById(
+          `comment-${focusComment}`,
+        );
+
+        if (commentElement) {
+          commentElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+
+          // Apply focus styling
+          commentElement.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+          commentElement.style.borderRadius = '8px';
+          commentElement.style.padding = '8px';
+          commentElement.style.margin = '8px 0';
+          commentElement.style.transition = 'background-color 0.3s ease';
+
+          // Remove focus highlight after 3 seconds
+          setTimeout(() => {
+            commentElement.style.backgroundColor = '';
+            commentElement.style.borderRadius = '';
+            commentElement.style.padding = '';
+            commentElement.style.margin = '';
+            commentElement.style.transition = '';
+          }, 3000);
+
+          // Remove the focus parameter from URL
+          const newSearchParams = new URLSearchParams(searchParams);
+          newSearchParams.delete('focusComment');
+          setSearchParams(newSearchParams, { replace: true });
+        } else {
+          // List all comment elements for debugging if needed
+          const allCommentElements =
+            document.querySelectorAll('[id^="comment-"]');
+          console.warn(
+            'Comment element not found for ID:',
+            `comment-${focusComment}`,
+            'Available:',
+            Array.from(allCommentElements).map((el) => el.id),
+          );
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+    };
+  }, [comments, searchParams, setSearchParams]);
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
@@ -424,6 +498,8 @@ export const TaskComments: React.FC<TaskCommentsProps> = ({
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
           <Avatar
+            src={currentUser?.photoURL}
+            alt={currentUser?.displayName}
             sx={{
               width: 32,
               height: 32,

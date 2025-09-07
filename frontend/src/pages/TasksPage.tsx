@@ -328,6 +328,7 @@ export const TasksPage: React.FC = () => {
       {stats && <TasksStatsCards stats={stats} />}
 
       <TasksTable
+        projectId={projectId!}
         tasks={tasks}
         userOptions={userOptions}
         searchingUsers={searchingUsers}

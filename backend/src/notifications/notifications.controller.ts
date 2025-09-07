@@ -26,7 +26,11 @@ export class NotificationsController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getUserNotifications(@CurrentUser() user: DecodedIdToken) {
-    return await this.notificationsService.getUserNotifications(user.uid);
+    const result = await this.notificationsService.getUserNotifications(
+      user.uid,
+    );
+
+    return result;
   }
 
   @Get('unread-count')
@@ -85,6 +89,18 @@ export class NotificationsController {
   ) {
     await this.notificationsService.deleteNotification(id, user.uid);
     return { message: 'Notification deleted successfully' };
+  }
+
+  @Delete()
+  @ApiOperation({ summary: 'Delete all user notifications' })
+  @ApiResponse({
+    status: 200,
+    description: 'All notifications deleted successfully',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async deleteAllNotifications(@CurrentUser() user: DecodedIdToken) {
+    await this.notificationsService.deleteAllNotifications(user.uid);
+    return { message: 'All notifications deleted successfully' };
   }
 
   @Delete('cleanup')
