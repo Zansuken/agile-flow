@@ -1,1 +1,1 @@
-export { TeamAvatars, type TeamAvatarsProps } from './TeamAvatarsComponent';
+export { TeamAvatars } from './TeamAvatarsComponent';
