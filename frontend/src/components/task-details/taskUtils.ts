@@ -30,8 +30,9 @@ export const getPriorityColor = (priority: TaskPriority) => {
   }
 };
 
-export const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
+export const formatDate = (date: Date | string | number) => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  return dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

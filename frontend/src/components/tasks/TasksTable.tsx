@@ -20,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type {
   Task,
   TaskPriority,
@@ -29,6 +30,7 @@ import type {
 } from '../../types/task';
 
 interface TasksTableProps {
+  projectId: string;
   tasks: Task[];
   userOptions: TaskUser[];
   searchingUsers: boolean;
@@ -43,6 +45,7 @@ interface TasksTableProps {
 }
 
 export const TasksTable: React.FC<TasksTableProps> = ({
+  projectId,
   tasks,
   userOptions,
   searchingUsers,
@@ -51,6 +54,7 @@ export const TasksTable: React.FC<TasksTableProps> = ({
   onDeleteTask,
   onSearchUsers,
 }) => {
+  const navigate = useNavigate();
   const formatDate = (date: Date | null): string => {
     if (!date) return '';
     return date.toLocaleDateString();
@@ -377,8 +381,9 @@ export const TasksTable: React.FC<TasksTableProps> = ({
                         <Tooltip title="View Details" arrow>
                           <IconButton
                             onClick={() =>
-                              // Navigate to task details
-                              console.log('Navigate to task details:', task.id)
+                              navigate(
+                                `/projects/${projectId}/tasks/${task.id}`,
+                              )
                             }
                             sx={{ color: 'white' }}
                             size="small"

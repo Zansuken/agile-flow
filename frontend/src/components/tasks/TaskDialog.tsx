@@ -1,6 +1,6 @@
-import { Person } from '@mui/icons-material';
 import {
   Autocomplete,
+  Avatar,
   Box,
   Button,
   Dialog,
@@ -50,13 +50,11 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
   editingTask,
   formData,
   userOptions,
-  projectMembers,
   searchingUsers,
   onClose,
   onFormDataChange,
   onSave,
   onSearchUsers,
-  onUserOptionsChange,
 }) => {
   return (
     <Dialog
@@ -183,8 +181,11 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
           </FormControl>
 
           <Autocomplete
+            size="small"
+            fullWidth
             options={userOptions}
-            getOptionLabel={(option) => option.displayName || option.email}
+            getOptionLabel={(option) => option.displayName || 'Unknown User'}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             value={
               userOptions.find((user) => user.id === formData.assignedTo) ||
               null
@@ -194,52 +195,74 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
                 assignedTo: value?.id || '',
               });
             }}
-            onInputChange={(_, value) => onSearchUsers(value)}
+            onInputChange={(_, value) => {
+              if (value.length > 2 || value === '') {
+                onSearchUsers(value);
+              }
+            }}
             onOpen={() => {
               // Show all project members when dropdown opens
               if (userOptions.length === 0) {
-                onUserOptionsChange(projectMembers);
+                onSearchUsers('');
               }
             }}
             loading={searchingUsers}
-            renderInput={(params) => (
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props;
+              return (
+                <Box component="li" key={key} {...optionProps}>
+                  <Avatar
+                    src={option.photoURL}
+                    alt={option.displayName}
+                    sx={{ width: 32, height: 32, mr: 2 }}
+                  >
+                    {(option.displayName || option.email)?.[0]?.toUpperCase()}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="body2">
+                      {option.displayName || 'User'}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {option.email}
+                    </Typography>
+                  </Box>
+                </Box>
+              );
+            }}
+            renderInput={({ InputProps, ...params }) => (
               <TextField
                 {...params}
-                label="Assignee"
-                placeholder="Search for a user to assign..."
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    color: 'white',
-                    '& fieldset': {
+                InputProps={{
+                  ...InputProps,
+                  sx: {
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: 'rgba(255, 255, 255, 0.3)',
                     },
-                    '&:hover fieldset': {
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
                       borderColor: 'rgba(255, 255, 255, 0.5)',
                     },
-                    '&.Mui-focused fieldset': {
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                       borderColor: 'rgba(255, 255, 255, 0.7)',
                     },
+                  },
+                }}
+                InputLabelProps={{
+                  sx: {
+                    color: 'rgba(255, 255, 255, 0.8)',
+                  },
+                }}
+                label="Assigned To"
+                placeholder="Search users..."
+                sx={{
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: 'rgba(255, 255, 255, 0.9)',
                   },
                   '& .MuiInputLabel-root': {
                     color: 'rgba(255, 255, 255, 0.8)',
                   },
                 }}
               />
-            )}
-            renderOption={(props, option) => (
-              <Box component="li" {...props}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Person fontSize="small" />
-                  <Box>
-                    <Typography variant="body2">
-                      {option.displayName || 'Unknown User'}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {option.email}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
             )}
             sx={{
               '& .MuiAutocomplete-popupIndicator': {

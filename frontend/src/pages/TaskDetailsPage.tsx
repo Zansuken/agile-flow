@@ -18,7 +18,6 @@ import {
   TaskDescription,
   TaskDetailsSidebar,
   TaskHeader,
-  type Comment,
   type TaskEditData,
 } from '../components/task-details';
 import { AuthContext } from '../contexts/AuthContext';
@@ -48,23 +47,6 @@ export const TaskDetailsPage: React.FC = () => {
     message: '',
     severity: 'info' as 'error' | 'warning' | 'info' | 'success',
   });
-
-  // Comments state
-  const [newComment, setNewComment] = useState('');
-  const [comments] = useState<Comment[]>([
-    {
-      id: '1',
-      content: 'This looks good! Can we add some tests for this feature?',
-      author: 'John Doe',
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '2',
-      content: 'I have started working on this. Should be ready by tomorrow.',
-      author: 'Jane Smith',
-      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ]);
 
   // Editing state
   const [editData, setEditData] = useState<TaskEditData>({
@@ -184,12 +166,6 @@ export const TaskDetailsPage: React.FC = () => {
     }
   };
 
-  const handleAddComment = () => {
-    // TODO: Implement actual comment adding functionality
-    console.log('Adding comment:', newComment);
-    setNewComment('');
-  };
-
   const handleNavigateBack = () => {
     navigate('/projects/' + projectId + '/tasks');
   };
@@ -259,11 +235,9 @@ export const TaskDetailsPage: React.FC = () => {
             />
 
             <TaskComments
-              comments={comments}
-              newComment={newComment}
+              taskId={taskId!}
               currentUser={currentUser as TaskUser | null}
-              onNewCommentChange={setNewComment}
-              onAddComment={handleAddComment}
+              projectMembers={userOptions}
             />
           </Stack>
         </Grid>
