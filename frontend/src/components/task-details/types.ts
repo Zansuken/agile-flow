@@ -10,10 +10,5 @@ export interface TaskEditData {
   dueDate: string;
 }
 
-export interface Comment {
-  id: string;
-  content: string;
-  author: string;
-  createdAt: string;
-  avatar?: string;
-}
+// Re-export Comment from the centralized types
+export type { Comment } from '../../types/comment';

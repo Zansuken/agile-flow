@@ -2,11 +2,13 @@ import {
   AccountCircle as AccountIcon,
   Dashboard as DashboardIcon,
   Menu as MenuIcon,
+  Notifications as NotificationsIcon,
   FolderOpen as ProjectsIcon,
 } from '@mui/icons-material';
 import {
   AppBar,
   Avatar,
+  Badge,
   Box,
   Button,
   Drawer,
@@ -18,14 +20,19 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Paper,
+  Popover,
   Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { notificationService } from '../../services/notificationService';
+import type { Notification } from '../../types/notification';
+import { formatDate } from '../task-details/taskUtils';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -33,8 +40,30 @@ export const Navbar: React.FC = () => {
   const { currentUser, currentUserData, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [notificationAnchor, setNotificationAnchor] =
+    useState<null | HTMLElement>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md')); // md and below for mobile/tablet
+
+  // Load notifications
+  useEffect(() => {
+    const loadNotifications = async () => {
+      try {
+        const userNotifications =
+          await notificationService.getUserNotifications();
+        setNotifications(userNotifications);
+        setUnreadCount(userNotifications.filter((n) => !n.isRead).length);
+      } catch (error) {
+        console.error('Failed to load notifications:', error);
+      }
+    };
+
+    if (currentUser) {
+      loadNotifications();
+    }
+  }, [currentUser]);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,6 +71,26 @@ export const Navbar: React.FC = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNotificationClick = (event: React.MouseEvent<HTMLElement>) => {
+    setNotificationAnchor(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchor(null);
+  };
+
+  const handleMarkNotificationRead = async (notificationId: string) => {
+    try {
+      await notificationService.markAsRead(notificationId);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n)),
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
   };
 
   const handleDrawerToggle = () => {
@@ -277,6 +326,27 @@ export const Navbar: React.FC = () => {
               ml: isMobile ? 0 : 'auto',
             }}
           >
+            {/* Notification Bell */}
+            <IconButton
+              size="large"
+              aria-label="notifications"
+              onClick={handleNotificationClick}
+              sx={{
+                color: 'white',
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                p: { xs: 0.5, sm: 1 },
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  border: '2px solid rgba(255, 255, 255, 0.4)',
+                },
+                transition: 'all 0.3s ease',
+              }}
+            >
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
+              </Badge>
+            </IconButton>
+
             <Typography
               variant="body2"
               sx={{
@@ -358,6 +428,112 @@ export const Navbar: React.FC = () => {
               <MenuItem onClick={handleClose}>Settings</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
+
+            {/* Notification Popover */}
+            <Popover
+              id="notifications-popover"
+              open={Boolean(notificationAnchor)}
+              anchorEl={notificationAnchor}
+              onClose={handleNotificationClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              sx={{
+                '& .MuiPaper-root': {
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: 2,
+                  mt: 1,
+                  maxWidth: 400,
+                  maxHeight: 500,
+                  overflow: 'hidden',
+                },
+              }}
+            >
+              <Paper
+                sx={{
+                  background: 'transparent',
+                  maxHeight: 400,
+                  overflow: 'auto',
+                }}
+              >
+                <Box
+                  sx={{
+                    p: 2,
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{ color: 'white', fontWeight: 600 }}
+                  >
+                    Notifications
+                  </Typography>
+                </Box>
+                {notifications.length === 0 ? (
+                  <Box sx={{ p: 3, textAlign: 'center' }}>
+                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                      No notifications yet
+                    </Typography>
+                  </Box>
+                ) : (
+                  <List sx={{ p: 0 }}>
+                    {notifications.slice(0, 10).map((notification) => (
+                      <ListItemButton
+                        key={notification.id}
+                        onClick={() =>
+                          handleMarkNotificationRead(notification.id)
+                        }
+                        sx={{
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                          backgroundColor: notification.isRead
+                            ? 'transparent'
+                            : 'rgba(255, 255, 255, 0.05)',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          },
+                        }}
+                      >
+                        <ListItemText
+                          primary={notification.title}
+                          secondary={
+                            <Box>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: 'rgba(255, 255, 255, 0.8)',
+                                  mb: 0.5,
+                                }}
+                              >
+                                {notification.message}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                sx={{ color: 'rgba(255, 255, 255, 0.6)' }}
+                              >
+                                {formatDate(notification.createdAt)}
+                              </Typography>
+                            </Box>
+                          }
+                          sx={{
+                            '& .MuiListItemText-primary': {
+                              color: 'white',
+                              fontWeight: notification.isRead ? 400 : 600,
+                            },
+                          }}
+                        />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                )}
+              </Paper>
+            </Popover>
           </Box>
         </Toolbar>
       </AppBar>
