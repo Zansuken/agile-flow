@@ -1,1 +1,0 @@
-export { TeamAvatars } from './TeamAvatarsComponent';
