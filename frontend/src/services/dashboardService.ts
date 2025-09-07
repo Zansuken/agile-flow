@@ -1,5 +1,7 @@
 import type { Project } from '../types/project';
+import { TaskStatus } from '../types/task';
 import { apiService } from './api';
+import { taskService } from './taskService';
 
 // Type for Firebase Timestamp objects
 interface FirebaseTimestamp {
@@ -52,11 +54,48 @@ class DashboardService {
       });
       const totalMembers = allMemberIds.size;
 
-      // For now, we'll mock task-related stats since we don't have a tasks API yet
-      // In a real implementation, you'd fetch tasks data
-      const totalTasks = totalProjects * 8; // Roughly 8 tasks per project
-      const activeTasks = Math.floor(totalTasks * 0.6);
-      const completedTasks = totalTasks - activeTasks;
+      // Calculate real task statistics across all projects
+      let totalTasks = 0;
+      let completedTasks = 0;
+      let activeTasks = 0;
+
+      try {
+        // Fetch tasks for all projects in parallel
+        const taskPromises = projects.map((project) =>
+          taskService.getProjectTasks(project.id).catch((err) => {
+            console.warn(
+              `Failed to fetch tasks for project ${project.id}:`,
+              err,
+            );
+            return []; // Return empty array if project tasks can't be fetched
+          }),
+        );
+
+        const allProjectTasks = await Promise.all(taskPromises);
+
+        // Flatten and count tasks
+        const allTasks = allProjectTasks.flat();
+        totalTasks = allTasks.length;
+        completedTasks = allTasks.filter(
+          (task) => task.status === TaskStatus.DONE,
+        ).length;
+        activeTasks = allTasks.filter(
+          (task) =>
+            task.status === TaskStatus.IN_PROGRESS ||
+            task.status === TaskStatus.IN_REVIEW ||
+            task.status === TaskStatus.TODO,
+        ).length;
+      } catch (error) {
+        console.warn(
+          'Error fetching task data for dashboard stats, using fallback:',
+          error,
+        );
+        // Fallback to estimated values if task fetching fails
+        totalTasks = totalProjects * 8; // Roughly 8 tasks per project
+        activeTasks = Math.floor(totalTasks * 0.6);
+        completedTasks = totalTasks - activeTasks;
+      }
+
       const onlineMembers = Math.floor(totalMembers * 0.3); // Mock 30% online
 
       return {
@@ -97,12 +136,13 @@ class DashboardService {
         )
         .slice(0, limit);
 
-      return sortedProjects.map((project) => ({
+      // Calculate progress for each project asynchronously
+      const recentProjectsPromises = sortedProjects.map(async (project) => ({
         id: project.id,
         name: project.name,
         description: project.description,
-        // Calculate progress based on status or use a mock value
-        progress: this.calculateProjectProgress(project),
+        // Calculate progress based on actual task completion
+        progress: await this.calculateProjectProgress(project),
         team: project.memberIds?.length || 0,
         // Mock due date for now (you might want to add this field to your Project model)
         dueDate: this.mockDueDate(project),
@@ -111,23 +151,50 @@ class DashboardService {
         createdAt: this.convertToDate(project.createdAt),
         updatedAt: this.convertToDate(project.updatedAt),
       }));
+
+      // Wait for all progress calculations to complete
+      return await Promise.all(recentProjectsPromises);
     } catch (error) {
       console.error('Error fetching recent projects:', error);
       return [];
     }
   }
 
-  private calculateProjectProgress(project: Project): number {
-    // Mock progress calculation based on project status
-    switch (project.status) {
-      case 'active':
-        return Math.floor(Math.random() * 40) + 30; // 30-70% for active projects
-      case 'archived':
-        return 100;
-      case 'inactive':
-        return Math.floor(Math.random() * 30) + 10; // 10-40% for inactive
-      default:
-        return Math.floor(Math.random() * 50) + 25; // 25-75% default
+  private async calculateProjectProgress(project: Project): Promise<number> {
+    try {
+      // Fetch all tasks for this project
+      const tasks = await taskService.getProjectTasks(project.id);
+
+      // If no tasks exist, return 0% progress
+      if (tasks.length === 0) {
+        return 0;
+      }
+
+      // Count completed tasks (status === 'done')
+      const completedTasks = tasks.filter(
+        (task) => task.status === TaskStatus.DONE,
+      ).length;
+
+      // Calculate progress percentage
+      const progress = Math.round((completedTasks / tasks.length) * 100);
+
+      return progress;
+    } catch (error) {
+      console.error(
+        `Error calculating progress for project ${project.id}:`,
+        error,
+      );
+      // Fallback to mock progress calculation if task fetching fails
+      switch (project.status) {
+        case 'active':
+          return Math.floor(Math.random() * 40) + 30; // 30-70% for active projects
+        case 'archived':
+          return 100;
+        case 'inactive':
+          return Math.floor(Math.random() * 30) + 10; // 10-40% for inactive
+        default:
+          return Math.floor(Math.random() * 50) + 25; // 25-75% default
+      }
     }
   }
 

@@ -175,6 +175,50 @@ export class UsersService {
     }
   }
 
+  async getUsersByIds(userIds: string[]): Promise<User[]> {
+    if (!userIds || userIds.length === 0) {
+      return [];
+    }
+
+    const firestore = this.firebaseService.getFirestore();
+
+    try {
+      // Firestore has a limit of 10 documents per `in` query
+      // If we have more than 10 IDs, we'll need to batch them
+      const batches: string[][] = [];
+      for (let i = 0; i < userIds.length; i += 10) {
+        batches.push(userIds.slice(i, i + 10));
+      }
+
+      const users: User[] = [];
+
+      for (const batch of batches) {
+        const snapshot = await firestore
+          .collection(this.collection)
+          .where('__name__', 'in', batch)
+          .get();
+
+        snapshot.docs.forEach((doc) => {
+          const userData = doc.data();
+          users.push({
+            id: doc.id,
+            email: (userData?.email as string) || '',
+            displayName: (userData?.displayName as string) || '',
+            photoURL: (userData?.photoURL as string) || undefined,
+            role: (userData?.role as string) || 'developer',
+            createdAt: this.convertTimestamp(userData?.createdAt),
+            updatedAt: this.convertTimestamp(userData?.updatedAt),
+          });
+        });
+      }
+
+      return users;
+    } catch (error) {
+      console.error('Error getting users by IDs:', error);
+      return [];
+    }
+  }
+
   private convertTimestamp(timestamp: any): Date {
     if (
       timestamp &&

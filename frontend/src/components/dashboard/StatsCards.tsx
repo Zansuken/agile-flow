@@ -1,7 +1,6 @@
 import {
   FolderOpen as ProjectIcon,
   Assignment as TaskIcon,
-  People as TeamIcon,
   TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
 import {
@@ -15,7 +14,7 @@ import {
 import React from 'react';
 
 import type { DashboardStats } from '../../services/dashboardService.js';
-import { HoverCard, StaggerContainer } from '../animations/index.js';
+import { StaggerContainer } from '../animations/index.js';
 
 interface StatsCardsProps {
   stats: DashboardStats | null;
@@ -47,14 +46,6 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
         : '0/0',
     },
     {
-      title: 'Team Members',
-      value: stats?.totalMembers?.toString() || '0',
-      subtitle: `${stats?.onlineMembers || 0} online now`,
-      icon: TeamIcon,
-      color: theme.palette.success.main,
-      trend: stats?.onlineMembers ? `+${stats.onlineMembers}` : '+0',
-    },
-    {
       title: 'Project Progress',
       value: stats?.totalProjects
         ? `${Math.round((stats.activeProjects / stats.totalProjects) * 100)}%`
@@ -74,14 +65,14 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
           gridTemplateColumns: {
             xs: '1fr',
             sm: 'repeat(2, 1fr)',
-            md: 'repeat(4, 1fr)',
+            md: 'repeat(3, 1fr)',
           },
-          gap: 3,
+          gap: { xs: 2, sm: 2.5, md: 3 },
           mt: 6,
         }}
       >
         {displayStats.map((stat) => (
-          <HoverCard key={stat.title}>
+          <Box key={stat.title}>
             <Card
               sx={{
                 height: '100%',
@@ -91,24 +82,18 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
                 borderRadius: 3,
                 position: 'relative',
                 overflow: 'visible',
-                '&:hover': {
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                },
-                transition: 'all 0.3s ease',
               }}
             >
-              <CardContent sx={{ p: 3 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
                 <Box
                   display="flex"
                   alignItems="center"
                   justifyContent="space-between"
-                  mb={2}
+                  mb={1.5}
                 >
                   <Box
                     sx={{
-                      p: 1.5,
+                      p: 1.25,
                       borderRadius: 2,
                       backgroundColor: 'rgba(255, 255, 255, 0.2)',
                       color: 'white',
@@ -117,7 +102,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
                       justifyContent: 'center',
                     }}
                   >
-                    <stat.icon sx={{ fontSize: 28 }} />
+                    <stat.icon sx={{ fontSize: { xs: 22, sm: 24 } }} />
                   </Box>
                   <Chip
                     label={stat.trend}
@@ -127,36 +112,47 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
                       color: 'white',
                       fontWeight: 600,
                       border: '1px solid rgba(255, 255, 255, 0.3)',
+                      fontSize: '0.75rem',
                     }}
                   />
                 </Box>
 
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   fontWeight={700}
                   gutterBottom
-                  sx={{ color: 'white' }}
+                  sx={{
+                    color: 'white',
+                    fontSize: { xs: '1.5rem', sm: '1.75rem' },
+                  }}
                 >
                   {stat.value}
                 </Typography>
 
                 <Typography
-                  variant="h6"
+                  variant="subtitle1"
                   gutterBottom
-                  sx={{ color: 'white', fontWeight: 600 }}
+                  sx={{
+                    color: 'white',
+                    fontWeight: 600,
+                    fontSize: { xs: '0.9rem', sm: '1rem' },
+                  }}
                 >
                   {stat.title}
                 </Typography>
 
                 <Typography
                   variant="body2"
-                  sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  }}
                 >
                   {stat.subtitle}
                 </Typography>
               </CardContent>
             </Card>
-          </HoverCard>
+          </Box>
         ))}
       </Box>
     </StaggerContainer>
