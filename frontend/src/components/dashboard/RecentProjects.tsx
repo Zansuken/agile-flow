@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import type { RecentProject } from '../../services/dashboardService';
 import { HoverCard, SlideIn, StaggerContainer } from '../animations';
-import { TeamAvatars } from '../shared/TeamAvatars';
+import { TeamAvatars } from '../shared';
 
 interface RecentProjectsProps {
   projects: RecentProject[];
