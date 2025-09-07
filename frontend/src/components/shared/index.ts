@@ -1,1 +1,1 @@
-export { TeamAvatars } from './TeamAvatars';
+export { TeamAvatars, type TeamAvatarsProps } from './TeamAvatars';

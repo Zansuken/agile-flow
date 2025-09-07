@@ -2,7 +2,7 @@ import { Avatar, AvatarGroup, Box, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { userService, type UserProfile } from '../../services/userService';
 
-interface TeamAvatarsProps {
+export interface TeamAvatarsProps {
   memberIds: string[];
   maxAvatars?: number;
   size?: 'small' | 'medium' | 'large';
